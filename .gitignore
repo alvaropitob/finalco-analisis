@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+finalco.png
+test_ui.js
+scrape_finalco.js
+final_ui_test.png
+*.log

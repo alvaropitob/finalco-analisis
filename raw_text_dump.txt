@@ -1,0 +1,653 @@
+DataCrédito – Consultas en la Web
+Consultado por: COMPANIA 2025/09/24 5.23 PM
+Freddy Enrique Pito Meneses - 76326311
+PD63A64
+INFORMACIÓN BÁSICA
+Tipo Documento Número Documento Estado Documento Lugar Expedición Fecha Expedición
+C.C. 72164237 Vigente BARRANQUILLA 29/07/1988
+Nombre Rango Edad Género Tiene RUT? Antiguedad Ubicación
+VARGAS TIRADO EDINSON DE JESUS 46-55 Masculino - 4 Meses Urbana
+PD63A64
+ARTICULO 14 LEY 1266 DE 2008
+"Se presenta reporte negativo cuando la(s) persona(s) naturales efectivamente se encuentran en mora en sus cuotas u obligaciones. Se presenta reporte positivo cuando la(s) persona(s)
+naturales están al día en sus obligaciones"
+PD63A64
+RESUMEN
+Perfil General
+Total como Codeudor y
+Sectores Sector Financiero Sector Cooperativo Sector Real Sector Telcos Total Sectores Total como Principal
+Otros
+Créditos Vigentes 5 0 3 1 9 9 0
+Créditos Cerrados 5 2 17 9 33 30 3
+Créditos Reestructurados 0 1 0 0 1 1 0
+Créditos Refinanciados 0 0 0 0 0 0 0
+Consultas en los ult. 6 Meses 3 0 20 0 23 - -
+Desacuerdos Vigentes a la Fecha 0 0 0 0 0 0 0
+Antigüedad desde 2007-05-31 2017-06-23 2010-05-18 2014-01-30 - - -
+Tendencia de endeudamiento
+Saldos y Moras Sep 25 Ago 25 Jul 25 Jun 25 May 25 Abr 25 Mar 25 Feb 25 Ene 25 Dic 24 Nov 24 Oct 24
+Saldo Deuda Total en Mora (en miles) 0 0 0 0 0 0 0 0 0 0 0 0
+Saldo Deuda Total (en miles) 800 19,268 25,584 25,616 25,826 19,454 19,701 20,245 20,363 20,247 19,324 19,958
+Moras máx Sector Financiero N N N N N N N N N N N
+Moras máx Sector Real N N N N N N N N N N N N
+Moras máx Sector Telcos N N N N N N N N N N N
+Total Moras Máximas N N N N N N N N N N N N
+Núm créditos con mora =30 0 0 0 0 0 0 0 0 0 0 0 0
+Núm créditos con mora >= 60 0 0 0 0 0 0 0 0 0 0 0 0
+Endeudamiento Actual PD63A64
+Carteras Calidad Núm Estado Actual Calf Vlr o cupo inicial Saldo Actual Saldo en Mora Valor Cuota % Part % Deuda
+Sector Financiero
+Al día - 5,000 3,661 0 117 14.6% 73.2%
+Cartera bancaria Principal 3 Al día - 5,000 3,624 0 117 14.4% 72.5%
+Al día - 9,900 8,963 0 190 35.7% 90.5%
+Cartera c/ias. financ. cial. Principal 1 Al día A 5,975 5,809 0 165 23.1% 97.2%
+Tarjeta de crédito Principal 1 Al día - 2,300 2,167 0 158 8.6% 94.2%
+Total Sector Financiero 28,175 24,224 0 747 96.5% 86.0%
+Sector Real
+Al día - 3,500 0 0 0 - -
+Créditos de consumo Principal 2
+Al día - 800 800 0 800 3.2% 100.0%
+Cartera caja de compens. y salud Principal 1 Al día - 501 42 0 44 0.2% 8.4%
+Total Sector Real 4,801 842 0 844 3.4% 17.5%
+Sector Telcos
+Cartera telefonía celular Principal 1 Al día A 0 31 0 0 0.1% -
+Total Sector Telcos 0 31 0 0 0.1% -
+TOTAL 32,976 25,097 0 1,591 100.0% 76.1%
+PD63A64
+HÁBITO DE PAGO DE OBLIGACIONES ABIERTAS / VIGENTES
+Sector Financiero
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+Activa
+BANCOLOMBIA AHO 966613966 A 20250831 20110209 -
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+BUENAVISTA SANTA
+Normal Nomina GMF - - - - - - - - - 0.0%
+MARTA / -
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+Activa
+CUENTA NEQUI AHO 060583499 A 20250831 20221110 -
+COMPANIA NACIONAL DE 2025/09/24 17:23:16 Página 1 de 7
+
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal Electrónica - - - - - - - - - 0.0% Banca Digital / -
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Al día
+[NNNNNNNNNNNN][-----------N]
+BANCOLOMBIA CAB 820096127 - 20250831 20220816 20320216
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal OTR GAR 5,000 3,661 0 117 - - - - 36 de 114/M/D 73.0% CIENAGA / Principal
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Al día
+[NNNNNNNNNNNN][-----------N]
+BANCOLOMBIA CAB 820096161 - 20250831 20220812 20320212
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal OTR GAR 5,000 3,624 0 117 - - - - 36 de 114/M/D 72.0% CIENAGA / Principal
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Al día
+[NNNNNNNNNNNN][NNNNN------N]
+BANCOLOMBIA LIBRANZA CAB 820095277 - 20250831 20220310 20300405
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal OTR GAR 9,900 8,963 0 190 - - - - 40 de 96/M/D 90.0% CIENAGA / Principal
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[------------][------------]
++ Al día
+[------------][-----------N]
+COLTEFINANCIER CCF 102116237 A 20250731 20250615 20280615
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal OTR GAR 5,975 5,809 0 165 - - - - 1 de 36/M/D 97.0% 2201 / Principal
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[NNNNNNNNNNNN][NNNNNNNNNNN-]
++ Al día
+[------------][-----------N]
+BBVA COLOMBIA TDC 131710717 - Plástico: Entregado 20250829 20230921 20271231
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal Visa/Clasica OTR GAR 2,300 2,167 0 158 - - - - -/M/- 94.0% BAHIA / Principal
+Sector Real
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Al día
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
+CRJA S.A CON 85TJ43165 - 20250731 20111010 20280731
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal OTR GAR 3,500 0 0 0 - - - - -/M/I - SANTA MARTA / Principal
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[------------][------------]
++ Al día
+[------------][-----------N]
+SOLVENTA CDG 004247373 - 20250905 20250904 20251015
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal SIN GAR 800 800 0 800 - - - - -/M/D-0 100.0% SOLVENTA / Principal
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[NNNNNNNNN---][------------]
++ Al día
+[------------][-----------N]
+CAJAMAG CSA 000080904 - 20250831 20241112 20251112
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+CFM-EDIFICIO
+Normal OTR GAR 501 42 0 44 - - - - 11 de 12/M/D-9 8.0% ADMINISTRATIVO /
+Principal
+Sector Telcos
+Tipo Num Cta 9 Estado de la Fecha Fecha Fecha Mora
+Entidad Informante Calf Adjetivo-fecha 47 meses
+Cuenta dígitos Obligación Actualización Apertura Vencimiento Máxima
+[NNNNNNNNNN--][------------]
++ Al día
+[------------][-----------N]
+CLARO SERV MOV CTC .69769238 A 20250831 20241021 20241208
+Orig: Normal
+Desacuerdo con la Estado del Marca/ Tipo Vlr o cupo Saldo Actual Saldo en Mora Valor Cuota Fecha Limite Fecha No.Cheq % Oficina/
+Perm. Cuotas/M/Vigencia
+inform. Titular Clase Garantía inicial (Miles $) (Miles $) (Miles $) Pago del Pago Devueltos deuda Deudor
+Normal OTR GAR - 31 0 0 - - - - -/-/D - Principal
+PD63A64
+HÁBITO DE PAGO DE OBLIGACIONES CERRADAS / INACTIVAS
+Sector Financiero
+Tipo Estado de la Adjetivo- Num Cta 9 Fecha Vlr o cupo Ciudad/ Oficina Desacuerdo con la
+Entidad Informante Calf Fecha Cierre 47 meses
+Cuenta Obligación fecha digitos Apertura inicial Fecha /Deudor inform.
+BANCOLOMBIA AHO Saldada - 823308598 20070531 20110531 - - CIENAGA / -
+COMPANIA NACIONAL DE 2025/09/24 17:23:16 Página 2 de 7
+
+[NNNNNNNN----][------------]
++ Pago Vol NO INFORMO /
+[------------][-----------N]
+BANCOLOMBIA CBM - 617014025 20180913 20190531 - 20190513
+Orig: Normal Principal
+[NN----------][------------]
++ Pago Vol
+[------------][-----------N]
+COLTEFINANCIER CCF AA 102098348 20250515 20250731 5,974 20280515 2201 / Principal
+Orig: Normal
++ Cancelada
+[--NNNNNNNNNN][NNNNNNNNNNNN]
+BANCOLOMBIA VolPlástico: NO INFORMO /
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
+TDC - 530696180 20130423 20190930 - 20230130
+MASTERCARD Devuelto Orig: Principal
+Normal
++ Cancelada
+[---NNNNNNNNN][NNNNNNNN----]
+VolPlástico: NO INFORMO /
+[------------][-----------N]
+BANCOLOMBIA VISA TDC - 451307097 20180116 20190930 - 20240130
+Devuelto Orig: Principal
+Normal
++ Cancelada
+[------------][N---------NN]
+Sin ASECOFIN
+[NNNN--NNNNNN][NNNNNNNNNNNN]
+BCO COLPATRIA TDC MoraPlástico: - 905700406 20150420 20210412 600 20201130 BARRANQUILLA /
+Devuelto Orig: Principal
+Normal
+Sector Cooperativo
+Tipo Estado de la Adjetivo- Num Cta 9 Fecha Vlr o cupo Ciudad/ Oficina Desacuerdo con la
+Entidad Informante Calf Fecha Cierre 47 meses
+Cuenta Obligación fecha digitos Apertura inicial Fecha /Deudor inform.
+[---NN-NNNNNN][NNNNNNNNNNNN]
++ Pago Vol NO INFORMO /
+[NN----------][-----------N]
+FINCOMERCIO CAC - 002174379 20170623 20190801 - 20191231
+Orig: Normal Principal
+[------------][----NNN-----]
++ Pago Vol 218 SANTA MARTA /
+[------------][-----------N]
+FINCOMERCIO CAC A 002803345 20190830 20210331 1,362 20200830
+Reestructurada Principal
+Sector Real
+Tipo Estado de la Adjetivo- Num Cta 9 Fecha Vlr o cupo Ciudad/ Oficina Desacuerdo con la
+Entidad Informante Calf Fecha Cierre 47 meses
+Cuenta Obligación fecha digitos Apertura inicial Fecha /Deudor inform.
+[N-----------][------------]
+PRESTAENLINEA + Pago Vol
+[------------][-----------N]
+CBM A 000637848 20250716 20250831 200 20250815 NEXFIN / Principal
+NEXFIN Orig: Normal
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Pago Vol CL. 38 NO.43-98 /
+[------------][-----------N]
+CREDITITULOS CEL - 000013824 20190827 20210831 3,039 20210904
+Orig: Normal Codeudor
+[------------][--------N---]
++ Pago Vol NO INFORMO /
+[------------][-----------N]
+ELECTRO AO S.A CEL - 000000075 20100518 20120930 - 20111202
+Orig: Normal Codeudor
+[NNNNNNNNNNNN][NNNNNN----NN]
++ Pago Vol
+[NNNNN-NNNNNN][----N-NNN-NN]
+CRJA S.A CON - TJ43606C1 20111105 20161231 - 20200109 NO INFORMO / Fiador
+Orig: Normal
+[NNNNNN------][------------]
++ Pago Vol LUEGOPAGO.COM
+[------------][-----------N]
+SISTECREDITO CON A 697-00045 20250107 20250711 489 20250707
+Orig: Normal TRAVEL / Principal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 000334903 20250115 20250218 250 20250214 SOLVENTA / Principal
+Orig: Normal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 000345592 20250210 20250310 350 20250314 SOLVENTA / Principal
+Orig: Normal
+[------------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 000365865 20250402 20250430 600 20250515 SOLVENTA / Principal
+Orig: Normal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 000401759 20250703 20250801 - 20250815 SOLVENTA / Principal
+Orig: Normal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 000413168 20250804 20250904 - 20250915 SOLVENTA / Principal
+Orig: Normal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG A 002964684 20241003 20241113 500 20291115 SOLVENTA / Principal
+Orig: Normal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 003225807 20241210 20250109 400 20250115 SOLVENTA / Principal
+Orig: Normal
+[------------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 003536302 20250302 20250409 550 20250415 SOLVENTA / Principal
+Orig: Normal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 003817169 20250514 20250601 - 20250616 SOLVENTA / Principal
+Orig: Normal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+SOLVENTA CDG - 003891955 20250602 20250703 - 20250715 SOLVENTA / Principal
+Orig: Normal
+[NNNNNNNNNNN-][------------]
++ Pago Vol CFM-SOLICITUDES
+[------------][-----------N]
+CAJAMAG CSA - 000074356 20230904 20240831 445 20240904
+Orig: Normal ONLINE / Principal
+[N-----------][------------]
++ Pago Vol
+[------------][-----------N]
+FINSANA SFI A CO6249228 20250502 20250630 500 20250601 PRINCIPAL / Principal
+Orig: Normal
+Sector Telcos
+Tipo Estado de la Adjetivo- Num Cta 9 Fecha Vlr o cupo Ciudad/ Oficina Desacuerdo con la
+Entidad Informante Calf Fecha Cierre 47 meses
+Cuenta Obligación fecha digitos Apertura inicial Fecha /Deudor inform.
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Pago Vol OFICINA PRINCIPAL /
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
+CLARO SERV FIJ CDC - 822368600 20140130 20240930 108 20241002
+Orig: Normal Principal
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Pago Vol SANTAMARTA /
+[------------][-----------N]
+CLARO TEC MOV COM A 010632098 20220802 20240831 836 20260831
+Orig: Normal Principal
+[NNNNNNNNNNNN][N-----------]
++ Pago Vol SANTAMARTA /
+[------------][-----------N]
+CLARO TEC MOV COM A 100002218 20220430 20230531 704 20260430
+Orig: Normal Principal
+[NNNNNNNNNNNN][N-----------]
++ Pago Vol SANTAMARTA /
+[------------][-----------N]
+CLARO TEC MOV COM A 106568808 20221031 20231130 751 20261031
+Orig: Normal Principal
+[NNNNNNNNNN--][------------]
++ Pago Vol NO INFORMO /
+[------------][-----------N]
+CLARO SERV MOV CTC A .13821918 20161231 20171031 - 20170209
+Orig: Normal Principal
+[NNNNNNNNNNNN][------------]
++ Pago Vol NO INFORMO /
+[------------][-----------N]
+CLARO SERV MOV CTC A .13821919 20161231 20171227 - 20170209
+Orig: Normal Principal
+COMPANIA NACIONAL DE 2025/09/24 17:23:16 Página 3 de 7
+
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
++ Pago Vol
+[NNNNNNNNNNNN][NNNNNNNNNNNN]
+CLARO SERV MOV CTC A .17654662 20180731 20240331 - 20181019 Principal
+Orig: Normal
+[NNNNN-------][------------]
++ Pago Vol
+[------------][-----------N]
+CLARO SERV MOV CTC A .59450114 20231107 20240430 - 20240117 Principal
+Orig: Normal
+[NNNNNNN-----][------------]
++ Pago Vol
+[------------][-----------N]
+CLARO SERV MOV CTC A .63678198 20240411 20241130 - 20240615 Principal
+Orig: Normal
+PD63A64
+ANALISIS DE VECTORES
+Num Cta 9 Tipo Sep Ago Jul Jun May Abr Mar Feb Ene Dic Nov Oct Sep Ago Jul Jun May Abr Mar Feb Ene Dic Nov Oct
+Entidad Estado
+dígitos Cuenta 25 25 25 25 25 25 25 25 25 24 24 24 24 24 24 24 24 24 24 24 24 23 23 23
+Sector Financiero
+BANCOLOMBIA 820096127 CAB Al día N N N N N N N N N N N N N N N N N N N N N N N
+BANCOLOMBIA 820096161 CAB Al día N N N N N N N N N N N N N N N N N N N N N N N
+BANCOLOMBIA LIBRANZA 820095277 CAB Al día N N N N N N N N N N N N N N N N N N N N N N N
+COLTEFINANCIER 102116237 CCF Al día N - - - - - - - - - - - - - - - - - - - - -
+COLTEFINANCIER 102098348 CCF Pago Vol N N N - - - - - - - - - - - - - - - - - - -
+BBVA COLOMBIA 131710717 TDC Al día N N N N N N N N N N N N N N N N N N N N N N N
+Moras Máximas Sector Financiero N N N N N N N N N N N N N N N N N N N N N N N
+Sector Real
+PRESTAENLINEA NEXFIN 000637848 CBM Pago Vol N N - - - - - - - - - - - - - - - - - - - - -
+CRJA S.A 85TJ43165 CON Al día N N N N N N N N N N N N N N N N N N N N N N
+SISTECREDITO 697-00045 CON Pago Vol N N N N N N N - - - - - - - - - - - - - - -
+SOLVENTA 004247373 CON Al día N - - - - - - - - - - - - - - - - - - - - - - -
+SOLVENTA 000334903 CON Pago Vol N N - - - - - - - - - - - - - - -
+SOLVENTA 000345592 CON Pago Vol N N - - - - - - - - - - - - - - - -
+SOLVENTA 000365865 CON Pago Vol N - - - - - - - - - - - - - - - - - -
+SOLVENTA 000401759 CON Pago Vol N N - - - - - - - - - - - - - - - - - - - - -
+SOLVENTA 000413168 CON Pago Vol N N - - - - - - - - - - - - - - - - - - - - - -
+SOLVENTA 002964684 CON Pago Vol N N - - - - - - - - - - - -
+SOLVENTA 003225807 CON Pago Vol N N - - - - - - - - - - - - - -
+SOLVENTA 003536302 CON Pago Vol N - - - - - - - - - - - - - - - - - -
+SOLVENTA 003817169 CON Pago Vol N N - - - - - - - - - - - - - - - - - - -
+SOLVENTA 003891955 CON Pago Vol N N - - - - - - - - - - - - - - - - - - - -
+CAJAMAG 000080904 CSA Al día N N N N N N N N N N - - - - - - - - - - - - -
+CAJAMAG 000074356 CSA Pago Vol N N N N N N N N N N N
+FINSANA CO6249228 SFI Pago Vol N N - - - - - - - - - - - - - - - - - - -
+Moras Máximas Sector Real N N N N N N N N N N N N N N N N N N N N N N N N
+Sector Telcos
+CLARO SERV FIJ 822368600 CDC Pago Vol N N N N N N N N N N N N
+CLARO TEC MOV 010632098 COM Pago Vol N N N N N N N N N N N
+CLARO TEC MOV 106568808 COM Pago Vol N N
+CLARO SERV MOV .69769238 CTC Al día N N N N N N N N N N N - - - - - - - - - - - -
+CLARO SERV MOV .17654662 CTC Pago Vol N N N N N N
+CLARO SERV MOV .59450114 CTC Pago Vol N N N N N N -
+CLARO SERV MOV .63678198 CTC Pago Vol N N N N N N N N - - - - - -
+Moras Máximas Sector Telcos N N N N N N N N N N N N N N N N N N N N N N N
+Total Sectores
+Moras Máximas Obligaciones N N N N N N N N N N N N N N N N N N N N N N N N
+null
+EVOLUCIÓN DE LA DEUDA
+Tipo Cuenta Valores Trimestre 2025/09 Trimestre 2025/06 Trimestre 2025/03 Trimestre 2024/12 Trimestre 2024/09
+COMPANIA NACIONAL DE 2025/09/24 17:23:16 Página 4 de 7
+
+Sector Financiero
+Num 3 3 3 3 3
+Vlr o Cupo Inicial 19,900 19,900 19,900 19,900 19,900
+Saldo 16,248 16,477 16,791 17,093 17,357
+Cartera bancaria Saldo en Mora 0 0 0 0 0
+Valor Cuota 424 424 424 424 482
+% Deuda 81.6% 82.8% 84.4% 85.9% 87.2%
+< Calificación - - - - -
+Num 1 1 0 0 0
+Vlr o Cupo Inicial 5,975 5,974 0 0 0
+Saldo 5,809 5,952 0 0 0
+Cartera c/ias. financ. cial. Saldo en Mora 0 0 0 0 0
+Valor Cuota 165 231 0 0 0
+% Deuda 97.2% 99.6% - - -
+< Calificación A - - - -
+Num 1 1 1 1 1
+Vlr o Cupo Inicial 2,300 2,300 2,300 2,300 2,300
+Saldo 2,167 2,284 2,267 2,288 2,292
+Tarjeta de crédito Saldo en Mora 0 0 0 0 0
+Valor Cuota 158 175 158 169 166
+% Deuda 94.2% 99.3% 98.6% 99.5% 99.7%
+< Calificación - - - - -
+Total Saldo Financiero 24,224 24,713 19,058 19,381 19,649
+Sector Real
+Num 2 4 4 2 1
+Vlr o Cupo Inicial 3,500 2,135 839 400 0
+Saldo 0 731 326 400 0
+Créditos de consumo Saldo en Mora 0 0 0 0 0
+Valor Cuota 0 731 81 400 0
+% Deuda - 34.2% 38.9% 100.0% -
+< Calificación - - - - -
+Num 1 1 1 1 0
+Vlr o Cupo Inicial 501 501 501 501 0
+Saldo 42 141 286 466 0
+Cartera caja de compens. y salud Saldo en Mora 0 0 0 0 0
+Valor Cuota 44 44 44 44 0
+% Deuda 8.4% 28.1% 57.1% 93.0% -
+< Calificación - - - - -
+Num 0 1 0 0 0
+Vlr o Cupo Inicial 0 500 0 0 0
+Saldo 0 0 0 0 0
+Servicios financieros Saldo en Mora 0 0 0 0 0
+Valor Cuota 0 0 0 0 0
+% Deuda - - - - -
+< Calificación - - - - -
+Total Saldo Real 42 872 612 866 0
+Sector Telcos
+Num 0 0 0 0 1
+Vlr o Cupo Inicial 0 0 0 0 108
+Saldo 0 0 0 0 0
+Cartera de comunicaciones Saldo en Mora 0 0 0 0 0
+Valor Cuota 0 0 0 0 0
+% Deuda - - - - -
+< Calificación - - - - -
+Num 1 1 1 1 1
+Vlr o Cupo Inicial 0 0 0 0 0
+Saldo 31 31 31 0 0
+Cartera telefonía celular Saldo en Mora 0 0 0 0 0
+Valor Cuota 0 0 0 0 0
+% Deuda - - - - -
+< Calificación A - - - -
+Total Saldo Telcos 31 31 31 0 0
+Total Saldos Sectores 24,297 25,616 19,701 20,247 19,649
+PD63A64
+HISTÓRICO DE CONSULTAS
+Fecha Ult. Consulta Consultante No. de Consultas mes
+16/09/2025 CIUDADANO 02
+09/09/2025 CONSULTAS LOTE 02
+03/09/2025 BANCOLOMBIA S.A. 01
+15/08/2025 CIUDADANO 05
+14/08/2025 TECH365 01
+03/08/2025 CMP.RAPICREDIT FINTECH 01
+27/07/2025 CIUDADANO 06
+15/07/2025 PRESTAENLINEA NEXFIN 01
+13/05/2025 ZINOBE SAS 01
+08/05/2025 BANCOLOMBIA S.A. 01
+03/05/2025 BANCO DE BOGOTA S. A. 01
+01/05/2025 FINSANA 01
+*CONSULTAS LOTE: corresponden a consultas realizadas por las Entidades para la supervisión y control del riesgo crediticio.
+COMPANIA NACIONAL DE 2025/09/24 17:23:16 Página 5 de 7
+
+PD63A64
+ENDEUDAMIENTO GLOBAL CLASIFICADO
+TRIMESTRE 2025/06
+Sector Financiero
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+BANCOLOMBIA-BC 0 - 3 $16,708 0 $0 0 $0 3 $16,708 0 $0 SIN GAR - $0 ML S
+BBVA COLOMBIA - BC 0 - 1 $2,363 0 $0 0 $0 1 $2,363 0 $0 SIN GAR - $0 ML S
+COLTEFINANCIER - 1 $5,952 0 $0 0 $0 1 $5,952 0 $0 OTR GAR - $0 MC DC
+TOTAL 5 $25,023 0 $0 0 $0 5 $25,023 0 $0 - - - - -
+Sector Real
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+CAJAMAG - 1 $141 0 $0 0 $0 1 $141 0 $0 OTR GAR - $0 MC DC
+SISTECREDITO - 1 $81 0 $0 0 $0 1 $81 0 $0 OTR GAR - $0 MC DC
+SOLVENTA - 1 $650 0 $0 0 $0 1 $650 0 $0 SIN GAR - $0 MC DC
+TOTAL 3 $872 0 $0 0 $0 3 $872 0 $0 - - - - -
+Sector Telcos
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+CLARO SERV MOV - 1 $31 0 $0 0 $0 1 $31 0 $0 OTR GAR - $0 MC DC
+TOTAL 1 $31 0 $0 0 $0 1 $31 0 $0 - - - - -
+TRIMESTRE 2025/03
+Sector Financiero
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+BANCOLOMBIA-BC 0 - 3 $17,028 0 $0 0 $0 3 $17,028 0 $0 SIN GAR - $0 ML S
+BBVA COLOMBIA - BC 0 - 1 $2,346 0 $0 0 $0 1 $2,346 0 $0 SIN GAR - $0 ML S
+TOTAL 4 $19,374 0 $0 0 $0 4 $19,374 0 $0 - - - - -
+Sector Real
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+CAJAMAG - 1 $286 0 $0 0 $0 1 $286 0 $0 OTR GAR - $0 MC DC
+SISTECREDITO - 1 $326 0 $0 0 $0 1 $326 0 $0 OTR GAR - $0 MC DC
+TOTAL 2 $612 0 $0 0 $0 2 $612 0 $0 - - - - -
+Sector Telcos
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+CLARO SERV MOV - 1 $31 0 $0 0 $0 1 $31 0 $0 OTR GAR - $0 MC DC
+TOTAL 1 $31 0 $0 0 $0 1 $31 0 $0 - - - - -
+TRIMESTRE 2024/12
+Sector Financiero
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+BANCOLOMBIA-BC 0 - 3 $17,335 0 $0 0 $0 3 $17,335 0 $0 SIN GAR - $0 ML S
+BBVA COLOMBIA - BC 0 - 1 $2,369 0 $0 0 $0 1 $2,369 0 $0 SIN GAR - $0 ML S
+TOTAL 4 $19,704 0 $0 0 $0 4 $19,704 0 $0 - - - - -
+Sector Real
+Consumo y Tarjeta de
+Comercial Hipotecario Microcrédito Garantías
+Crédito
+Entidad Informante Calf Num Saldo total Moneda Fuente
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $ Tipo Fecha Avalúo Valor
+CAJAMAG - 1 $466 0 $0 0 $0 1 $466 0 $0 OTR GAR - $0 MC DC
+SOLVENTA - 1 $400 0 $0 0 $0 1 $400 0 $0 SIN GAR - $0 MC DC
+TOTAL 2 $866 0 $0 0 $0 2 $866 0 $0 - - - - -
+PD63A64
+RESUMEN ENDEUDAMIENTO GLOBAL
+Comercial Hipotecario Consumo y Tarjeta de Crédito Microcrédito
+Fecha
+Sector % Participación
+Corte
+Nro Miles $ Nro Miles $ Nro Miles $ Nro Miles $
+COMPANIA NACIONAL DE 2025/09/24 17:23:16 Página 6 de 7
+
+Financiero 0 $0 0 $0 5 $25,023 0 $0 96.5%
+Cooperativo 0 $0 0 $0 0 $0 0 $0 -
+2025/06 Real 0 $0 0 $0 3 $872 0 $0 3.4%
+Telcos 0 $0 0 $0 1 $31 0 $0 0.1%
+Total 0 $0 0 $0 9 $25,926 0 $0 100%
+Financiero 0 $0 0 $0 4 $19,374 0 $0 96.8%
+Cooperativo 0 $0 0 $0 0 $0 0 $0 -
+2025/03 Real 0 $0 0 $0 2 $612 0 $0 3.1%
+Telcos 0 $0 0 $0 1 $31 0 $0 0.2%
+Total 0 $0 0 $0 7 $20,017 0 $0 100%
+Financiero 0 $0 0 $0 4 $19,704 0 $0 95.8%
+Cooperativo 0 $0 0 $0 0 $0 0 $0 -
+2024/12 Real 0 $0 0 $0 2 $866 0 $0 4.2%
+Telcos 0 $0 0 $0 0 $0 0 $0 -
+Total 0 $0 0 $0 6 $20,570 0 $0 100%
+PD63A64
+RECONOCER+
+# Dirección Estrato Tipo Zona Ciudad Departamento Reportado Desde Ultimo Reporte # de Reportes # de Entidades Fuente
+1 KR 98 4 C 250 - RES URB CALI VALLE DEL CAUCA MAY - 2025 MAY - 2025 1 1 SUS
+2 CL 22 15 15 - RES - CRR URB SANTA MARTA MAGDALENA SEP - 2023 AGO - 2025 2 1 SUS
+3 AV LIBERTADOR CL 24 LIBERTADOR - RES - LAB - CRR URB SANTA MARTA MAGDALENA MAR - 2017 AGO - 2024 15 1 SUS
+4 AV LIBERTADOR 27 32 3 LAB URB SANTA MARTA MAGDALENA JUN - 2017 MAR - 2021 2 1 SUS
+5 BR PIZANO MZ 29 CA 5 - RES URB SANTA MARTA MAGDALENA SEP - 2015 MAR - 2021 1 1 SUS
+6 AV LIBERTADOR 127 32 BR EL LIB - LAB URB SANTA MARTA MAGDALENA SEP - 2015 MAR - 2021 1 1 SUS
+7 BR PIZANO 200 MZ 29 CA 5 CA - RES - CRR URB SANTA MARTA MAGDALENA JUN - 2014 SEP - 2024 2 1 SUS
+8 MZ 29 CA 5 - RES - CRR URB SANTA MARTA MAGDALENA DIC - 2013 JUN - 2025 2 1 SUS
+9 CL 23 4 27 PI 11 - LAB URB SANTA MARTA MAGDALENA FEB - 2011 AGO - 2025 2 1 SUS
+Vector de Direcciones
+Tipo Sep 23 Oct 23 Nov 23 Dic 23 Ene 24 Feb 24 Mar 24 Abr 24 May 24 Jun 24 Jul 24 Ago 24 Sep 24 Oct 24 Nov 24 Dic 24 Ene 25 Feb 25 Mar 25 Abr 25 May 25 Jun 25 Jul 25 Ago 25
+RES
+LAB
+CRR
+# Teléfono Fijo Tipo Ciudad Departamento Reportado Desde Ultimo Reporte # de Reportes # de Entidades Fuente
+1 4333841 RES - LAB SANTA MARTA MAGDALENA MAY - 2011 JUN - 2025 6 2 SUS
+2 4334652 LAB SANTA MARTA MAGDALENA JUN - 2017 MAR - 2021 2 1 SUS
+3 4330006 RES SANTA MARTA MAGDALENA JUN - 2017 MAR - 2021 2 1 SUS
+4 4359073 RES SANTA MARTA MAGDALENA MAY - 2011 AGO - 2025 2 1 SUS
+# Celular Reportado Por Reportado Desde Último Reporte # de Reportes # de Entidades Fuente
+1 3205149673 - ABR - 2020 AGO - 2025 9 5 SUS
+2 3148725586 - ABR - 2022 NOV - 2023 3 1 SUS
+3 3168041104 - JUN - 2017 MAR - 2021 2 1 SUS
+# Correo Electrónico Reportado Por Reportado Desde Último Reporte # de Reportes Fuente
+1 edinson20069@hotmail.com - FEB - 2011 AGO - 2025 10 SUS
+2 samaravargas257@gmail.com - MAY - 2025 MAY - 2025 1 SUS
+3 edinsonvargas670@gmail.com - ENE - 2025 JUN - 2025 1 SUS
+4 adinson20069@hotmail.com - SEP - 2017 MAR - 2021 2 SUS
+5 edison20069@hotmail.com - MAY - 2015 MAR - 2021 1 SUS
+NOTAS
+Espacio disponible para notas relacionadas con la Historia de Crédito y su reglamentación .
+Fin-consulta Tipo 1. La consulta fue efectiva.
+COMPANIA NACIONAL DE 2025/09/24 17:23:16 Página 7 de 7
+

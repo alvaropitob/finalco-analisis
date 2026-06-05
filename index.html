@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finalco — Extractor Inteligente Datacrédito</title>
+<meta name="description" content="Extractor profesional de reportes Datacrédito PDF con visualización completa y análisis detallado">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & VARIABLES ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-body: #f8fafc;
+  --bg-gradient: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+  --bg-card: #ffffff;
+  --bg-card-solid: #ffffff;
+  --bg-surface: #f1f5f9;
+  --bg-hover: #f1f5f9;
+  --bg-input: #ffffff;
+  --border: #e8e8e8;
+  --border-accent: rgba(59,113,254,0.3);
+  --border-hover: rgba(59,113,254,0.6);
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent: #3b71fe;
+  --accent-light: #5a88ff;
+  --accent-glow: rgba(59,113,254,0.1);
+  --success: #059669;
+  --success-bg: rgba(16,185,129,0.12);
+  --danger: #dc2626;
+  --danger-bg: rgba(239,68,68,0.12);
+  --warning: #d97706;
+  --warning-bg: rgba(245,158,11,0.12);
+  --info: #2563eb;
+  --info-bg: rgba(59,130,246,0.12);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.04);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --sidebar-w: 260px;
+  --header-h: 64px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg-body);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── SCROLLBAR ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+
+/* ─── LAYOUT ──────────────────────────────────────────────────────────── */
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+  position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  z-index: 100; transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.sidebar-brand .logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: #fff;
+}
+.sidebar-brand h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.3px; }
+.sidebar-brand span { font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 2px; }
+.sidebar-nav { padding: 16px 12px; flex: 1; }
+.sidebar-nav a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: var(--radius-sm);
+  color: var(--text-secondary); text-decoration: none;
+  font-size: 0.85rem; font-weight: 500;
+  transition: all 0.2s; margin-bottom: 2px;
+}
+.sidebar-nav a:hover { background: var(--bg-hover); color: var(--text); }
+.sidebar-nav a.active { background: var(--accent-glow); color: var(--accent-light); border: 1px solid var(--border-accent); }
+.sidebar-nav a .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+.sidebar-nav .nav-section {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-muted); padding: 16px 14px 6px; font-weight: 600;
+}
+.main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+
+/* ─── HEADER ──────────────────────────────────────────────────────────── */
+.header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255,255,255,0.85); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-info { display: flex; align-items: center; gap: 16px; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+  background: var(--accent-glow); color: var(--accent-light);
+  border: 1px solid var(--border-accent);
+}
+.header-badge.success { background: var(--success-bg); color: var(--success); border-color: rgba(16,185,129,0.3); }
+.header-title { font-size: 0.95rem; font-weight: 600; }
+.header-sub { font-size: 0.78rem; color: var(--text-secondary); }
+
+/* ─── CONTENT ─────────────────────────────────────────────────────────── */
+.content { padding: 28px 32px 60px; max-width: 1200px; }
+
+/* ─── UPLOAD ZONE ─────────────────────────────────────────────────────── */
+.upload-hero {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: calc(100vh - var(--header-h) - 60px);
+  text-align: center; padding: 40px;
+}
+.upload-hero h2 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+.upload-hero h2 span {
+  background: linear-gradient(135deg, var(--accent), #a855f7, #ec4899);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.upload-hero p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 32px; max-width: 500px; }
+.upload-zone {
+  width: 100%; max-width: 560px;
+  border: 2px dashed rgba(99,102,241,0.3);
+  border-radius: var(--radius-lg); padding: 56px 40px;
+  background: var(--accent-glow);
+  cursor: pointer; transition: all 0.3s ease; position: relative;
+  overflow: hidden;
+}
+.upload-zone::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(99,102,241,0.08), transparent 70%);
+  transition: opacity 0.3s;
+}
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: var(--accent); background: rgba(99,102,241,0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.15);
+}
+.upload-zone .upload-icon { font-size: 3rem; margin-bottom: 16px; }
+.upload-zone .upload-text { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.upload-zone .upload-sub { font-size: 0.82rem; color: var(--text-secondary); }
+.upload-zone input[type="file"] { display: none; }
+#status-msg {
+  margin-top: 20px; font-size: 0.85rem; color: var(--text-secondary);
+  min-height: 24px; transition: all 0.3s;
+}
+#status-msg.error { color: var(--danger); }
+#status-msg.success { color: var(--success); }
+
+/* ─── CARDS ───────────────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.5s ease both;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border-accent); }
+.card-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.card-icon.purple { background: rgba(99,102,241,0.15); }
+.card-icon.green { background: var(--success-bg); }
+.card-icon.blue { background: var(--info-bg); }
+.card-icon.orange { background: var(--warning-bg); }
+.card-icon.red { background: var(--danger-bg); }
+.card-title { font-size: 1rem; font-weight: 700; letter-spacing: -0.2px; }
+.card-count { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ─── SUMMARY GRID ────────────────────────────────────────────────────── */
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.summary-stat {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  transition: all 0.2s;
+}
+.summary-stat:hover { border-color: var(--border-accent); transform: translateY(-1px); }
+.summary-stat .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 6px; }
+.summary-stat .stat-value { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+.summary-stat .stat-sub { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
+.summary-stat.accent .stat-value { color: var(--accent-light); }
+.summary-stat.success .stat-value { color: var(--success); }
+.summary-stat.danger .stat-value { color: var(--danger); }
+.summary-stat.warning .stat-value { color: var(--warning); }
+.summary-stat.info .stat-value { color: var(--info); }
+
+/* ─── FIELD ROWS ──────────────────────────────────────────────────────── */
+.fields-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.field-row {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 12px 14px; border-radius: var(--radius-sm);
+  background: var(--bg-surface); border: 1px solid var(--border);
+}
+.field-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+.field-value { font-size: 0.92rem; font-weight: 600; color: var(--text); word-break: break-word; }
+
+/* ─── TABLES ──────────────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.data-table th {
+  text-align: left; padding: 10px 14px; font-weight: 600;
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-muted); background: var(--bg-surface);
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.data-table td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  color: var(--text-secondary); white-space: nowrap;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg-hover); }
+.data-table tr.total-row td { font-weight: 700; color: var(--text); background: var(--bg-surface); border-top: 2px solid var(--border-accent); }
+.data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table .bold { font-weight: 700; color: var(--text); }
+
+/* ─── BADGES ──────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600; white-space: nowrap;
+}
+.badge-success { background: var(--success-bg); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+.badge-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+.badge-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+.badge-info { background: var(--info-bg); color: var(--info); border: 1px solid rgba(59,130,246,0.2); }
+.badge-neutral { background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border); }
+.badge-sector { padding: 2px 8px; font-size: 0.68rem; border-radius: 4px; letter-spacing: 0.3px; }
+
+/* ─── OBLIGATION CARDS ────────────────────────────────────────────────── */
+.obl-card {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 12px;
+  transition: all 0.2s; overflow: hidden;
+}
+.obl-card:hover { border-color: var(--border-accent); }
+.obl-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; cursor: pointer; gap: 12px;
+  transition: background 0.2s;
+}
+.obl-header:hover { background: var(--bg-hover); }
+.obl-header .entity-name { font-weight: 700; font-size: 0.9rem; }
+.obl-header .entity-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.obl-header .chevron { color: var(--text-muted); transition: transform 0.3s; font-size: 0.8rem; }
+.obl-card.open .obl-header .chevron { transform: rotate(180deg); }
+.obl-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease;
+  border-top: 0 solid var(--border);
+}
+.obl-card.open .obl-body { max-height: 800px; border-top-width: 1px; }
+.obl-body-inner { padding: 16px 20px; }
+
+/* ─── PROGRESS BAR ────────────────────────────────────────────────────── */
+.progress { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.progress-bar {
+  height: 100%; border-radius: 3px; transition: width 0.6s ease;
+  background: linear-gradient(90deg, var(--accent), #a855f7);
+}
+.progress-bar.high { background: linear-gradient(90deg, var(--danger), #f97316); }
+.progress-bar.mid { background: linear-gradient(90deg, var(--warning), #f59e0b); }
+.progress-bar.low { background: linear-gradient(90deg, var(--success), #34d399); }
+
+/* ─── CHART ───────────────────────────────────────────────────────────── */
+.chart-container { position: relative; width: 100%; height: 260px; margin-top: 10px; }
+.chart-container canvas { width: 100% !important; height: 100% !important; }
+
+/* ─── VECTOR GRID ─────────────────────────────────────────────────────── */
+.vector-cell { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; font-size: 0.65rem; font-weight: 700; border-radius: 3px; margin: 1px; }
+.vector-N { background: var(--success-bg); color: var(--success); }
+.vector-dash { background: rgba(255,255,255,0.03); color: var(--text-muted); }
+.vector-mora { background: var(--danger-bg); color: var(--danger); }
+
+/* ─── RAW TEXT ─────────────────────────────────────────────────────────── */
+.raw-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  background: var(--bg-surface); border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 0.8rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; margin-top: 20px;
+}
+.raw-toggle:hover { border-color: var(--border-accent); color: var(--text); }
+.raw-text {
+  display: none; margin-top: 12px; padding: 16px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-family: 'Courier New', monospace;
+  font-size: 0.72rem; color: var(--text-muted);
+  white-space: pre-wrap; max-height: 400px; overflow-y: auto;
+  line-height: 1.8;
+}
+.empty-state { text-align: center; padding: 32px; color: var(--text-muted); font-size: 0.85rem; }
+.empty-state .empty-icon { font-size: 2rem; margin-bottom: 10px; opacity: 0.5; }
+
+/* ─── ANIMATIONS ──────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+.stagger-9 { animation-delay: 0.45s; }
+.loading { animation: pulse 1.5s infinite; }
+
+/* ─── MOBILE MENU ─────────────────────────────────────────────────────── */
+.mobile-menu-btn {
+  display: none; background: none; border: none; color: var(--text);
+  font-size: 1.4rem; cursor: pointer; padding: 8px;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .content { padding: 20px 16px 40px; }
+  .header { padding: 0 16px; }
+  .mobile-menu-btn { display: block; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .fields-grid { grid-template-columns: 1fr; }
+  .upload-hero h2 { font-size: 1.4rem; }
+  .upload-zone { padding: 36px 24px; }
+}
+@media (max-width: 480px) {
+  .summary-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── UTILITY ─────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.mt-16 { margin-top: 16px; }
+.mt-8 { margin-top: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.gap-8 { gap: 8px; }
+.text-right { text-align: right; }
+.section-divider { border: none; border-top: 1px solid var(--border); margin: 8px 0 20px; }
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 90;
+}
+.overlay.open { display: block; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo" style="background: linear-gradient(135deg, #25d366, #3b71fe);">🍃</div>
+      <div>
+        <h1>Finalco Extractor</h1>
+        <span>Datacrédito Parser</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <div class="nav-section">Documento</div>
+      <a href="#sec-upload" class="active"><span class="icon">📄</span> Cargar PDF</a>
+      <div class="nav-section" id="nav-sections-label" class="hidden">Secciones</div>
+      <a href="#sec-info" id="nav-info" class="hidden"><span class="icon">👤</span> Información Básica</a>
+      <a href="#sec-resumen" id="nav-resumen" class="hidden"><span class="icon">📊</span> Resumen Crediticio</a>
+      <a href="#sec-endeudamiento" id="nav-endeudamiento" class="hidden"><span class="icon">💰</span> Endeudamiento Actual</a>
+      <a href="#sec-vigentes" id="nav-vigentes" class="hidden"><span class="icon">🏦</span> Obligaciones Vigentes</a>
+      <a href="#sec-cerradas" id="nav-cerradas" class="hidden"><span class="icon">📋</span> Obligaciones Cerradas</a>
+      <a href="#sec-consultas" id="nav-consultas" class="hidden"><span class="icon">🔍</span> Consultas</a>
+      <a href="#sec-reconocer" id="nav-reconocer" class="hidden"><span class="icon">📞</span> Reconocer+</a>
+      <a href="#sec-raw" id="nav-raw" class="hidden"><span class="icon">📝</span> Texto Crudo</a>
+    </nav>
+  </aside>
+
+  <!-- OVERLAY (mobile) -->
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="header">
+      <div class="header-info">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+        <div>
+          <div class="header-title" id="header-name">Finalco — Extractor Datacrédito</div>
+          <div class="header-sub" id="header-sub">Carga un reporte PDF para comenzar</div>
+        </div>
+      </div>
+      <div id="header-actions" style="display: flex; gap: 12px; align-items: center;">
+        <div id="header-badges"></div>
+        <button id="btn-save-db" class="hidden" onclick="guardarEnBD()" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.8rem; box-shadow: 0 4px 10px var(--accent-glow); transition: all 0.2s;">💾 Guardar en BD</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- UPLOAD SECTION -->
+      <section id="sec-upload">
+        <div class="upload-hero" id="upload-hero">
+          <h2>Analiza tu reporte <span>Datacrédito</span></h2>
+          <p>Carga un reporte PDF de Datacrédito para extraer, organizar y visualizar toda la información crediticia automáticamente.</p>
+          <label class="upload-zone" id="upload-zone" for="pdf-input">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Haz clic o arrastra tu PDF aquí</div>
+            <div class="upload-sub">Soporta reportes Midatacrédito / Datacrédito</div>
+            <input type="file" id="pdf-input" accept=".pdf">
+          </label>
+          <div id="status-msg">Ningún archivo cargado</div>
+        </div>
+      </section>
+
+      <!-- RESULTS (hidden until load) -->
+      <div id="results" class="hidden">
+
+        <!-- DASHBOARD SUMMARY -->
+        <section id="sec-dashboard" class="card stagger-1">
+          <div class="summary-grid" id="out-dashboard"></div>
+        </section>
+
+        <!-- INFO BÁSICA -->
+        <section id="sec-info" class="card stagger-2">
+          <div class="card-header">
+            <div class="card-icon purple">👤</div>
+            <div><div class="card-title">Información Básica</div><div class="card-count" id="info-count"></div></div>
+          </div>
+          <div id="out-info"></div>
+        </section>
+
+        <!-- RESUMEN CREDITICIO -->
+        <section id="sec-resumen" class="card stagger-3">
+          <div class="card-header">
+            <div class="card-icon blue">📊</div>
+            <div><div class="card-title">Resumen Crediticio</div><div class="card-count">Perfil general y tendencia de endeudamiento</div></div>
+          </div>
+          <div id="out-resumen"></div>
+          <div class="chart-container" id="chart-tendencia" style="display:none">
+            <canvas id="canvas-tendencia"></canvas>
+          </div>
+        </section>
+
+        <!-- ENDEUDAMIENTO ACTUAL -->
+        <section id="sec-endeudamiento" class="card stagger-4">
+          <div class="card-header">
+            <div class="card-icon green">💰</div>
+            <div><div class="card-title">Endeudamiento Actual</div><div class="card-count">Desglose por tipo de cartera y sector</div></div>
+          </div>
+          <div id="out-endeudamiento"></div>
+        </section>
+
+        <!-- OBLIGACIONES VIGENTES -->
+        <section id="sec-vigentes" class="card stagger-5">
+          <div class="card-header">
+            <div class="card-icon orange">🏦</div>
+            <div><div class="card-title">Obligaciones Vigentes</div><div class="card-count" id="vigentes-count"></div></div>
+          </div>
+          <div id="out-vigentes"></div>
+        </section>
+
+        <!-- OBLIGACIONES CERRADAS -->
+        <section id="sec-cerradas" class="card stagger-6">
+          <div class="card-header">
+            <div class="card-icon red">📋</div>
+            <div><div class="card-title">Obligaciones Cerradas / Inactivas</div><div class="card-count" id="cerradas-count"></div></div>
+          </div>
+          <div id="out-cerradas"></div>
+        </section>
+
+        <!-- CONSULTAS -->
+        <section id="sec-consultas" class="card stagger-7">
+          <div class="card-header">
+            <div class="card-icon blue">🔍</div>
+            <div><div class="card-title">Histórico de Consultas</div><div class="card-count" id="consultas-count"></div></div>
+          </div>
+          <div id="out-consultas"></div>
+        </section>
+
+        <!-- RECONOCER+ -->
+        <section id="sec-reconocer" class="card stagger-8">
+          <div class="card-header">
+            <div class="card-icon purple">📞</div>
+            <div><div class="card-title">Reconocer+</div><div class="card-count">Datos de contacto reportados</div></div>
+          </div>
+          <div id="out-reconocer"></div>
+        </section>
+
+        <!-- RAW TEXT -->
+        <section id="sec-raw" class="card stagger-9">
+          <div class="card-header">
+            <div class="card-icon blue">📝</div>
+            <div><div class="card-title">Texto Crudo del PDF</div><div class="card-count">Texto extraído sin procesar</div></div>
+          </div>
+          <button class="raw-toggle" onclick="toggleRaw()">
+            <span id="raw-chevron">▶</span> Ver texto completo extraído
+          </button>
+          <div class="raw-text" id="raw-text"></div>
+        </section>
+
+      </div><!-- /results -->
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// PDF.js CONFIG
+// ═══════════════════════════════════════════════════════════════════════════
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const uniq = arr => [...new Set(arr)];
+const esc = s => s.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const fmtMoney = v => {
+  if (v == null || v === '-' || v === '') return '-';
+  const n = parseFloat(String(v).replace(/,/g, ''));
+  return isNaN(n) ? v : '$' + n.toLocaleString('es-CO');
+};
+const fmtDate = d => {
+  if (!d || d === '-') return '-';
+  // Convert YYYYMMDD to DD/MM/YYYY
+  if (/^\d{8}$/.test(d)) return `${d.slice(6)}/${d.slice(4,6)}/${d.slice(0,4)}`;
+  return d;
+};
+function textBetween(txt, startRx, endRx) {
+  const s = txt.search(startRx);
+  if (s === -1) return '';
+  const sub = txt.slice(s);
+  const e = sub.search(endRx);
+  return e > 0 ? sub.slice(0, e) : sub;
+}
+
+function estadoBadge(estado) {
+  if (!estado || estado === '-') return '<span class="badge badge-neutral">—</span>';
+  const low = estado.toLowerCase();
+  if (low.includes('mora')) return `<span class="badge badge-danger">⚠ ${esc(estado)}</span>`;
+  if (low.includes('día') || low.includes('dia') || low.includes('normal') || low.includes('activ'))
+    return `<span class="badge badge-success">✓ ${esc(estado)}</span>`;
+  if (low.includes('pago vol') || low.includes('saldada') || low.includes('cancelada'))
+    return `<span class="badge badge-info">${esc(estado)}</span>`;
+  return `<span class="badge badge-neutral">${esc(estado)}</span>`;
+}
+
+function califBadge(calf) {
+  if (!calf || calf === '-') return '<span class="badge badge-neutral">—</span>';
+  const c = calf.toUpperCase().trim();
+  if (c === 'A' || c === 'AA') return `<span class="badge badge-success">${c}</span>`;
+  if (c === 'B') return `<span class="badge badge-warning">${c}</span>`;
+  if (c === 'C') return `<span class="badge badge-warning">${c}</span>`;
+  if (c === 'D' || c === 'E') return `<span class="badge badge-danger">${c}</span>`;
+  return `<span class="badge badge-neutral">${c}</span>`;
+}
+
+function sectorBadge(sector) {
+  if (!sector) return '';
+  const low = sector.toLowerCase();
+  if (low.includes('financ')) return '<span class="badge badge-sector badge-info">Financiero</span>';
+  if (low.includes('real')) return '<span class="badge badge-sector badge-warning">Real</span>';
+  if (low.includes('telco')) return '<span class="badge badge-sector badge-neutral">Telcos</span>';
+  if (low.includes('coop')) return '<span class="badge badge-sector badge-success">Cooperativo</span>';
+  return `<span class="badge badge-sector badge-neutral">${esc(sector)}</span>`;
+}
+
+function deudaBar(pct) {
+  if (pct == null || isNaN(pct)) return '';
+  const cls = pct > 90 ? 'high' : pct > 60 ? 'mid' : 'low';
+  return `<div class="progress mt-8"><div class="progress-bar ${cls}" style="width:${Math.min(pct,100)}%"></div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SECTION SPLITTER
+// ═══════════════════════════════════════════════════════════════════════════
+function splitSections(txt) {
+  const sec = {};
+  const markers = [
+    ['infoBasica',    /INFORMACI[ÓO]N\s+B[ÁA]SICA/i,             /RESUMEN\s+PD|ART[ÍI]CULO\s+14/i],
+    ['resumen',       /RESUMEN\s+PD/i,                             /Endeudamiento\s+Actual/i],
+    ['endeudamiento', /Endeudamiento\s+Actual/i,                   /H[ÁA]BITO\s+DE\s+PAGO.*ABIERTAS/i],
+    ['vigentes',      /H[ÁA]BITO\s+DE\s+PAGO.*ABIERTAS\s*\/?\s*VIGENTES/i, /H[ÁA]BITO\s+DE\s+PAGO.*CERRADAS/i],
+    ['cerradas',      /H[ÁA]BITO\s+DE\s+PAGO.*CERRADAS/i,         /AN[ÁA]LISIS\s+DE\s+VECTORES/i],
+    ['vectores',      /AN[ÁA]LISIS\s+DE\s+VECTORES/i,             /EVOLUCI[ÓO]N\s+DE\s+LA\s+DEUDA/i],
+    ['evolucion',     /EVOLUCI[ÓO]N\s+DE\s+LA\s+DEUDA/i,          /HIST[ÓO]RICO\s+DE\s+CONSULTAS/i],
+    ['consultas',     /HIST[ÓO]RICO\s+DE\s+CONSULTAS/i,           /ENDEUDAMIENTO\s+GLOBAL/i],
+    ['globalClas',    /ENDEUDAMIENTO\s+GLOBAL\s+CLASIFICADO/i,     /RESUMEN\s+ENDEUDAMIENTO\s+GLOBAL/i],
+    ['globalRes',     /RESUMEN\s+ENDEUDAMIENTO\s+GLOBAL/i,         /RECONOCER\+/i],
+    ['reconocer',     /RECONOCER\+/i,                              /NOTAS|Fin-consulta|Espacio\s+disponible/i],
+  ];
+  for (const [key, start, end] of markers) {
+    sec[key] = textBetween(txt, start, end);
+  }
+  return sec;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXTRACTION FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── 1. INFO BÁSICA ─────────────────────────────────────────────────────
+function extraerInfoBasica(txt, seccion) {
+  const d = {};
+  const s = seccion || txt;
+
+  // Pattern: "C.C. NAME CEDULA Vigente RANGO CITY - DD/MM/YYYY Genero"
+  const m = s.match(
+    /C\.C\.\s+([A-ZÁÉÍÓÚÑ\s]+?)\s+(\d{7,10})\s+(Vigente|Cancelado|Activo|Inactivo)\s+(\d{2}-\d{2})\s+([A-ZÁÉÍÓÚÑ\s]+?)\s*-\s*(\d{2}\/\d{2}\/\d{4})\s+(Masculino|Femenino)/i
+  );
+  if (m) {
+    d.tipoDoc = 'C.C.';
+    d.nombre = m[1].trim();
+    d.cedula = m[2];
+    d.estadoDoc = m[3];
+    d.rangoEdad = m[4];
+    d.lugarExpedicion = m[5].trim();
+    d.fechaExpedicion = m[6];
+    d.genero = m[7];
+  } else {
+    // Fallback: try individual fields
+    const ced = s.match(/(?:N[uú]mero\s+Documento|C[eé]dula)[^\d]*(\d{7,10})/i);
+    if (ced) d.cedula = ced[1];
+    const fe = s.match(/(\d{2}\/\d{2}\/\d{4})/);
+    if (fe) d.fechaExpedicion = fe[1];
+    const gen = s.match(/(Masculino|Femenino)/i);
+    if (gen) d.genero = gen[1];
+    const est = s.match(/(Vigente|Cancelado)/i);
+    if (est) d.estadoDoc = est[1];
+    const rng = s.match(/(\d{2}-\d{2})/);
+    if (rng) d.rangoEdad = rng[1];
+    // Name fallback: look near cedula
+    if (d.cedula) {
+      const idx = s.indexOf(d.cedula);
+      if (idx > 0) {
+        const win = s.substring(Math.max(0, idx - 300), idx);
+        const cands = [...win.matchAll(/\b([A-ZÁÉÍÓÚÑ]{2,}(?:\s+[A-ZÁÉÍÓÚÑ]{2,}){2,})\b/g)]
+          .map(m => m[1].trim())
+          .filter(n => !/(INFORMACI|DOCUMENTO|EXPEDICI|ESTADO|GENERO|RUT|UBICACI)/i.test(n));
+        d.nombre = cands.sort((a,b) => b.split(' ').length - a.split(' ').length)[0];
+      }
+    }
+  }
+
+  // Antigüedad & Ubicación
+  const ant = s.match(/(\d+)\s+(Meses?|A[ñn]os?)\s+(Urbana|Rural)/i);
+  if (ant) { d.antiguedad = `${ant[1]} ${ant[2]}`; d.ubicacion = ant[3]; }
+
+  // RUT
+  const rut = s.match(/(?:Tiene\s+)?RUT\??\s*(SI|NO|S[ÍI])/i);
+  // If not found, check broader
+  if (!rut) {
+    const rutLine = s.match(/RUT/i);
+    if (rutLine) d.rut = '—';
+  } else {
+    d.rut = rut[1];
+  }
+
+  // Consultado por
+  const cons = txt.match(/Consultado\s+por:\s*(.+?)\s+(\d{4}\/\d{2}\/\d{2})\s+(\d+[.:]\d+\s*[APM]*)/i);
+  if (cons) {
+    d.consultadoPor = cons[1].trim();
+    d.fechaConsulta = cons[2];
+    d.horaConsulta = cons[3].trim();
+  }
+
+  return d;
+}
+
+// ─── 2. RESUMEN CREDITICIO ──────────────────────────────────────────────
+function extraerResumen(txt, seccion) {
+  const d = { perfil: {}, moras: {}, tendencia: [] };
+  const s = seccion || txt;
+
+  // Key totals
+  const moraMax = s.match(/Total\s+Moras\s+M[áa]ximas\s+([A-Z0-9]+)/i);
+  if (moraMax) d.moras.totalMorasMax = moraMax[1];
+
+  const m30 = s.match(/N[úu]m\s+cr[ée]ditos?\s+con\s+mora\s*[=<>]*\s*30\s+(\d+)/i);
+  if (m30) d.moras.creditosMora30 = m30[1];
+
+  const m60 = s.match(/N[úu]m\s+cr[ée]ditos?\s+con\s+mora\s*>=?\s*60\s+(\d+)/i);
+  if (m60) d.moras.creditosMora60 = m60[1];
+
+  // Try to extract Perfil General table data
+  const rowLabels = ['Vigentes','Cerrados','Reestructurados','Refinanciados','Consultas 6m','Desacuerdos','Antigüedad'];
+  const colLabels = ['Financiero','Cooperativo','Real','Telcos','Total','Principal','Codeudor'];
+  const grid = [[],[],[],[],[],[],[]];
+
+  for (let r = 0; r < rowLabels.length; r++) {
+    const rxStr = rowLabels[r] === 'Consultas 6m' ? 'Consultas\\s*6m' : 
+                  rowLabels[r] === 'Antigüedad' ? 'Antig[uü]edad\\s*desde' : rowLabels[r];
+    const rx = new RegExp(rxStr + '\\s+([\\d\\-\\s]{10,})(?=\\n|[A-Z])', 'i');
+    const m = s.match(rx);
+    if (m) {
+      const vals = m[1].trim().split(/\s+/);
+      for (let c = 0; c < 7; c++) {
+        grid[c][r] = vals[c] === '-' ? '-' : (vals[c] || '-');
+      }
+    } else {
+      for (let c = 0; c < 7; c++) grid[c][r] = '-';
+    }
+  }
+  d.perfil = { grid, rowLabels, colLabels };
+
+  // Tendencia de endeudamiento: extract month-value pairs
+  const tendBlock = textBetween(s, /Tendencia\s+de\s+endeudamiento/i, /Moras\s+m[áa]x|Total\s+Moras/i);
+  if (tendBlock) {
+    // Extract saldo pairs: (mora, total) = "0 19,268"
+    const pares = [...tendBlock.matchAll(/(\d+)\s+(\d{1,3}(?:,\d{3})+)/g)];
+    // Extract month labels
+    const meses = [...tendBlock.matchAll(/(Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic)\s+(\d{2})/gi)];
+
+    if (pares.length && meses.length) {
+      const monthOrder = { 'Ene':1,'Feb':2,'Mar':3,'Abr':4,'May':5,'Jun':6,'Jul':7,'Ago':8,'Sep':9,'Oct':10,'Nov':11,'Dic':12 };
+      const points = [];
+      const len = Math.min(pares.length, meses.length);
+      // Build pairs sorted chronologically
+      const unsorted = [];
+      for (let i = 0; i < meses.length; i++) {
+        const label = meses[i][1] + ' ' + meses[i][2];
+        const year = parseInt('20' + meses[i][2]);
+        const month = monthOrder[meses[i][1].charAt(0).toUpperCase() + meses[i][1].slice(1).toLowerCase()] || 0;
+        const sortKey = year * 100 + month;
+        unsorted.push({ label, sortKey, idx: i });
+      }
+      unsorted.sort((a,b) => a.sortKey - b.sortKey);
+
+      for (let i = 0; i < unsorted.length && i < pares.length; i++) {
+        const p = pares[i];
+        points.push({
+          label: unsorted[i].label,
+          mora: parseInt(p[1]),
+          total: parseInt(p[2].replace(/,/g, ''))
+        });
+      }
+      d.tendencia = points;
+    }
+  }
+
+  return d;
+}
+
+// ─── 3. ENDEUDAMIENTO ACTUAL ────────────────────────────────────────────
+function extraerEndeudamiento(txt, seccion) {
+  const s = seccion || txt;
+  const items = [];
+
+  // Match sector total lines: "Total Sector X   cuota   pct%   saldo   pct%   vlr_inicial   mora"
+  const totalRx = /Total\s+Sector\s+(\w+)\s+([\d,.]+)\s+([\d.]+%)\s+([\d,.]+)\s+([\d.]+%)\s+([\d,.]+)\s+(\d+)/gi;
+  let m;
+  while ((m = totalRx.exec(s)) !== null) {
+    items.push({
+      sector: m[1],
+      cuota: m[2].replace(/,/g,''),
+      pctPart: m[3],
+      saldo: m[4].replace(/,/g,''),
+      pctDeuda: m[5],
+      vlrInicial: m[6].replace(/,/g,''),
+      mora: m[7]
+    });
+  }
+
+  // Total general
+  const totalGen = s.match(
+    /TOTAL\s+([\d,.]+)\s+([\d.]+%)\s+([\d,.]+)\s+([\d.]+%)\s+([\d,.]+)\s+(\d+)/i
+  );
+  let total = null;
+  if (totalGen) {
+    total = {
+      cuota: totalGen[1].replace(/,/g,''),
+      pctPart: totalGen[2],
+      saldo: totalGen[3].replace(/,/g,''),
+      pctDeuda: totalGen[4],
+      vlrInicial: totalGen[5].replace(/,/g,''),
+      mora: totalGen[6]
+    };
+  }
+
+  function extraerObligacionesCerradas(rawText, sectionText) {
+    const result = [];
+    const s = sectionText || rawText;
+
+    const obligRe = /([A-ZÁÉÍÓÚÑ\s]+?)\s+([A-Z]{3})\s+(.*?)\s+([\w\.-]{5,20})\s+(\d{8})\s+(\d{8})/g;
+    
+    let match;
+    while ((match = obligRe.exec(s)) !== null) {
+      const oblig = {
+        entidad: match[1].trim(),
+        tipoCuenta: match[2],
+        estado: match[3].trim() === '-' ? 'Saldada' : match[3].trim(),
+        numero: match[4],
+        fechaApe: match[5],
+        fechaCierre: match[6]
+      };
+      
+      // Clean up entity name if it's too short (regex artifact)
+      if (oblig.entidad.length < 3) oblig.entidad = 'ENTIDAD NO IDENTIFICADA';
+      if (oblig.entidad === "COMPANIA NACIONAL DE") continue;
+      
+      result.push(oblig);
+    }
+    return result;
+  }
+
+  // Individual cartera rows
+  // Pattern: "Cartera bancaria   Principal   3 A Al día   97.2% 23.1% 165 0 5,809 5,975"
+  const carteraRows = [];
+  const cartRx = /((?:Cartera\s+[\w\s.]+|Tarjeta\s+de\s+cr[ée]dito|Cr[ée]ditos?\s+de\s+consumo|Servicios?\s+financieros?))\s+(?:Principal|Codeudor|Fiador)\s+(\d+)\s+([A-Z-]+)\s+(.+?)\s+([\d.]+%)\s+([\d.]+%)\s+([\d,.]+)\s+(\d+)\s+([\d,.]+)\s+([\d,.]+)/gi;
+  let cm;
+  while ((cm = cartRx.exec(s)) !== null) {
+    carteraRows.push({
+      tipo: cm[1].trim(),
+      num: cm[2],
+      calf: cm[3],
+      estado: cm[4].trim(),
+      pctDeuda: cm[5],
+      pctPart: cm[6],
+      cuota: cm[7].replace(/,/g,''),
+      mora: cm[8],
+      saldo: cm[9].replace(/,/g,''),
+      vlrInicial: cm[10].replace(/,/g,'')
+    });
+  }
+
+  return { sectores: items, total, carteras: carteraRows };
+}
+
+// ─── 4. OBLIGACIONES VIGENTES ───────────────────────────────────────────
+function extraerObligaciones(txt, seccion) {
+  const result = [];
+  const s = seccion || txt;
+
+  const obligRe = /([A-ZÁÉÍÓÚÑ\s]+?)\s+([A-Z]{3})\s+([\w\.-]+)\s+([A-Z-]*)\s+.*?(\d{8})\s+(\d{8})\s+(?:(\d{8})|-)/g;
+  
+  let match;
+  while ((match = obligRe.exec(s)) !== null) {
+    const obl = {
+      entidad: match[1].trim(),
+      tipoCuenta: match[2],
+      numCuenta: match[3],
+      calificacion: match[4] === '-' ? 'A' : match[4],
+      estado: 'Normal',
+      fechaActual: match[5],
+      fechaApertura: match[6],
+      fechaVencimiento: match[7] || '-',
+      saldoActual: '0',
+      saldoMora: '0',
+      valorCuota: '0',
+      moraMaxima: '-',
+      sector: '',
+      estadoTitular: 'Principal',
+      marcaClase: '-',
+      tipoGarantia: '-',
+      vlrInicial: '0',
+      cuotasVigencia: '-',
+      pctDeuda: '-',
+      oficina: '-',
+      vector: ''
+    };
+
+    if (obl.entidad.length < 3) obl.entidad = 'ENTIDAD NO IDENTIFICADA';
+    if (obl.entidad === "COMPANIA NACIONAL DE" || obl.entidad.includes("Página")) continue;
+    
+    // Guess entity name if it was a regex artifact
+    const bankNames = /BANCOLOMBIA|NEQUI|COLTEFINANCIER|BBVA|BCO\s+COLPATRIA|FINCOMERCIO|CRJA|SOLVENTA|CAJAMAG|CLARO|PRESTAENLINEA|CREDITITULOS|ELECTRO|SISTECREDITO|FINSANA|ASECOFIN/i;
+    if (obl.entidad === 'ENTIDAD NO IDENTIFICADA') {
+      const pos = s.indexOf(obl.numCuenta);
+      if (pos > -1) {
+        const after = s.slice(Math.max(0, pos - 200), pos + 200);
+        const bankMatch = after.match(bankNames);
+        if (bankMatch) obl.entidad = bankMatch[0];
+      }
+    }
+
+    const win = s.substring(match.index, Math.min(s.length, match.index + 400));
+    
+    // Find values
+    const valuesMatch = win.match(/(?:Normal|Reestructurada|Refinanciada)[\s\w\/]+\s+([\d,-]+)\s+([\d,-]+)\s+([\d,-]+)\s+([\d,-]+)/);
+    if (valuesMatch) {
+      obl.vlrInicial = valuesMatch[1].replace(/[^\d]/g, '') || '0';
+      obl.saldoActual = valuesMatch[2].replace(/[^\d]/g, '') || '0';
+      obl.saldoMora = valuesMatch[3].replace(/[^\d]/g, '') || '0';
+      obl.valorCuota = valuesMatch[4].replace(/[^\d]/g, '') || '0';
+    } else {
+      const fallback = win.match(/(\d[\d,]*)\s+(\d[\d,]*)\s+(\d[\d,]*)\s+(\d[\d,]*)/);
+      if (fallback) {
+        obl.vlrInicial = fallback[1].replace(/[^\d]/g, '') || '0';
+        obl.saldoActual = fallback[2].replace(/[^\d]/g, '') || '0';
+        obl.saldoMora = fallback[3].replace(/[^\d]/g, '') || '0';
+        obl.valorCuota = fallback[4].replace(/[^\d]/g, '') || '0';
+      }
+    }
+
+    // Try to get sector
+    const pidx = s.lastIndexOf("Sector", match.index);
+    if (pidx !== -1 && pidx > match.index - 2000) {
+      const pstr = s.substring(pidx, pidx + 50);
+      if (/Financiero/i.test(pstr)) obl.sector = 'Financiero';
+      else if (/Real/i.test(pstr)) obl.sector = 'Real';
+      else if (/Telcos/i.test(pstr)) obl.sector = 'Telcos';
+      else if (/Cooperativo/i.test(pstr)) obl.sector = 'Cooperativo';
+    }
+
+    const vecMatch = win.match(/\[([A-Z0-9-]{12})\]\s*\[([A-Z0-9-]{12})\]/);
+    if (vecMatch) obl.vector = vecMatch[1] + vecMatch[2];
+
+    result.push(obl);
+  }
+  return result;
+}
+
+// ─── 5. OBLIGACIONES CERRADAS ───────────────────────────────────────────
+function extraerCerradas(txt, seccion) {
+  const result = [];
+  const s = seccion || txt;
+
+  const obligRe = /([A-ZÁÉÍÓÚÑ\s]+?)\s+([A-Z]{3})\s+(.*?)\s+([\w\.-]{5,20})\s+(\d{8})\s+(\d{8})/g;
+  
+  let match;
+  while ((match = obligRe.exec(s)) !== null) {
+    const oblig = {
+      entidad: match[1].trim(),
+      tipoCuenta: match[2],
+      estado: match[3].trim() === '-' ? 'Saldada' : match[3].replace(/Orig:.*/i, '').replace(/^\+\s*/, '').trim(),
+      numCuenta: match[4],
+      fechaApertura: match[5],
+      fechaCierre: match[6],
+      calificacion: '-',
+      vlrInicial: '0',
+      oficina: '-'
+    };
+    
+    if (oblig.entidad.length < 3) oblig.entidad = 'ENTIDAD NO IDENTIFICADA';
+    if (oblig.entidad === "COMPANIA NACIONAL DE" || oblig.entidad.includes("Página")) continue;
+    
+    // Guess entity name if it was a regex artifact
+    const bankNames = /BANCOLOMBIA|NEQUI|COLTEFINANCIER|BBVA|BCO\s+COLPATRIA|FINCOMERCIO|CRJA|SOLVENTA|CAJAMAG|CLARO|PRESTAENLINEA|CREDITITULOS|ELECTRO|SISTECREDITO|FINSANA|ASECOFIN/i;
+    if (oblig.entidad === 'A' || oblig.entidad === 'ENTIDAD NO IDENTIFICADA') {
+      const pos = s.indexOf(oblig.numCuenta);
+      if (pos > -1) {
+        const after = s.slice(Math.max(0, pos - 200), pos + 200);
+        const bankMatch = after.match(bankNames);
+        if (bankMatch) oblig.entidad = bankMatch[0];
+      }
+    }
+    
+    result.push(oblig);
+  }
+  return result;
+}
+
+// ─── 6. CONSULTAS ───────────────────────────────────────────────────────
+function extraerConsultas(txt, seccion) {
+  const s = seccion || txt;
+  const items = [];
+
+  // Pattern: "DD/MM/YYYY   ENTITY_NAME   NUM"
+  const rx = /(\d{2}\/\d{2}\/\d{4})\s+(.+?)\s+(\d{2})\b/g;
+  let m;
+  while ((m = rx.exec(s)) !== null) {
+    let quien = m[2].trim();
+    // Clean up common breaks
+    quien = quien.replace(/\s{2,}/g, ' ').replace(/\s+$/, '');
+    if (quien.length < 2 || /Fecha|Consulta|Ult/i.test(quien)) continue;
+    items.push({
+      fecha: m[1],
+      quien,
+      numConsultas: m[3]
+    });
+  }
+
+  return items;
+}
+
+// ─── 7. RECONOCER+ ──────────────────────────────────────────────────────
+function extraerReconocer(txt, seccion) {
+  const s = seccion || txt;
+  const data = { telefonos: [], celulares: [], emails: [], direcciones: [] };
+
+  // ── Teléfonos Fijos ──
+  const secTel = textBetween(s, /Tel[eé]fono\s+Fijo/i, /#\s+Celular/i);
+  if (secTel) {
+    const rows = [...secTel.matchAll(/(\d+)\s+(\d{7,10})\s+((?:RES|LAB|COM|CRR)[\s\w-]*?)\s+([A-ZÁÉÍÓÚÑ\s]+?)\s+((?:MAGDALENA|ATLANTICO|BOLIVAR|CUNDINAMARCA|ANTIOQUIA|SANTANDER|VALLE\s+DEL\s+CAUCA|[A-ZÁÉÍÓÚÑ]+))\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+(\d+)\s+(\d+)\s+(\w+)/gi)];
+    for (const r of rows) {
+      data.telefonos.push({
+        num: r[1], telefono: r[2], tipo: r[3].trim(),
+        ciudad: r[4].trim(), depto: r[5].trim(),
+        desde: r[6], hasta: r[7],
+        reportes: r[8], entidades: r[9], fuente: r[10]
+      });
+    }
+  }
+
+  // ── Celulares ──
+  const secCel = textBetween(s, /#\s+Celular/i, /#\s+Correo\s+Electr/i);
+  if (secCel) {
+    const rows = [...secCel.matchAll(/(\d+)\s+(3\d{9})\s+(.+?)\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+(\d+)\s+(\d+)\s+(\w+)/gi)];
+    for (const r of rows) {
+      data.celulares.push({
+        num: r[1], celular: r[2], reportadoPor: r[3].trim(),
+        desde: r[4], hasta: r[5],
+        reportes: r[6], entidades: r[7], fuente: r[8]
+      });
+    }
+  }
+
+  // ── Correos Electrónicos ──
+  const secEmail = textBetween(s, /#\s+Correo\s+Electr/i, /#\s+Direcci[oó]n/i);
+  if (secEmail) {
+    const rows = [...secEmail.matchAll(/(\d+)\s+([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\s+(.+?)\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+(\d+)\s+(\w+)/gi)];
+    for (const r of rows) {
+      data.emails.push({
+        num: r[1], email: r[2], reportadoPor: r[3].trim(),
+        desde: r[4], hasta: r[5],
+        reportes: r[6], fuente: r[7]
+      });
+    }
+  }
+
+  // ── Direcciones ──
+  const secDir = textBetween(s, /#\s+Direcci[oó]n\s+Estrato/i, /NOTAS|Fin-consulta|Espacio|$/i);
+  if (secDir) {
+    const rows = [...secDir.matchAll(/(\d+)\s+((?:KR|CL|AV|BR|MZ|CA|DG|TV)\s+[^\n]+?)\s+(-|\d+)\s+((?:RES|LAB|COM|CRR)[\s\w-]*?)\s+([A-ZÁÉÍÓÚÑ\s]+?)\s+((?:MAGDALENA|ATLANTICO|BOLIVAR|CUNDINAMARCA|ANTIOQUIA|SANTANDER|VALLE\s+DEL\s+CAUCA|[A-ZÁÉÍÓÚÑ]+))\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+((?:[A-Z]{3})\s*-\s*\d{4})\s+(\d+)\s+(URB|RUR)\s+(\d+)\s+(\w+)/gi)];
+    for (const r of rows) {
+      data.direcciones.push({
+        num: r[1], direccion: r[2].trim(), estrato: r[3],
+        tipo: r[4].trim(), ciudad: r[5].trim(), depto: r[6].trim(),
+        desde: r[7], hasta: r[8],
+        reportes: r[9], zona: r[10], entidades: r[11], fuente: r[12]
+      });
+    }
+  }
+
+  // Fallback: grab raw contacts if detailed parse failed
+  if (!data.telefonos.length && !data.celulares.length && !data.emails.length) {
+    data.celulares = uniq([...s.matchAll(/(3\d{9})/g)].map(m => ({ celular: m[1] })));
+    data.emails = uniq([...s.matchAll(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/gi)].map(m => ({ email: m[1] })));
+    data.direcciones = uniq([...s.matchAll(/((?:KR|CL|AV|BR|MZ|CA|DG|TV)\s+\d+[A-Z0-9#\s-]{3,40})/gi)].map(m => ({ direccion: m[1].trim() })));
+    const phonesRaw = uniq([...s.matchAll(/\b(\d{7})\b/g)].map(m => m[1]));
+    data.telefonos = phonesRaw.map(t => ({ telefono: t }));
+  }
+
+  return data;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderDashboard(info, endeudamiento, vigentes, cerradas) {
+  const container = $('out-dashboard');
+  
+  let saldoDeuda = 0, saldoMora = 0, cuotaMensual = 0;
+  if (endeudamiento && endeudamiento.total) {
+    saldoDeuda = endeudamiento.total.saldo;
+    saldoMora = endeudamiento.total.mora;
+    cuotaMensual = endeudamiento.total.cuota;
+  } else if (vigentes && vigentes.length > 0) {
+    for (const v of vigentes) {
+      saldoDeuda += parseFloat(String(v.saldoActual).replace(/,/g, '')) || 0;
+      saldoMora += parseFloat(String(v.saldoMora).replace(/,/g, '')) || 0;
+      cuotaMensual += parseFloat(String(v.valorCuota).replace(/,/g, '')) || 0;
+    }
+  }
+
+  const saldo = saldoDeuda ? fmtMoney(saldoDeuda) : '—';
+  const mora = saldoMora ? fmtMoney(saldoMora) : '—';
+  const cuota = cuotaMensual ? fmtMoney(cuotaMensual) : '—';
+  const numVig = vigentes.length;
+  const numCer = cerradas.length;
+  const moraVal = parseInt(saldoMora) || 0;
+
+  container.innerHTML = `
+    <div class="summary-stat accent">
+      <div class="stat-label">Saldo Deuda Total</div>
+      <div class="stat-value">${saldo}</div>
+      <div class="stat-sub">En miles de pesos</div>
+    </div>
+    <div class="summary-stat ${moraVal > 0 ? 'danger' : 'success'}">
+      <div class="stat-label">Saldo en Mora</div>
+      <div class="stat-value">${mora}</div>
+      <div class="stat-sub">${moraVal > 0 ? '⚠ Tiene saldo en mora' : '✓ Sin mora'}</div>
+    </div>
+    <div class="summary-stat info">
+      <div class="stat-label">Cuota Mensual Total</div>
+      <div class="stat-value">${cuota}</div>
+      <div class="stat-sub">En miles de pesos</div>
+    </div>
+    <div class="summary-stat warning">
+      <div class="stat-label">Obligaciones Vigentes</div>
+      <div class="stat-value">${numVig}</div>
+      <div class="stat-sub">${numCer} cerradas</div>
+    </div>
+  `;
+}
+
+function renderInfoBasica(data) {
+  const container = $('out-info');
+  const fields = [
+    ['Nombre Completo', data.nombre],
+    ['Tipo Documento', data.tipoDoc],
+    ['Número Documento', data.cedula],
+    ['Fecha Expedición', data.fechaExpedicion],
+    ['Lugar Expedición', data.lugarExpedicion],
+    ['Estado Documento', data.estadoDoc],
+    ['Género', data.genero],
+    ['Rango de Edad', data.rangoEdad],
+    ['Antigüedad', data.antiguedad],
+    ['Ubicación', data.ubicacion],
+    ['Consultado por', data.consultadoPor],
+    ['Fecha Consulta', data.fechaConsulta],
+  ].filter(([,v]) => v && v !== '-' && v !== undefined);
+
+  $('info-count').textContent = `${fields.length} campos extraídos`;
+
+  container.innerHTML = `<div class="fields-grid">${fields.map(([label, val]) =>
+    `<div class="field-row"><div class="field-label">${label}</div><div class="field-value">${esc(String(val))}</div></div>`
+  ).join('')}</div>`;
+
+  // Update header
+  if (data.nombre) $('header-name').textContent = data.nombre;
+  if (data.cedula) {
+    $('header-sub').textContent = `C.C. ${data.cedula}`;
+    $('header-badges').innerHTML = `<span class="header-badge success">✓ Procesado</span>`;
+  }
+}
+
+function renderResumen(data) {
+  const container = $('out-resumen');
+  let html = '';
+
+  // Moras summary
+  const moraItems = [
+    ['Total Moras Máximas', data.moras.totalMorasMax],
+    ['Créditos con mora ≥30 días', data.moras.creditosMora30],
+    ['Créditos con mora ≥60 días', data.moras.creditosMora60],
+  ].filter(([,v]) => v !== undefined);
+
+  if (moraItems.length) {
+    html += `<div class="summary-grid mb-12">${moraItems.map(([label, val]) => {
+      const isZero = val === '0' || val === 'N';
+      return `<div class="summary-stat ${isZero ? 'success' : 'danger'}">
+        <div class="stat-label">${label}</div>
+        <div class="stat-value">${val === 'N' ? 'Normal' : val}</div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  // Perfil General table
+  if (data.perfil.grid && data.perfil.grid.length > 0) {
+    html += `<h3 style="font-size:0.85rem;font-weight:600;margin:16px 0 10px;color:var(--text-secondary)">Perfil General por Sector</h3>`;
+    html += '<div class="table-wrap"><table class="data-table"><thead><tr><th></th>';
+    const cols = data.perfil.colLabels || [];
+    const rows = data.perfil.rowLabels || [];
+    for (const c of cols) html += `<th class="num">${c}</th>`;
+    html += '</tr></thead><tbody>';
+    for (let r = 0; r < rows.length; r++) {
+      html += `<tr><td class="bold">${rows[r]}</td>`;
+      for (let c = 0; c < cols.length; c++) {
+        const val = data.perfil.grid[c] && data.perfil.grid[c][r] !== undefined ? data.perfil.grid[c][r] : '-';
+        html += `<td class="num">${val}</td>`;
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+  }
+
+  container.innerHTML = html || '<div class="empty-state"><div class="empty-icon">📊</div>No se encontraron datos de resumen</div>';
+
+  // Tendencia chart
+  if (data.tendencia && data.tendencia.length > 2) {
+    $('chart-tendencia').style.display = 'block';
+    drawTendenciaChart(data.tendencia);
+  }
+}
+
+function renderEndeudamiento(data) {
+  const container = $('out-endeudamiento');
+  if (!data.sectores.length && !data.total) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">💰</div>No se encontraron datos de endeudamiento</div>';
+    return;
+  }
+
+  let html = '<div class="table-wrap"><table class="data-table"><thead><tr>';
+  html += '<th>Sector</th><th class="num">Valor Cuota</th><th class="num">Saldo Actual</th>';
+  html += '<th class="num">Vlr Inicial</th><th class="num">Saldo Mora</th><th class="num">% Part.</th>';
+  html += '</tr></thead><tbody>';
+
+  for (const s of data.sectores) {
+    html += `<tr>
+      <td>${sectorBadge(s.sector)}</td>
+      <td class="num">${fmtMoney(s.cuota)}</td>
+      <td class="num bold">${fmtMoney(s.saldo)}</td>
+      <td class="num">${fmtMoney(s.vlrInicial)}</td>
+      <td class="num">${parseInt(s.mora) > 0 ? `<span style="color:var(--danger)">${fmtMoney(s.mora)}</span>` : fmtMoney(s.mora)}</td>
+      <td class="num">${s.pctDeuda}</td>
+    </tr>`;
+  }
+
+  if (data.total) {
+    html += `<tr class="total-row">
+      <td class="bold">TOTAL</td>
+      <td class="num bold">${fmtMoney(data.total.cuota)}</td>
+      <td class="num bold">${fmtMoney(data.total.saldo)}</td>
+      <td class="num bold">${fmtMoney(data.total.vlrInicial)}</td>
+      <td class="num bold">${parseInt(data.total.mora) > 0 ? `<span style="color:var(--danger)">${fmtMoney(data.total.mora)}</span>` : fmtMoney(data.total.mora)}</td>
+      <td class="num bold">${data.total.pctDeuda}</td>
+    </tr>`;
+  }
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+function renderObligaciones(items) {
+  const container = $('out-vigentes');
+  $('vigentes-count').textContent = `${items.length} obligación(es) encontrada(s)`;
+
+  if (!items.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏦</div>No se encontraron obligaciones vigentes</div>';
+    return;
+  }
+
+  container.innerHTML = items.map((o, i) => {
+    const pctNum = parseFloat(String(o.pctDeuda).replace('%',''));
+    return `<div class="obl-card" id="obl-${i}">
+      <div class="obl-header" onclick="toggleObl(${i})">
+        <div>
+          <div class="entity-name">${esc(o.entidad)}</div>
+          <div class="entity-meta" style="margin-top:6px">
+            <span class="badge badge-neutral">${esc(o.tipoCuenta)}</span>
+            ${o.sector ? sectorBadge(o.sector) : ''}
+            ${estadoBadge(o.estado)}
+            ${califBadge(o.calificacion)}
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.1rem;font-weight:700">${fmtMoney(o.saldoActual)}</div>
+          <div style="font-size:0.72rem;color:var(--text-muted)">Saldo actual (miles)</div>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="obl-body">
+        <div class="obl-body-inner">
+          <div class="fields-grid">
+            <div class="field-row"><div class="field-label">Num. Cuenta</div><div class="field-value">${esc(o.numCuenta)}</div></div>
+            <div class="field-row"><div class="field-label">Vlr/Cupo Inicial</div><div class="field-value">${fmtMoney(o.vlrInicial)}</div></div>
+            <div class="field-row"><div class="field-label">Saldo en Mora</div><div class="field-value">${parseInt(String(o.saldoMora).replace(/,/g,'')) > 0 ? '<span style="color:var(--danger)">' + fmtMoney(o.saldoMora) + '</span>' : fmtMoney(o.saldoMora)}</div></div>
+            <div class="field-row"><div class="field-label">Valor Cuota</div><div class="field-value">${fmtMoney(o.valorCuota)}</div></div>
+            <div class="field-row"><div class="field-label">Fecha Apertura</div><div class="field-value">${fmtDate(o.fechaApertura)}</div></div>
+            <div class="field-row"><div class="field-label">Fecha Vencimiento</div><div class="field-value">${fmtDate(o.fechaVencimiento)}</div></div>
+            <div class="field-row"><div class="field-label">Fecha Actualización</div><div class="field-value">${fmtDate(o.fechaActual)}</div></div>
+            <div class="field-row"><div class="field-label">Mora Máxima</div><div class="field-value">${esc(o.moraMaxima)}</div></div>
+            <div class="field-row"><div class="field-label">Cuotas/Vigencia</div><div class="field-value">${esc(o.cuotasVigencia)}</div></div>
+            <div class="field-row"><div class="field-label">% Deuda</div><div class="field-value">${esc(o.pctDeuda)}${deudaBar(pctNum)}</div></div>
+            <div class="field-row"><div class="field-label">Tipo Garantía</div><div class="field-value">${esc(o.tipoGarantia)}</div></div>
+            <div class="field-row"><div class="field-label">Marca/Clase</div><div class="field-value">${esc(o.marcaClase)}</div></div>
+            <div class="field-row"><div class="field-label">Estado Titular</div><div class="field-value">${esc(o.estadoTitular)}</div></div>
+            <div class="field-row"><div class="field-label">Oficina/Deudor</div><div class="field-value">${esc(o.oficina)}</div></div>
+          </div>
+          ${o.vector ? `<div style="margin-top:14px">
+            <div class="field-label" style="margin-bottom:6px">Vector de Pago</div>
+            <div>${renderVector(o.vector)}</div>
+          </div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCerradas(items) {
+  const container = $('out-cerradas');
+  $('cerradas-count').textContent = `${items.length} obligación(es) encontrada(s)`;
+
+  if (!items.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div>No se encontraron obligaciones cerradas</div>';
+    return;
+  }
+
+  let html = '<div class="table-wrap"><table class="data-table"><thead><tr>';
+  html += '<th>Entidad</th><th>Tipo</th><th>Estado</th><th>Calf</th>';
+  html += '<th class="num">Vlr Inicial</th><th>Apertura</th><th>Cierre</th><th>Oficina</th>';
+  html += '</tr></thead><tbody>';
+
+  for (const o of items) {
+    html += `<tr>
+      <td class="bold">${esc(o.entidad)}</td>
+      <td><span class="badge badge-neutral">${esc(o.tipoCuenta)}</span></td>
+      <td>${estadoBadge(o.estado)}</td>
+      <td>${califBadge(o.calificacion)}</td>
+      <td class="num">${fmtMoney(o.vlrInicial)}</td>
+      <td>${fmtDate(o.fechaApertura)}</td>
+      <td>${fmtDate(o.fechaCierre)}</td>
+      <td style="font-size:0.78rem;color:var(--text-muted);max-width:160px;overflow:hidden;text-overflow:ellipsis">${esc(o.oficina)}</td>
+    </tr>`;
+  }
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+function renderConsultas(items) {
+  const container = $('out-consultas');
+  $('consultas-count').textContent = `${items.length} consulta(s) encontrada(s)`;
+
+  if (!items.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div>No se encontraron consultas</div>';
+    return;
+  }
+
+  let html = '<div class="table-wrap"><table class="data-table"><thead><tr>';
+  html += '<th>Fecha</th><th>Consultante</th><th class="num">No. Consultas</th>';
+  html += '</tr></thead><tbody>';
+
+  for (const c of items) {
+    const isCiudadano = /CIUDADANO/i.test(c.quien);
+    html += `<tr>
+      <td>${esc(c.fecha)}</td>
+      <td>${isCiudadano ? '<span class="badge badge-info">👤 ' + esc(c.quien) + '</span>' : esc(c.quien)}</td>
+      <td class="num">${esc(c.numConsultas)}</td>
+    </tr>`;
+  }
+
+  html += '</tbody></table></div>';
+
+  // Note about CONSULTAS LOTE
+  html += '<div style="margin-top:12px;font-size:0.75rem;color:var(--text-muted);padding:10px 14px;background:var(--bg-surface);border-radius:var(--radius-sm);border:1px solid var(--border)">';
+  html += '*CONSULTAS LOTE: corresponden a consultas realizadas por las Entidades para supervisión y control del riesgo crediticio.';
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function renderReconocer(data) {
+  const container = $('out-reconocer');
+  if (!data) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📞</div>No se encontraron datos de Reconocer+</div>';
+    return;
+  }
+
+  let html = '';
+
+  // Teléfonos Fijos
+  if (data.telefonos.length) {
+    html += '<h3 style="font-size:0.85rem;font-weight:600;margin:0 0 10px;color:var(--text-secondary)">📞 Teléfonos Fijos</h3>';
+    html += '<div class="table-wrap mb-12"><table class="data-table"><thead><tr>';
+    html += '<th>#</th><th>Teléfono</th><th>Tipo</th><th>Ciudad</th><th>Depto</th><th>Desde</th><th>Hasta</th><th class="num">Rep.</th>';
+    html += '</tr></thead><tbody>';
+    for (const t of data.telefonos) {
+      html += `<tr>
+        <td>${esc(t.num)}</td><td class="bold">${esc(t.telefono)}</td>
+        <td><span class="badge badge-neutral">${esc(t.tipo)}</span></td>
+        <td>${esc(t.ciudad)}</td><td>${esc(t.depto)}</td>
+        <td>${esc(t.desde)}</td><td>${esc(t.hasta)}</td>
+        <td class="num">${esc(t.reportes)}</td>
+      </tr>`;
+    }
+    html += '</tbody></table></div>';
+  }
+
+  // Celulares
+  if (data.celulares.length) {
+    html += '<h3 style="font-size:0.85rem;font-weight:600;margin:16px 0 10px;color:var(--text-secondary)">📱 Celulares</h3>';
+    html += '<div class="table-wrap mb-12"><table class="data-table"><thead><tr>';
+    html += '<th>#</th><th>Celular</th><th>Desde</th><th>Hasta</th><th class="num">Rep.</th><th class="num">Ent.</th>';
+    html += '</tr></thead><tbody>';
+    for (const c of data.celulares) {
+      html += `<tr>
+        <td>${esc(c.num || '-')}</td><td class="bold">${esc(c.celular)}</td>
+        <td>${esc(c.desde || '-')}</td><td>${esc(c.hasta || '-')}</td>
+        <td class="num">${esc(c.reportes || '-')}</td><td class="num">${esc(c.entidades || '-')}</td>
+      </tr>`;
+    }
+    html += '</tbody></table></div>';
+  }
+
+  // Correos
+  if (data.emails.length) {
+    html += '<h3 style="font-size:0.85rem;font-weight:600;margin:16px 0 10px;color:var(--text-secondary)">✉️ Correos Electrónicos</h3>';
+    html += '<div class="table-wrap mb-12"><table class="data-table"><thead><tr>';
+    html += '<th>#</th><th>Correo</th><th>Desde</th><th>Hasta</th><th class="num">Rep.</th>';
+    html += '</tr></thead><tbody>';
+    for (const e of data.emails) {
+      html += `<tr>
+        <td>${esc(e.num || '-')}</td><td class="bold">${esc(e.email)}</td>
+        <td>${esc(e.desde || '-')}</td><td>${esc(e.hasta || '-')}</td>
+        <td class="num">${esc(e.reportes || '-')}</td>
+      </tr>`;
+    }
+    html += '</tbody></table></div>';
+  }
+
+  // Direcciones
+  if (data.direcciones.length) {
+    html += '<h3 style="font-size:0.85rem;font-weight:600;margin:16px 0 10px;color:var(--text-secondary)">📍 Direcciones</h3>';
+    html += '<div class="table-wrap"><table class="data-table"><thead><tr>';
+    html += '<th>#</th><th>Dirección</th><th>Estrato</th><th>Tipo</th><th>Ciudad</th><th>Depto</th><th>Desde</th><th>Hasta</th>';
+    html += '</tr></thead><tbody>';
+    for (const d of data.direcciones) {
+      html += `<tr>
+        <td>${esc(d.num || '-')}</td><td class="bold" style="white-space:normal;min-width:180px">${esc(d.direccion)}</td>
+        <td>${esc(d.estrato || '-')}</td>
+        <td><span class="badge badge-neutral">${esc(d.tipo || '-')}</span></td>
+        <td>${esc(d.ciudad || '-')}</td><td>${esc(d.depto || '-')}</td>
+        <td>${esc(d.desde || '-')}</td><td>${esc(d.hasta || '-')}</td>
+      </tr>`;
+    }
+    html += '</tbody></table></div>';
+  }
+
+  container.innerHTML = html || '<div class="empty-state"><div class="empty-icon">📞</div>No se encontraron datos de Reconocer+</div>';
+}
+
+function renderVector(vec) {
+  if (!vec) return '';
+  return vec.split('').map(c => {
+    if (c === 'N') return '<span class="vector-cell vector-N">N</span>';
+    if (c === '-') return '<span class="vector-cell vector-dash">-</span>';
+    if (/\d/.test(c)) return `<span class="vector-cell vector-mora">${c}</span>`;
+    return '';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TENDENCIA CHART (Canvas)
+// ═══════════════════════════════════════════════════════════════════════════
+function drawTendenciaChart(points) {
+  const canvas = $('canvas-tendencia');
+  const container = $('chart-tendencia');
+  const dpr = window.devicePixelRatio || 1;
+  const w = container.clientWidth;
+  const h = 260;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 30, right: 20, bottom: 50, left: 70 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+
+  const maxVal = Math.max(...points.map(p => p.total)) * 1.15;
+  const minVal = 0;
+
+  // Background
+  ctx.fillStyle = 'rgba(241, 245, 249, 0.5)';
+  ctx.fillRect(0, 0, w, h);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+  ctx.lineWidth = 1;
+  const gridLines = 5;
+  for (let i = 0; i <= gridLines; i++) {
+    const y = pad.top + (ch / gridLines) * i;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(w - pad.right, y);
+    ctx.stroke();
+
+    // Y labels
+    const val = Math.round(maxVal - (maxVal / gridLines) * i);
+    ctx.fillStyle = '#64748b';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(val.toLocaleString('es-CO'), pad.left - 10, y + 4);
+  }
+
+  const step = cw / (points.length - 1 || 1);
+
+  // Area gradient
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+  grad.addColorStop(0, 'rgba(99, 102, 241, 0.25)');
+  grad.addColorStop(1, 'rgba(99, 102, 241, 0.02)');
+
+  ctx.beginPath();
+  ctx.moveTo(pad.left, pad.top + ch);
+  for (let i = 0; i < points.length; i++) {
+    const x = pad.left + step * i;
+    const y = pad.top + ch - (points[i].total / maxVal) * ch;
+    if (i === 0) ctx.lineTo(x, y);
+    else {
+      const prevX = pad.left + step * (i - 1);
+      const prevY = pad.top + ch - (points[i - 1].total / maxVal) * ch;
+      const cpx = (prevX + x) / 2;
+      ctx.bezierCurveTo(cpx, prevY, cpx, y, x, y);
+    }
+  }
+  ctx.lineTo(pad.left + step * (points.length - 1), pad.top + ch);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  for (let i = 0; i < points.length; i++) {
+    const x = pad.left + step * i;
+    const y = pad.top + ch - (points[i].total / maxVal) * ch;
+    if (i === 0) ctx.moveTo(x, y);
+    else {
+      const prevX = pad.left + step * (i - 1);
+      const prevY = pad.top + ch - (points[i - 1].total / maxVal) * ch;
+      const cpx = (prevX + x) / 2;
+      ctx.bezierCurveTo(cpx, prevY, cpx, y, x, y);
+    }
+  }
+  ctx.strokeStyle = '#6366f1';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // Points
+  for (let i = 0; i < points.length; i++) {
+    const x = pad.left + step * i;
+    const y = pad.top + ch - (points[i].total / maxVal) * ch;
+
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#6366f1';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+
+    // X labels
+    ctx.save();
+    ctx.translate(x, h - pad.bottom + 16);
+    ctx.rotate(-0.5);
+    ctx.fillStyle = '#64748b';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(points[i].label, 0, 0);
+    ctx.restore();
+  }
+
+  // Title
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '600 12px Inter, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Tendencia de Endeudamiento (miles $)', pad.left, 18);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MAIN PROCESSING
+// ═══════════════════════════════════════════════════════════════════════════
+function procesarReporte(txt) {
+  const sec = splitSections(txt);
+
+  const info = extraerInfoBasica(txt, sec.infoBasica);
+  const resumen = extraerResumen(txt, sec.resumen);
+  const endeudamiento = extraerEndeudamiento(txt, sec.endeudamiento);
+  const vigentes = extraerObligaciones(txt, sec.vigentes);
+  const cerradas = extraerCerradas(txt, sec.cerradas);
+  const consultas = extraerConsultas(txt, sec.consultas);
+  const reconocer = extraerReconocer(txt, sec.reconocer);
+
+  // If vigentes didn't find sector info, try to infer from endeudamiento
+  if (vigentes.length) {
+    let lastSector = 'Financiero';
+    for (const o of vigentes) {
+      if (o.sector) lastSector = o.sector;
+      else o.sector = lastSector;
+    }
+  }
+
+  // Render all sections
+  renderDashboard(info, endeudamiento, vigentes, cerradas);
+  renderInfoBasica(info);
+  renderResumen(resumen);
+  renderEndeudamiento(endeudamiento);
+  renderObligaciones(vigentes);
+  renderCerradas(cerradas);
+  renderConsultas(consultas);
+  renderReconocer(reconocer);
+
+  // Show results and raw text
+  $('raw-text').textContent = txt;
+  $('results').classList.remove('hidden');
+  $('upload-hero').style.minHeight = 'auto';
+  $('upload-hero').querySelector('h2').style.display = 'none';
+  $('upload-hero').querySelector('p').style.display = 'none';
+
+  // Mostrar el botón de guardar
+  $('btn-save-db').classList.remove('hidden');
+
+  // Guardar datos en window para la función guardarEnBD
+  window.__datosExtraidos = {
+    infoBasica: info,
+    resumen,
+    endeudamiento,
+    vigentes,
+    cerradas,
+    consultas,
+    reconocer
+  };
+
+  // Show nav links
+  document.querySelectorAll('.sidebar-nav a.hidden, .sidebar-nav .hidden').forEach(el => el.classList.remove('hidden'));
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PDF READER
+// ═══════════════════════════════════════════════════════════════════════════
+async function leerPDF(file) {
+  const status = $('status-msg');
+  status.className = '';
+  status.textContent = '⏳ Leyendo PDF…';
+
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let textoCompleto = '';
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    status.textContent = `⏳ Procesando página ${i} de ${pdf.numPages}…`;
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+
+    // Group items by Y coordinate for better line reconstruction
+    const lineMap = new Map();
+    for (const item of content.items) {
+      if (!item.str.trim()) continue;
+      const y = Math.round(item.transform[5] * 2) / 2; // Round to nearest 0.5
+      if (!lineMap.has(y)) lineMap.set(y, []);
+      lineMap.get(y).push({ x: item.transform[4], str: item.str });
+    }
+
+    // Sort by Y descending (PDF coords), then X ascending within each line
+    const sortedYs = [...lineMap.keys()].sort((a, b) => b - a);
+    for (const y of sortedYs) {
+      const items = lineMap.get(y).sort((a, b) => a.x - b.x);
+      textoCompleto += items.map(it => it.str).join(' ') + '\n';
+    }
+    textoCompleto += '\n';
+  }
+
+  // Validate it's a Datacrédito report
+  const esDatacredito = /(datacr[eé]dito|mi\s+huella|reporte\s+de\s+cr[eé]dito|historia\s+de\s+cr[eé]dito|H[ÁA]BITO\s+DE\s+PAGO)/i.test(textoCompleto);
+
+  if (!esDatacredito) {
+    status.className = 'error';
+    status.textContent = '⚠ Este PDF no parece ser un reporte Datacrédito válido';
+    return;
+  }
+
+  status.className = 'success';
+  status.textContent = `✓ ${pdf.numPages} página(s) leídas — ${textoCompleto.length.toLocaleString()} caracteres extraídos`;
+
+  procesarReporte(textoCompleto);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EVENT HANDLERS
+// ═══════════════════════════════════════════════════════════════════════════
+$('pdf-input').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  $('status-msg').textContent = '⏳ Cargando…';
+  leerPDF(file).catch(err => {
+    $('status-msg').className = 'error';
+    $('status-msg').textContent = '⚠ Error al leer el PDF: ' + err.message;
+    console.error(err);
+  });
+});
+
+// Drag & Drop
+const uploadZone = $('upload-zone');
+['dragenter','dragover'].forEach(ev => {
+  uploadZone.addEventListener(ev, e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+});
+['dragleave','drop'].forEach(ev => {
+  uploadZone.addEventListener(ev, e => { e.preventDefault(); uploadZone.classList.remove('dragover'); });
+});
+uploadZone.addEventListener('drop', e => {
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+    $('pdf-input').files = e.dataTransfer.files;
+    $('status-msg').textContent = '⏳ Cargando…';
+    leerPDF(file).catch(err => {
+      $('status-msg').className = 'error';
+      $('status-msg').textContent = '⚠ Error: ' + err.message;
+    });
+  }
+});
+
+// Toggle obligation detail
+function toggleObl(i) {
+  const card = $('obl-' + i);
+  card.classList.toggle('open');
+}
+
+// Toggle raw text
+function toggleRaw() {
+  const raw = $('raw-text');
+  const chevron = $('raw-chevron');
+  const visible = raw.style.display === 'block';
+  raw.style.display = visible ? 'none' : 'block';
+  chevron.textContent = visible ? '▶' : '▼';
+}
+
+// Mobile sidebar
+function toggleSidebar() {
+  $('sidebar').classList.toggle('open');
+  $('overlay').classList.toggle('open');
+}
+
+// Close sidebar on nav click (mobile)
+document.querySelectorAll('.sidebar-nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth <= 900) {
+      $('sidebar').classList.remove('open');
+      $('overlay').classList.remove('open');
+    }
+  });
+});
+
+// Scroll spy for sidebar nav
+const observer = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.sidebar-nav a[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  }
+}, { threshold: 0.3, rootMargin: '-80px 0px -60% 0px' });
+
+document.querySelectorAll('section[id]').forEach(sec => observer.observe(sec));
+
+// Guardar en la Base de Datos PostgreSQL
+async function guardarEnBD() {
+  const btn = $('btn-save-db');
+  const data = window.__datosExtraidos;
+  
+  if (!data) {
+    alert('No hay datos para guardar.');
+    return;
+  }
+  
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '⏳ Guardando...';
+  btn.disabled = true;
+  
+  try {
+    const res = await fetch('http://localhost:8765/api/reportes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    
+    const result = await res.json();
+    
+    if (res.ok && result.success) {
+      alert('✅ Datos guardados correctamente en la Base de Datos con ID: ' + result.reporte_id);
+      btn.innerHTML = '✅ Guardado';
+      btn.style.background = 'var(--success)';
+    } else {
+      throw new Error(result.error || 'Error al guardar');
+    }
+  } catch (error) {
+    console.error('Error al guardar en BD:', error);
+    alert('❌ Error al guardar en la base de datos: ' + error.message);
+    btn.innerHTML = '❌ Error';
+    btn.style.background = 'var(--danger)';
+    setTimeout(() => {
+      btn.innerHTML = '💾 Reintentar';
+      btn.style.background = 'var(--accent)';
+      btn.disabled = false;
+    }, 3000);
+  }
+}
+
+// Resize chart on window resize
+window.addEventListener('resize', () => {
+  const chartContainer = $('chart-tendencia');
+  if (chartContainer.style.display !== 'none') {
+    // Re-read tendencia data if available
+    const raw = $('raw-text').textContent;
+    if (raw) {
+      const sec = splitSections(raw);
+      const resumen = extraerResumen(raw, sec.resumen);
+      if (resumen.tendencia.length > 2) drawTendenciaChart(resumen.tendencia);
+    }
+  }
+});
+</script>
+</body>
+</html>
