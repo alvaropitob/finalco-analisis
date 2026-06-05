@@ -20,9 +20,9 @@ app.post('/api/reportes', async (req, res) => {
     return res.status(400).json({ success: false, error: 'Faltan datos de Info Básica (cédula)' });
   }
 
-  const client = await pool.connect();
-  
+  let client;
   try {
+    client = await pool.connect();
     await client.query('BEGIN');
     
     // 1. Insertar Reporte
@@ -140,11 +140,15 @@ app.post('/api/reportes', async (req, res) => {
     await client.query('COMMIT');
     res.json({ success: true, reporte_id, message: 'Datos guardados correctamente en PostgreSQL' });
   } catch (error) {
-    await client.query('ROLLBACK');
+    if (client) {
+      await client.query('ROLLBACK');
+    }
     console.error('Error guardando en DB:', error);
     res.status(500).json({ success: false, error: error.message });
   } finally {
-    client.release();
+    if (client) {
+      client.release();
+    }
   }
 });
 

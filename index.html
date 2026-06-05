@@ -1767,7 +1767,11 @@ async function guardarEnBD() {
   btn.disabled = true;
   
   try {
-    const res = await fetch('http://localhost:8765/api/reportes', {
+    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:' 
+      ? 'http://localhost:8765/api/reportes' 
+      : '/api/reportes';
+
+    const res = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
