@@ -1228,19 +1228,45 @@ function extraerInfoBasica(txt, seccion) {
     d.fechaExpedicion = m[6];
     d.genero = m[7];
   } else {
-    // Fallback: try individual fields
-    const ced = s.match(/(?:N[uú]mero\s+Documento|C[eé]dula)[^\d]*(\d{7,10})/i);
-    if (ced) d.cedula = ced[1];
-    const fe = s.match(/(\d{2}\/\d{2}\/\d{4})/);
-    if (fe) d.fechaExpedicion = fe[1];
-    const gen = s.match(/(Masculino|Femenino)/i);
-    if (gen) d.genero = gen[1];
-    const est = s.match(/(Vigente|Cancelado)/i);
-    if (est) d.estadoDoc = est[1];
-    const rng = s.match(/(\d{2}-\d{2})/);
-    if (rng) d.rangoEdad = rng[1];
+    // Fallback for multi-line layout headers
+    const mDoc = s.match(/Tipo\s+Documento\s+N[uú]mero\s+Documento[^\n]*\n\s*(C\.C\.|C\.E\.|T\.I\.|P[A-Z]*)\s+(\d+)\s+([A-ZÁÉÍÓÚÑ]+)\s+([A-ZÁÉÍÓÚÑ\s]+?)\s+(\d{2}\/\d{2}\/\d{4})/i);
+    if (mDoc) {
+      d.tipoDoc = mDoc[1];
+      d.cedula = mDoc[2];
+      d.estadoDoc = mDoc[3];
+      d.lugarExpedicion = mDoc[4].trim();
+      d.fechaExpedicion = mDoc[5];
+    }
+    const mName = s.match(/Nombre\s+Rango\s+Edad\s+G[eé]nero[^\n]*\n\s*([A-ZÁÉÍÓÚÑ\s]+?)\s+(\d{2}-\d{2})\s+(Masculino|Femenino)/i);
+    if (mName) {
+      d.nombre = mName[1].trim();
+      d.rangoEdad = mName[2];
+      d.genero = mName[3];
+    }
+
+    // Individual field matchers (only if not already matched)
+    if (!d.cedula) {
+      const ced = s.match(/(?:N[uú]mero\s+Documento|C[eé]dula)[^\d]*(\d{7,10})/i);
+      if (ced) d.cedula = ced[1];
+    }
+    if (!d.fechaExpedicion) {
+      const fe = s.match(/(\d{2}\/\d{2}\/\d{4})/);
+      if (fe) d.fechaExpedicion = fe[1];
+    }
+    if (!d.genero) {
+      const gen = s.match(/(Masculino|Femenino)/i);
+      if (gen) d.genero = gen[1];
+    }
+    if (!d.estadoDoc) {
+      const est = s.match(/(Vigente|Cancelado)/i);
+      if (est) d.estadoDoc = est[1];
+    }
+    if (!d.rangoEdad) {
+      const rng = s.match(/(\d{2}-\d{2})/);
+      if (rng) d.rangoEdad = rng[1];
+    }
     // Name fallback: look near cedula
-    if (d.cedula) {
+    if (!d.nombre && d.cedula) {
       const idx = s.indexOf(d.cedula);
       if (idx > 0) {
         const win = s.substring(Math.max(0, idx - 300), idx);
@@ -2546,6 +2572,26 @@ function renderAnalisisCrediticio(info, resumen, endeudamiento, vigentes, cerrad
 
   // ─── RENDER INICIO ────────────────────────────────────────────────────
   let html = '';
+
+  // ═══ IDENTIFICACIÓN DEL CLIENTE (Datos Básicos) ═══
+  html += `
+  <div class="client-id-banner" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; background: linear-gradient(135deg, rgba(22, 84, 134, 0.04), rgba(0, 120, 54, 0.04)); border: 1.5px solid var(--border); border-radius: var(--radius); margin-bottom: 20px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+      <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--accent-glow); border: 1px solid var(--border-accent); display: flex; align-items: center; justify-content: center; color: var(--finalco-green); flex-shrink: 0;">
+        <i data-lucide="user" style="width: 22px; height: 22px; stroke-width: 2.5;"></i>
+      </div>
+      <div>
+        <div style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); font-weight: 700;">Cliente Identificado</div>
+        <div style="font-size: 1.2rem; font-weight: 800; color: var(--finalco-blue); font-family: var(--font-heading); line-height: 1.2;">${esc(info.nombre || 'Nombre No Encontrado')}</div>
+        <div style="font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); margin-top: 2px;">Documento de Identidad: <strong style="color: var(--text);">${esc(info.tipoDoc || 'C.C.')} ${esc(info.cedula || 'No Encontrada')}</strong></div>
+      </div>
+    </div>
+    <div style="text-align: right; font-size: 0.75rem; color: var(--text-muted); min-width: 140px;">
+      <div>Fecha Consulta</div>
+      <div style="font-weight: 700; color: var(--text-secondary);">${esc(info.fechaConsulta || '-')} ${esc(info.horaConsulta || '')}</div>
+    </div>
+  </div>
+  `;
 
   // ═══ PANEL EJECUTIVO DE DECISIÓN ═══
   html += `<div class="decision-panel" style="border: 1.5px solid ${ringColor}33; background: ${ringColor}08;">`;
