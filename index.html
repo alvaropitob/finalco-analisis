@@ -6,40 +6,70 @@
 <title>Finalco — Extractor Inteligente Datacrédito</title>
 <meta name="description" content="Extractor profesional de reportes Datacrédito PDF con visualización completa y análisis detallado">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 /* ─── RESET & VARIABLES ──────────────────────────────────────────────── */
+/* Paleta de colores oficial Finalco (https://finalco.com.co) */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg-body: #f8fafc;
-  --bg-gradient: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+  /* ── Colores Finalco ── */
+  --finalco-green: #007836;        /* Verde corporativo principal */
+  --finalco-blue: #165486;         /* Azul institucional */
+  --finalco-blue-mid: #066aab;     /* Azul medio (botones) */
+  --finalco-blue-light: #2473A0;   /* Azul claro (íconos) */
+  --finalco-green-dark: #005a28;   /* Verde oscuro (hover) */
+
+  /* ── Fondo y superficies ── */
+  --bg-body: #f5f8f5;              /* Tinte verde muy suave */
+  --bg-gradient: linear-gradient(145deg, #f5f8f5 0%, #edf3f0 100%);
   --bg-card: #ffffff;
   --bg-card-solid: #ffffff;
-  --bg-surface: #f1f5f9;
-  --bg-hover: #f1f5f9;
+  --bg-surface: #f0f5f2;
+  --bg-hover: #e8f2ec;
   --bg-input: #ffffff;
-  --border: #e8e8e8;
-  --border-accent: rgba(59,113,254,0.3);
-  --border-hover: rgba(59,113,254,0.6);
-  --text: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --accent: #3b71fe;
-  --accent-light: #5a88ff;
-  --accent-glow: rgba(59,113,254,0.1);
-  --success: #059669;
-  --success-bg: rgba(16,185,129,0.12);
-  --danger: #dc2626;
-  --danger-bg: rgba(239,68,68,0.12);
+
+  /* ── Bordes ── */
+  --border: #dde8e2;
+  --border-accent: rgba(0,120,54,0.3);
+  --border-hover: rgba(0,120,54,0.6);
+
+  /* ── Texto ── */
+  --text: #0d1f14;
+  --text-secondary: #3d5245;
+  --text-muted: #607b6a;
+
+  /* ── Acento principal = Verde Finalco ── */
+  --accent: #007836;
+  --accent-light: #00a04a;
+  --accent-glow: rgba(0,120,54,0.1);
+
+  /* ── Acento secundario = Azul Finalco ── */
+  --accent2: #165486;
+  --accent2-light: #2473A0;
+  --accent2-glow: rgba(22,84,134,0.1);
+
+  /* ── Estados semánticos ── */
+  --success: #007836;
+  --success-bg: rgba(0,120,54,0.12);
+  --danger: #c0392b;
+  --danger-bg: rgba(192,57,43,0.12);
   --warning: #d97706;
-  --warning-bg: rgba(245,158,11,0.12);
-  --info: #2563eb;
-  --info-bg: rgba(59,130,246,0.12);
+  --warning-bg: rgba(217,119,6,0.12);
+  --info: #165486;
+  --info-bg: rgba(22,84,134,0.12);
+
+  /* ── Radios y sombras ── */
   --radius: 14px;
   --radius-sm: 8px;
   --radius-lg: 20px;
-  --shadow: 0 4px 20px rgba(0,0,0,0.04);
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --shadow: 0 4px 20px rgba(0,0,0,0.05);
+
+  /* ── Tipografía Finalco: Roboto + Poppins ── */
+  --font: 'Roboto', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Poppins', 'Roboto', sans-serif;
+
   --sidebar-w: 260px;
   --header-h: 64px;
 }
@@ -58,7 +88,7 @@ body {
 /* ─── SCROLLBAR ───────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(0,120,54,0.35); border-radius: 3px; }
 
 /* ─── LAYOUT ──────────────────────────────────────────────────────────── */
 .app { display: flex; min-height: 100vh; }
@@ -76,11 +106,11 @@ body {
 }
 .sidebar-brand .logo {
   width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent), #a855f7);
+  background: linear-gradient(135deg, var(--finalco-green), var(--finalco-blue));
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; font-weight: 800; color: #fff;
 }
-.sidebar-brand h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.3px; }
+.sidebar-brand h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.3px; font-family: var(--font-heading); color: var(--finalco-blue); }
 .sidebar-brand span { font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 2px; }
 .sidebar-nav { padding: 16px 12px; flex: 1; }
 .sidebar-nav a {
@@ -89,33 +119,57 @@ body {
   color: var(--text-secondary); text-decoration: none;
   font-size: 0.85rem; font-weight: 500;
   transition: all 0.2s; margin-bottom: 2px;
+  border-left: 3px solid transparent;
 }
-.sidebar-nav a:hover { background: var(--bg-hover); color: var(--text); }
-.sidebar-nav a.active { background: var(--accent-glow); color: var(--accent-light); border: 1px solid var(--border-accent); }
-.sidebar-nav a .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+.sidebar-nav a:hover { background: var(--bg-hover); color: var(--finalco-blue); border-left-color: rgba(0,120,54,0.4); }
+.sidebar-nav a.active {
+  background: var(--accent-glow); color: var(--finalco-green);
+  border: 1px solid var(--border-accent);
+  border-left: 3px solid var(--finalco-green);
+  font-weight: 600;
+}
+.sidebar-nav a .icon { font-size: 1.1rem; width: 24px; text-align: center; display: inline-flex; align-items: center; justify-content: center; }
+.sidebar-nav a .icon svg { width: 18px; height: 18px; stroke-width: 2; }
+.card-icon svg { width: 20px; height: 20px; stroke-width: 2; }
+.upload-icon svg { width: 48px; height: 48px; stroke-width: 1.5; color: var(--finalco-green); }
+.cfg-icon svg { width: 18px; height: 18px; stroke-width: 2; }
+.config-section-title svg { width: 16px; height: 16px; stroke-width: 2; display: inline; vertical-align: -2px; }
+.ai-icon svg { width: 18px; height: 18px; stroke-width: 2; }
 .sidebar-nav .nav-section {
   font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px;
-  color: var(--text-muted); padding: 16px 14px 6px; font-weight: 600;
+  color: var(--text-muted); padding: 16px 14px 6px; font-weight: 700;
 }
+/* Footer del sidebar */
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.sidebar-footer img { height: 22px; opacity: 0.8; }
+.sidebar-footer-text { line-height: 1.4; }
+.sidebar-footer-text strong { color: var(--finalco-blue); font-weight: 600; display: block; }
 .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
 
 /* ─── HEADER ──────────────────────────────────────────────────────────── */
 .header {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(255,255,255,0.85); backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+  border-bottom: 3px solid var(--finalco-green);
   padding: 0 32px; height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0,120,54,0.08);
 }
 .header-info { display: flex; align-items: center; gap: 16px; }
 .header-badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
-  background: var(--accent-glow); color: var(--accent-light);
+  background: var(--accent-glow); color: var(--finalco-green);
   border: 1px solid var(--border-accent);
 }
-.header-badge.success { background: var(--success-bg); color: var(--success); border-color: rgba(16,185,129,0.3); }
-.header-title { font-size: 0.95rem; font-weight: 600; }
+.header-badge.success { background: var(--success-bg); color: var(--finalco-green); border-color: rgba(0,120,54,0.3); }
+.header-title { font-size: 0.95rem; font-weight: 700; color: var(--finalco-blue); font-family: var(--font-heading); }
 .header-sub { font-size: 0.78rem; color: var(--text-secondary); }
 
 /* ─── CONTENT ─────────────────────────────────────────────────────────── */
@@ -128,14 +182,15 @@ body {
   text-align: center; padding: 40px;
 }
 .upload-hero h2 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+.upload-hero h2 { font-family: var(--font-heading); }
 .upload-hero h2 span {
-  background: linear-gradient(135deg, var(--accent), #a855f7, #ec4899);
+  background: linear-gradient(135deg, var(--finalco-green), var(--finalco-blue-mid), var(--finalco-blue));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .upload-hero p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 32px; max-width: 500px; }
 .upload-zone {
   width: 100%; max-width: 560px;
-  border: 2px dashed rgba(99,102,241,0.3);
+  border: 2px dashed rgba(0,120,54,0.35);
   border-radius: var(--radius-lg); padding: 56px 40px;
   background: var(--accent-glow);
   cursor: pointer; transition: all 0.3s ease; position: relative;
@@ -143,13 +198,13 @@ body {
 }
 .upload-zone::before {
   content: ''; position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(99,102,241,0.08), transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(0,120,54,0.08), transparent 70%);
   transition: opacity 0.3s;
 }
 .upload-zone:hover, .upload-zone.dragover {
-  border-color: var(--accent); background: rgba(99,102,241,0.15);
+  border-color: var(--finalco-green); background: rgba(0,120,54,0.12);
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(99,102,241,0.15);
+  box-shadow: 0 12px 40px rgba(0,120,54,0.15);
 }
 .upload-zone .upload-icon { font-size: 3rem; margin-bottom: 16px; }
 .upload-zone .upload-text { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
@@ -184,7 +239,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 1.2rem; flex-shrink: 0;
 }
-.card-icon.purple { background: rgba(99,102,241,0.15); }
+.card-icon.purple { background: rgba(22,84,134,0.15); }
 .card-icon.green { background: var(--success-bg); }
 .card-icon.blue { background: var(--info-bg); }
 .card-icon.orange { background: var(--warning-bg); }
@@ -277,14 +332,14 @@ body {
 .obl-body-inner { padding: 16px 20px; }
 
 /* ─── PROGRESS BAR ────────────────────────────────────────────────────── */
-.progress { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.progress { height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px; overflow: hidden; }
 .progress-bar {
   height: 100%; border-radius: 3px; transition: width 0.6s ease;
-  background: linear-gradient(90deg, var(--accent), #a855f7);
+  background: linear-gradient(90deg, var(--finalco-green), var(--finalco-blue-mid));
 }
-.progress-bar.high { background: linear-gradient(90deg, var(--danger), #f97316); }
+.progress-bar.high { background: linear-gradient(90deg, var(--danger), #e74c3c); }
 .progress-bar.mid { background: linear-gradient(90deg, var(--warning), #f59e0b); }
-.progress-bar.low { background: linear-gradient(90deg, var(--success), #34d399); }
+.progress-bar.low { background: linear-gradient(90deg, var(--finalco-green), #2ecc71); }
 
 /* ─── CHART ───────────────────────────────────────────────────────────── */
 .chart-container { position: relative; width: 100%; height: 260px; margin-top: 10px; }
@@ -356,6 +411,259 @@ body {
   .summary-grid { grid-template-columns: 1fr; }
 }
 
+/* ─── ANALYSIS PANEL ──────────────────────────────────────────────────── */
+.analysis-verdict {
+  text-align: center; padding: 32px 24px; margin-bottom: 24px;
+  border-radius: var(--radius-lg); position: relative; overflow: hidden;
+}
+.analysis-verdict::before {
+  content: ''; position: absolute; inset: 0;
+  opacity: 0.12; z-index: 0;
+}
+.analysis-verdict.verdict-aprobar { background: linear-gradient(135deg, rgba(5,150,105,0.08), rgba(16,185,129,0.15)); border: 2px solid rgba(16,185,129,0.3); }
+.analysis-verdict.verdict-aprobar::before { background: radial-gradient(circle at 50% 40%, rgba(16,185,129,0.3), transparent 70%); }
+.analysis-verdict.verdict-revisar { background: linear-gradient(135deg, rgba(217,119,6,0.08), rgba(245,158,11,0.15)); border: 2px solid rgba(245,158,11,0.3); }
+.analysis-verdict.verdict-revisar::before { background: radial-gradient(circle at 50% 40%, rgba(245,158,11,0.3), transparent 70%); }
+.analysis-verdict.verdict-rechazar { background: linear-gradient(135deg, rgba(220,38,38,0.08), rgba(239,68,68,0.15)); border: 2px solid rgba(239,68,68,0.3); }
+.analysis-verdict.verdict-rechazar::before { background: radial-gradient(circle at 50% 40%, rgba(239,68,68,0.3), transparent 70%); }
+.verdict-icon {
+  font-size: 3.5rem; position: relative; z-index: 1;
+  animation: verdictPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.verdict-label {
+  font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;
+  position: relative; z-index: 1; margin: 8px 0 4px;
+}
+.verdict-aprobar .verdict-label { color: var(--success); }
+.verdict-revisar .verdict-label { color: var(--warning); }
+.verdict-rechazar .verdict-label { color: var(--danger); }
+.verdict-sub { font-size: 0.85rem; color: var(--text-secondary); position: relative; z-index: 1; max-width: 500px; margin: 0 auto; line-height: 1.5; }
+
+@keyframes verdictPop {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.analysis-score-ring {
+  width: 120px; height: 120px; margin: 0 auto 16px; position: relative; z-index: 1;
+}
+.analysis-score-ring svg { transform: rotate(-90deg); }
+.analysis-score-ring .ring-bg { fill: none; stroke: rgba(0,0,0,0.06); stroke-width: 8; }
+.analysis-score-ring .ring-fg {
+  fill: none; stroke-width: 8; stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.analysis-score-value {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -1px;
+}
+
+.analysis-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px; margin-top: 20px;
+}
+.analysis-item {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  transition: all 0.3s ease; position: relative; overflow: hidden;
+}
+.analysis-item::after {
+  content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  border-radius: 4px 0 0 4px;
+}
+.analysis-item:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+.analysis-item.flag-green { border-color: rgba(16,185,129,0.25); }
+.analysis-item.flag-green::after { background: linear-gradient(180deg, #10b981, #059669); }
+.analysis-item.flag-yellow { border-color: rgba(245,158,11,0.25); }
+.analysis-item.flag-yellow::after { background: linear-gradient(180deg, #f59e0b, #d97706); }
+.analysis-item.flag-red { border-color: rgba(239,68,68,0.25); }
+.analysis-item.flag-red::after { background: linear-gradient(180deg, #ef4444, #dc2626); }
+
+.analysis-item-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.analysis-item-title {
+  font-size: 0.88rem; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.analysis-item-title .ai-icon { font-size: 1.2rem; }
+.analysis-flag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+.analysis-flag.green { background: var(--success-bg); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+.analysis-flag.yellow { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+.analysis-flag.red { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+
+.analysis-value {
+  font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px;
+}
+.analysis-value.green { color: var(--success); }
+.analysis-value.yellow { color: var(--warning); }
+.analysis-value.red { color: var(--danger); }
+
+.analysis-detail {
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;
+}
+.analysis-thresholds {
+  display: flex; gap: 12px; margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border); font-size: 0.72rem;
+}
+.analysis-thresholds .thresh {
+  display: flex; align-items: center; gap: 4px; color: var(--text-muted);
+}
+.analysis-thresholds .thresh .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.analysis-thresholds .thresh .dot.g { background: var(--success); }
+.analysis-thresholds .thresh .dot.r { background: var(--danger); }
+
+.analysis-bar {
+  height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px;
+  margin-top: 10px; overflow: hidden;
+}
+.analysis-bar-fill {
+  height: 100%; border-radius: 3px; transition: width 1s ease;
+}
+.analysis-bar-fill.green { background: linear-gradient(90deg, #10b981, #34d399); }
+.analysis-bar-fill.yellow { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.analysis-bar-fill.red { background: linear-gradient(90deg, #ef4444, #f97316); }
+
+.analysis-summary-row {
+  display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px;
+}
+.analysis-summary-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: var(--radius-sm);
+  background: var(--bg-surface); border: 1px solid var(--border);
+  font-size: 0.82rem; font-weight: 600;
+}
+.analysis-summary-chip .chip-count {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 800; color: #fff;
+}
+.chip-count.green { background: var(--success); }
+.chip-count.yellow { background: var(--warning); }
+.chip-count.red { background: var(--danger); }
+
+/* ─── CONFIG MODAL ────────────────────────────────────────────────────── */
+.config-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+  backdrop-filter: blur(4px); z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+.config-overlay.open { display: flex; align-items: center; justify-content: center; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.config-modal {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); width: 680px; max-width: 95vw;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+  animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.config-header {
+  position: sticky; top: 0; z-index: 1;
+  background: var(--bg-card); padding: 24px 28px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.config-header h2 {
+  font-size: 1.15rem; font-weight: 800; letter-spacing: -0.3px;
+  display: flex; align-items: center; gap: 10px;
+}
+.config-header h2 .cfg-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(0,120,54,0.15), rgba(22,84,134,0.15));
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.config-close {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-surface); color: var(--text-muted);
+  cursor: pointer; font-size: 1rem; display: flex;
+  align-items: center; justify-content: center; transition: all 0.2s;
+}
+.config-close:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+
+.config-body { padding: 20px 28px 28px; }
+.config-section {
+  margin-bottom: 24px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.config-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.config-section-title {
+  font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text-muted); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.config-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-bottom: 12px;
+}
+.config-field {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.config-field label {
+  font-size: 0.78rem; font-weight: 600; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 6px;
+}
+.config-field label .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.config-field label .dot.g { background: var(--success); }
+.config-field label .dot.r { background: var(--danger); }
+.config-field label .dot.y { background: var(--warning); }
+.config-field label .dot.b { background: var(--accent); }
+
+.config-field input, .config-field select {
+  padding: 9px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg-input);
+  font-family: var(--font); font-size: 0.85rem; font-weight: 500;
+  color: var(--text); transition: all 0.2s; width: 100%;
+}
+.config-field input:focus, .config-field select:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.config-field .hint {
+  font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;
+}
+
+.config-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding-top: 20px; border-top: 1px solid var(--border); margin-top: 8px;
+}
+.config-btn {
+  padding: 10px 20px; border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; border: 1px solid var(--border);
+}
+.config-btn.primary {
+  background: linear-gradient(135deg, var(--finalco-green), var(--finalco-blue-mid));
+  color: #fff; border: none;
+  box-shadow: 0 4px 12px rgba(0,120,54,0.25);
+}
+.config-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,120,54,0.35); }
+.config-btn.secondary { background: var(--bg-surface); color: var(--text-secondary); }
+.config-btn.secondary:hover { background: var(--bg-hover); color: var(--text); }
+.config-btn.danger { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.2); }
+.config-btn.danger:hover { background: rgba(239,68,68,0.2); }
+
+.config-preset {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px; font-size: 0.75rem;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+  border: 1px solid var(--border); background: var(--bg-surface);
+  color: var(--text-secondary);
+}
+.config-preset:hover { border-color: var(--border-accent); color: var(--accent); }
+.config-preset.active { background: var(--accent-glow); border-color: var(--border-accent); color: var(--accent); }
+
 /* ─── UTILITY ─────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
 .mt-16 { margin-top: 16px; }
@@ -378,29 +686,146 @@ body {
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <div class="logo" style="background: linear-gradient(135deg, #25d366, #3b71fe);">🍃</div>
-      <div>
-        <h1>Finalco Extractor</h1>
-        <span>Datacrédito Parser</span>
-      </div>
+      <img src="finalco.png" alt="Finalco" style="height:38px; object-fit:contain; max-width:160px;">
     </div>
     <nav class="sidebar-nav" id="sidebar-nav">
       <div class="nav-section">Documento</div>
-      <a href="#sec-upload" class="active"><span class="icon">📄</span> Cargar PDF</a>
+      <a href="#sec-upload" class="active"><span class="icon"><i data-lucide="file-up"></i></span> Cargar PDF</a>
       <div class="nav-section" id="nav-sections-label" class="hidden">Secciones</div>
-      <a href="#sec-info" id="nav-info" class="hidden"><span class="icon">👤</span> Información Básica</a>
-      <a href="#sec-resumen" id="nav-resumen" class="hidden"><span class="icon">📊</span> Resumen Crediticio</a>
-      <a href="#sec-endeudamiento" id="nav-endeudamiento" class="hidden"><span class="icon">💰</span> Endeudamiento Actual</a>
-      <a href="#sec-vigentes" id="nav-vigentes" class="hidden"><span class="icon">🏦</span> Obligaciones Vigentes</a>
-      <a href="#sec-cerradas" id="nav-cerradas" class="hidden"><span class="icon">📋</span> Obligaciones Cerradas</a>
-      <a href="#sec-consultas" id="nav-consultas" class="hidden"><span class="icon">🔍</span> Consultas</a>
-      <a href="#sec-reconocer" id="nav-reconocer" class="hidden"><span class="icon">📞</span> Reconocer+</a>
-      <a href="#sec-raw" id="nav-raw" class="hidden"><span class="icon">📝</span> Texto Crudo</a>
+      <a href="#sec-info" id="nav-info" class="hidden"><span class="icon"><i data-lucide="user"></i></span> Información Básica</a>
+      <a href="#sec-resumen" id="nav-resumen" class="hidden"><span class="icon"><i data-lucide="bar-chart-3"></i></span> Resumen Crediticio</a>
+      <a href="#sec-endeudamiento" id="nav-endeudamiento" class="hidden"><span class="icon"><i data-lucide="wallet"></i></span> Endeudamiento Actual</a>
+      <a href="#sec-vigentes" id="nav-vigentes" class="hidden"><span class="icon"><i data-lucide="landmark"></i></span> Obligaciones Vigentes</a>
+      <a href="#sec-cerradas" id="nav-cerradas" class="hidden"><span class="icon"><i data-lucide="clipboard-list"></i></span> Obligaciones Cerradas</a>
+      <a href="#sec-consultas" id="nav-consultas" class="hidden"><span class="icon"><i data-lucide="search"></i></span> Consultas</a>
+      <a href="#sec-analisis" id="nav-analisis" class="hidden"><span class="icon"><i data-lucide="shield-check"></i></span> Análisis Crediticio</a>
+      <a href="#sec-reconocer" id="nav-reconocer" class="hidden"><span class="icon"><i data-lucide="phone"></i></span> Reconocer+</a>
+      <a href="#sec-raw" id="nav-raw" class="hidden"><span class="icon"><i data-lucide="file-text"></i></span> Texto Crudo</a>
+      <div class="nav-section">Sistema</div>
+      <a href="#" onclick="openConfig(); return false;"><span class="icon"><i data-lucide="settings"></i></span> Configuración</a>
     </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-text">
+        <strong>Finalco S.A.S.</strong>
+        Extractor Interno v1.0
+      </div>
+    </div>
   </aside>
 
   <!-- OVERLAY (mobile) -->
   <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- CONFIG MODAL -->
+  <div class="config-overlay" id="config-overlay" onclick="if(event.target===this)closeConfig()">
+    <div class="config-modal">
+      <div class="config-header">
+        <h2><span class="cfg-icon"><i data-lucide="sliders-horizontal"></i></span> Configuración de Umbrales</h2>
+        <button class="config-close" onclick="closeConfig()" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="config-body">
+
+        <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
+          <button class="config-preset active" onclick="loadPreset('default')" id="preset-default"><i data-lucide="clipboard-check" style="width:14px;height:14px"></i> Estándar</button>
+          <button class="config-preset" onclick="loadPreset('strict')" id="preset-strict"><i data-lucide="lock" style="width:14px;height:14px"></i> Estricto</button>
+          <button class="config-preset" onclick="loadPreset('flexible')" id="preset-flexible"><i data-lucide="unlock" style="width:14px;height:14px"></i> Flexible</button>
+        </div>
+
+        <!-- MORA -->
+        <div class="config-section">
+          <div class="config-section-title"><i data-lucide="banknote"></i> Mora Actual</div>
+          <div class="config-row">
+            <div class="config-field">
+              <label><span class="dot g"></span> Monto máximo para aprobar ($)</label>
+              <input type="number" id="cfg-mora-green" min="0" value="0">
+              <div class="hint">Mora ≤ este valor = bandera verde</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UTILIZACIÓN -->
+        <div class="config-section">
+          <div class="config-section-title"><i data-lucide="credit-card"></i> Utilización de Cupos</div>
+          <div class="config-row">
+            <div class="config-field">
+              <label><span class="dot g"></span> Máximo para verde (%)</label>
+              <input type="number" id="cfg-util-green" min="0" max="100" value="50">
+            </div>
+            <div class="config-field">
+              <label><span class="dot r"></span> Mínimo para rojo (%)</label>
+              <input type="number" id="cfg-util-red" min="0" max="100" value="90">
+            </div>
+          </div>
+        </div>
+
+        <!-- REESTRUCTURACIONES -->
+        <div class="config-section">
+          <div class="config-section-title"><i data-lucide="refresh-cw"></i> Reestructuraciones</div>
+          <div class="config-row">
+            <div class="config-field">
+              <label><span class="dot g"></span> Máximo permitido para verde</label>
+              <input type="number" id="cfg-reest-green" min="0" value="0">
+              <div class="hint">Si tiene más de este número → bandera roja</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONSULTAS -->
+        <div class="config-section">
+          <div class="config-section-title"><i data-lucide="search"></i> Consultas (30 días)</div>
+          <div class="config-row">
+            <div class="config-field">
+              <label><span class="dot g"></span> Máximo para verde</label>
+              <input type="number" id="cfg-consult-green" min="0" value="2">
+            </div>
+            <div class="config-field">
+              <label><span class="dot r"></span> Mínimo para rojo</label>
+              <input type="number" id="cfg-consult-red" min="0" value="5">
+            </div>
+          </div>
+        </div>
+
+        <!-- ANTIGÜEDAD -->
+        <div class="config-section">
+          <div class="config-section-title"><i data-lucide="calendar-clock"></i> Antigüedad Crediticia</div>
+          <div class="config-row">
+            <div class="config-field">
+              <label><span class="dot g"></span> Mínimo para verde (meses)</label>
+              <input type="number" id="cfg-antig-green" min="0" value="24">
+              <div class="hint">24 meses = 2 años</div>
+            </div>
+            <div class="config-field">
+              <label><span class="dot r"></span> Máximo para rojo (meses)</label>
+              <input type="number" id="cfg-antig-red" min="0" value="6">
+              <div class="hint">Menor a este valor = perfil joven</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VEREDICTO -->
+        <div class="config-section">
+          <div class="config-section-title"><i data-lucide="scale"></i> Reglas del Veredicto Final</div>
+          <div class="config-row">
+            <div class="config-field">
+              <label><span class="dot b"></span> Máx. rojos para rechazar automático</label>
+              <input type="number" id="cfg-verdict-maxreds" min="1" value="3">
+              <div class="hint">Si tiene ≥ este # de rojos → RECHAZAR</div>
+            </div>
+            <div class="config-field">
+              <label><span class="dot b"></span> Máx. amarillos para aprobar</label>
+              <input type="number" id="cfg-verdict-maxyellows" min="0" value="1">
+              <div class="hint">Si 0 rojos y ≤ este # de amarillos → APROBAR</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="config-actions">
+          <button class="config-btn danger" onclick="resetConfig()">↺ Restablecer</button>
+          <button class="config-btn secondary" onclick="closeConfig()">Cancelar</button>
+          <button class="config-btn primary" onclick="saveConfig()">✓ Guardar y Reanalizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- MAIN -->
   <div class="main">
@@ -414,7 +839,7 @@ body {
       </div>
       <div id="header-actions" style="display: flex; gap: 12px; align-items: center;">
         <div id="header-badges"></div>
-        <button id="btn-save-db" class="hidden" onclick="guardarEnBD()" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.8rem; box-shadow: 0 4px 10px var(--accent-glow); transition: all 0.2s;">💾 Guardar en BD</button>
+        <button id="btn-save-db" class="hidden" onclick="guardarEnBD()" style="background: var(--accent); color: white; border: none; padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.8rem; box-shadow: 0 4px 10px var(--accent-glow); transition: all 0.2s; display:inline-flex; align-items:center; gap:6px;"><i data-lucide="database" style="width:14px;height:14px"></i> Guardar en BD</button>
       </div>
     </header>
 
@@ -425,7 +850,7 @@ body {
           <h2>Analiza tu reporte <span>Datacrédito</span></h2>
           <p>Carga un reporte PDF de Datacrédito para extraer, organizar y visualizar toda la información crediticia automáticamente.</p>
           <label class="upload-zone" id="upload-zone" for="pdf-input">
-            <div class="upload-icon">📄</div>
+            <div class="upload-icon"><i data-lucide="file-up"></i></div>
             <div class="upload-text">Haz clic o arrastra tu PDF aquí</div>
             <div class="upload-sub">Soporta reportes Midatacrédito / Datacrédito</div>
             <input type="file" id="pdf-input" accept=".pdf">
@@ -437,24 +862,38 @@ body {
       <!-- RESULTS (hidden until load) -->
       <div id="results" class="hidden">
 
+        <!-- ANÁLISIS CREDITICIO -->
+        <section id="sec-analisis" class="card stagger-1">
+          <div class="card-header">
+            <div class="card-icon" style="background: linear-gradient(135deg, rgba(22,84,134,0.15), rgba(0,120,54,0.15));">
+              <i data-lucide="shield-check" style="color:#165486"></i>
+            </div>
+            <div>
+              <div class="card-title">Análisis Crediticio Automático</div>
+              <div class="card-count">Evaluación de riesgo basada en 6 variables clave del Datacrédito</div>
+            </div>
+          </div>
+          <div id="out-analisis"></div>
+        </section>
+
         <!-- DASHBOARD SUMMARY -->
-        <section id="sec-dashboard" class="card stagger-1">
+        <section id="sec-dashboard" class="card stagger-2">
           <div class="summary-grid" id="out-dashboard"></div>
         </section>
 
         <!-- INFO BÁSICA -->
-        <section id="sec-info" class="card stagger-2">
+        <section id="sec-info" class="card stagger-3">
           <div class="card-header">
-            <div class="card-icon purple">👤</div>
+            <div class="card-icon purple"><i data-lucide="user" style="color:#165486"></i></div>
             <div><div class="card-title">Información Básica</div><div class="card-count" id="info-count"></div></div>
           </div>
           <div id="out-info"></div>
         </section>
 
         <!-- RESUMEN CREDITICIO -->
-        <section id="sec-resumen" class="card stagger-3">
+        <section id="sec-resumen" class="card stagger-4">
           <div class="card-header">
-            <div class="card-icon blue">📊</div>
+            <div class="card-icon blue"><i data-lucide="bar-chart-3" style="color:#2473A0"></i></div>
             <div><div class="card-title">Resumen Crediticio</div><div class="card-count">Perfil general y tendencia de endeudamiento</div></div>
           </div>
           <div id="out-resumen"></div>
@@ -464,45 +903,45 @@ body {
         </section>
 
         <!-- ENDEUDAMIENTO ACTUAL -->
-        <section id="sec-endeudamiento" class="card stagger-4">
+        <section id="sec-endeudamiento" class="card stagger-5">
           <div class="card-header">
-            <div class="card-icon green">💰</div>
+            <div class="card-icon green"><i data-lucide="wallet" style="color:#007836"></i></div>
             <div><div class="card-title">Endeudamiento Actual</div><div class="card-count">Desglose por tipo de cartera y sector</div></div>
           </div>
           <div id="out-endeudamiento"></div>
         </section>
 
         <!-- OBLIGACIONES VIGENTES -->
-        <section id="sec-vigentes" class="card stagger-5">
+        <section id="sec-vigentes" class="card stagger-6">
           <div class="card-header">
-            <div class="card-icon orange">🏦</div>
+            <div class="card-icon orange"><i data-lucide="landmark" style="color:#d97706"></i></div>
             <div><div class="card-title">Obligaciones Vigentes</div><div class="card-count" id="vigentes-count"></div></div>
           </div>
           <div id="out-vigentes"></div>
         </section>
 
         <!-- OBLIGACIONES CERRADAS -->
-        <section id="sec-cerradas" class="card stagger-6">
+        <section id="sec-cerradas" class="card stagger-7">
           <div class="card-header">
-            <div class="card-icon red">📋</div>
+            <div class="card-icon red"><i data-lucide="clipboard-list" style="color:#dc2626"></i></div>
             <div><div class="card-title">Obligaciones Cerradas / Inactivas</div><div class="card-count" id="cerradas-count"></div></div>
           </div>
           <div id="out-cerradas"></div>
         </section>
 
         <!-- CONSULTAS -->
-        <section id="sec-consultas" class="card stagger-7">
+        <section id="sec-consultas" class="card stagger-8">
           <div class="card-header">
-            <div class="card-icon blue">🔍</div>
+            <div class="card-icon blue"><i data-lucide="search" style="color:#2563eb"></i></div>
             <div><div class="card-title">Histórico de Consultas</div><div class="card-count" id="consultas-count"></div></div>
           </div>
           <div id="out-consultas"></div>
         </section>
 
         <!-- RECONOCER+ -->
-        <section id="sec-reconocer" class="card stagger-8">
+        <section id="sec-reconocer" class="card stagger-9">
           <div class="card-header">
-            <div class="card-icon purple">📞</div>
+            <div class="card-icon purple"><i data-lucide="phone" style="color:#165486"></i></div>
             <div><div class="card-title">Reconocer+</div><div class="card-count">Datos de contacto reportados</div></div>
           </div>
           <div id="out-reconocer"></div>
@@ -511,7 +950,7 @@ body {
         <!-- RAW TEXT -->
         <section id="sec-raw" class="card stagger-9">
           <div class="card-header">
-            <div class="card-icon blue">📝</div>
+            <div class="card-icon blue"><i data-lucide="file-text" style="color:#2473A0"></i></div>
             <div><div class="card-title">Texto Crudo del PDF</div><div class="card-count">Texto extraído sin procesar</div></div>
           </div>
           <button class="raw-toggle" onclick="toggleRaw()">
@@ -1242,7 +1681,7 @@ function renderObligaciones(items) {
   $('vigentes-count').textContent = `${items.length} obligación(es) encontrada(s)`;
 
   if (!items.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏦</div>No se encontraron obligaciones vigentes</div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon"><i data-lucide="landmark"></i></div>No se encontraron obligaciones vigentes</div>';
     return;
   }
 
@@ -1329,7 +1768,7 @@ function renderConsultas(items) {
   $('consultas-count').textContent = `${items.length} consulta(s) encontrada(s)`;
 
   if (!items.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div>No se encontraron consultas</div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon"><i data-lucide="search"></i></div>No se encontraron consultas</div>';
     return;
   }
 
@@ -1433,7 +1872,7 @@ function renderReconocer(data) {
     html += '</tbody></table></div>';
   }
 
-  container.innerHTML = html || '<div class="empty-state"><div class="empty-icon">📞</div>No se encontraron datos de Reconocer+</div>';
+  container.innerHTML = html || '<div class="empty-state"><div class="empty-icon"><i data-lucide="phone"></i></div>No se encontraron datos de Reconocer+</div>';
 }
 
 function renderVector(vec) {
@@ -1444,6 +1883,513 @@ function renderVector(vec) {
     if (/\d/.test(c)) return `<span class="vector-cell vector-mora">${c}</span>`;
     return '';
   }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIGURACIÓN DE UMBRALES — Persistencia en localStorage
+// ═══════════════════════════════════════════════════════════════════════════
+
+const CONFIG_KEY = 'finalco_analysis_config';
+
+const DEFAULT_CONFIG = {
+  moraGreen: 0,           // Mora ≤ este valor = verde
+  utilGreen: 50,          // Utilización < este % = verde
+  utilRed: 90,            // Utilización > este % = rojo
+  reestGreen: 0,          // Reestructuraciones ≤ este valor = verde
+  consultGreen: 2,        // Consultas 30d ≤ este valor = verde
+  consultRed: 5,          // Consultas 30d ≥ este valor = rojo
+  antigGreen: 24,         // Antigüedad ≥ este # meses = verde
+  antigRed: 6,            // Antigüedad < este # meses = rojo
+  verdictMaxReds: 3,      // ≥ este # de rojos = RECHAZAR
+  verdictMaxYellows: 1,   // 0 rojos y ≤ este # amarillos = APROBAR
+};
+
+const PRESETS = {
+  default: { ...DEFAULT_CONFIG },
+  strict: {
+    moraGreen: 0, utilGreen: 30, utilRed: 70,
+    reestGreen: 0, consultGreen: 1, consultRed: 3,
+    antigGreen: 36, antigRed: 12,
+    verdictMaxReds: 2, verdictMaxYellows: 0
+  },
+  flexible: {
+    moraGreen: 0, utilGreen: 70, utilRed: 95,
+    reestGreen: 1, consultGreen: 4, consultRed: 8,
+    antigGreen: 12, antigRed: 3,
+    verdictMaxReds: 4, verdictMaxYellows: 2
+  }
+};
+
+function loadConfig() {
+  try {
+    const saved = localStorage.getItem(CONFIG_KEY);
+    if (saved) return { ...DEFAULT_CONFIG, ...JSON.parse(saved) };
+  } catch(e) { console.warn('Error loading config:', e); }
+  return { ...DEFAULT_CONFIG };
+}
+
+function saveConfigToStorage(cfg) {
+  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); }
+  catch(e) { console.warn('Error saving config:', e); }
+}
+
+function getConfigFromForm() {
+  return {
+    moraGreen: parseInt($('cfg-mora-green').value) || 0,
+    utilGreen: parseInt($('cfg-util-green').value) || 50,
+    utilRed: parseInt($('cfg-util-red').value) || 90,
+    reestGreen: parseInt($('cfg-reest-green').value) || 0,
+    consultGreen: parseInt($('cfg-consult-green').value) || 2,
+    consultRed: parseInt($('cfg-consult-red').value) || 5,
+    antigGreen: parseInt($('cfg-antig-green').value) || 24,
+    antigRed: parseInt($('cfg-antig-red').value) || 6,
+    verdictMaxReds: parseInt($('cfg-verdict-maxreds').value) || 3,
+    verdictMaxYellows: parseInt($('cfg-verdict-maxyellows').value) || 1,
+  };
+}
+
+function populateForm(cfg) {
+  $('cfg-mora-green').value = cfg.moraGreen;
+  $('cfg-util-green').value = cfg.utilGreen;
+  $('cfg-util-red').value = cfg.utilRed;
+  $('cfg-reest-green').value = cfg.reestGreen;
+  $('cfg-consult-green').value = cfg.consultGreen;
+  $('cfg-consult-red').value = cfg.consultRed;
+  $('cfg-antig-green').value = cfg.antigGreen;
+  $('cfg-antig-red').value = cfg.antigRed;
+  $('cfg-verdict-maxreds').value = cfg.verdictMaxReds;
+  $('cfg-verdict-maxyellows').value = cfg.verdictMaxYellows;
+}
+
+function openConfig() {
+  const cfg = loadConfig();
+  populateForm(cfg);
+  highlightActivePreset(cfg);
+  $('config-overlay').classList.add('open');
+}
+
+function closeConfig() {
+  $('config-overlay').classList.remove('open');
+}
+
+function saveConfig() {
+  const cfg = getConfigFromForm();
+  saveConfigToStorage(cfg);
+  closeConfig();
+  // Re-run analysis if data exists
+  if (window.__datosExtraidos) {
+    const d = window.__datosExtraidos;
+    renderAnalisisCrediticio(d.infoBasica, d.resumen, d.endeudamiento, d.vigentes, d.cerradas, d.consultas);
+  }
+}
+
+function resetConfig() {
+  populateForm(DEFAULT_CONFIG);
+  highlightActivePreset(DEFAULT_CONFIG);
+}
+
+function loadPreset(name) {
+  const preset = PRESETS[name] || PRESETS.default;
+  populateForm(preset);
+  // Update active button
+  document.querySelectorAll('.config-preset').forEach(b => b.classList.remove('active'));
+  const btn = $('preset-' + name);
+  if (btn) btn.classList.add('active');
+}
+
+function highlightActivePreset(cfg) {
+  document.querySelectorAll('.config-preset').forEach(b => b.classList.remove('active'));
+  for (const [name, preset] of Object.entries(PRESETS)) {
+    const match = Object.keys(preset).every(k => preset[k] === cfg[k]);
+    if (match) {
+      const btn = $('preset-' + name);
+      if (btn) btn.classList.add('active');
+      return;
+    }
+  }
+}
+
+// Initialize form on page load
+(function() {
+  const cfg = loadConfig();
+  populateForm(cfg);
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ANÁLISIS CREDITICIO — Motor de Evaluación (con umbrales configurables)
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderAnalisisCrediticio(info, resumen, endeudamiento, vigentes, cerradas, consultas) {
+  const container = $('out-analisis');
+  const cfg = loadConfig();
+  const variables = [];
+
+  // ─── 1. MORA ACTUAL ─────────────────────────────────────────────────
+  let moraTotal = 0;
+  if (endeudamiento && endeudamiento.total) {
+    moraTotal = parseInt(String(endeudamiento.total.mora).replace(/[^\d]/g, '')) || 0;
+  } else if (vigentes && vigentes.length) {
+    for (const v of vigentes) {
+      moraTotal += parseInt(String(v.saldoMora).replace(/[^\d]/g, '')) || 0;
+    }
+  }
+  const moraFlag = moraTotal <= cfg.moraGreen ? 'green' : 'red';
+  variables.push({
+    icon: '<i data-lucide="banknote" style="width:20px;height:20px;display:inline"></i>', title: 'Mora Actual',
+    value: moraTotal === 0 ? '$0' : fmtMoney(moraTotal),
+    flag: moraFlag,
+    flagLabel: moraFlag === 'green' ? 'Sin Mora' : 'Tiene Mora',
+    detail: moraFlag === 'green'
+      ? 'El solicitante no presenta saldo en mora en ninguna obligación vigente.'
+      : `Se detectó un saldo en mora de ${fmtMoney(moraTotal)}. Esto representa un riesgo alto.`,
+    greenText: cfg.moraGreen === 0 ? '$0' : '≤ ' + fmtMoney(cfg.moraGreen),
+    redText: cfg.moraGreen === 0 ? '> $0' : '> ' + fmtMoney(cfg.moraGreen),
+    barPct: moraFlag === 'green' ? 100 : 15
+  });
+
+  // ─── 2. VECTORES (12 MESES) ─────────────────────────────────────────
+  let vectorMoras = 0;
+  let vectorTotal = 0;
+  let vectorDetail = '';
+  const moraPatterns = [];
+  if (vigentes && vigentes.length) {
+    for (const v of vigentes) {
+      if (v.vector) {
+        const chars = v.vector.slice(0, 12); // últimos 12 meses
+        vectorTotal += chars.length;
+        for (const c of chars) {
+          if (/[1-9]/.test(c)) {
+            vectorMoras++;
+          }
+        }
+        // Detect specific patterns
+        if (/[3-9]/.test(chars)) {
+          moraPatterns.push(`${v.entidad}: presencia de mora ≥30 días`);
+        }
+      }
+    }
+  }
+  // Also check resumen moras data
+  const hasMora30 = resumen && resumen.moras && parseInt(resumen.moras.creditosMora30) > 0;
+  const hasMora60 = resumen && resumen.moras && parseInt(resumen.moras.creditosMora60) > 0;
+  const totalMorasMax = resumen && resumen.moras ? resumen.moras.totalMorasMax : '0';
+  const morasMaxIsN = totalMorasMax === 'N' || totalMorasMax === '0';
+
+  let vecFlag;
+  if (vectorMoras === 0 && morasMaxIsN && !hasMora30 && !hasMora60) {
+    vecFlag = 'green';
+    vectorDetail = 'Todos los vectores de pago muestran "N" (Normal) en los últimos 12 meses.';
+  } else if (hasMora60 || moraPatterns.length > 1) {
+    vecFlag = 'red';
+    vectorDetail = `Se detectaron ${vectorMoras} período(s) con mora en vectores.`;
+    if (hasMora60) vectorDetail += ' Hay créditos con mora ≥60 días.';
+    if (moraPatterns.length) vectorDetail += ' ' + moraPatterns.join('; ');
+  } else {
+    vecFlag = 'yellow';
+    vectorDetail = `Se detectaron ${vectorMoras} período(s) aislado(s) con mora menor. Riesgo moderado.`;
+    if (hasMora30) vectorDetail += ' Hay créditos con mora ≥30 días.';
+  }
+  variables.push({
+    icon: '<i data-lucide="bar-chart-2" style="width:20px;height:20px;display:inline"></i>', title: 'Vectores de Pago (12 meses)',
+    value: vectorMoras === 0 ? 'Todos N' : `${vectorMoras} mora(s)`,
+    flag: vecFlag,
+    flagLabel: vecFlag === 'green' ? 'Limpio' : vecFlag === 'yellow' ? 'Alerta Leve' : 'Moras Detectadas',
+    detail: vectorDetail,
+    greenText: 'Todos en N', redText: 'Presencia 30/60/90',
+    barPct: vecFlag === 'green' ? 100 : vecFlag === 'yellow' ? 55 : 20
+  });
+
+  // ─── 3. UTILIZACIÓN DE CUPOS ─────────────────────────────────────────
+  let totalCupo = 0, totalSaldo = 0;
+  let tarjetasCount = 0;
+  if (vigentes && vigentes.length) {
+    for (const v of vigentes) {
+      const inicial = parseInt(String(v.vlrInicial).replace(/[^\d]/g, '')) || 0;
+      const saldo = parseInt(String(v.saldoActual).replace(/[^\d]/g, '')) || 0;
+      // Consider credit cards and revolving credit
+      const isTarjeta = /tarjeta|tc|tdc|rotativo/i.test(v.tipoCuenta + ' ' + (v.marcaClase || ''));
+      if (isTarjeta || /CRE|ROT/i.test(v.tipoCuenta)) {
+        totalCupo += inicial;
+        totalSaldo += saldo;
+        tarjetasCount++;
+      }
+    }
+  }
+  let utilizacion = totalCupo > 0 ? Math.round((totalSaldo / totalCupo) * 100) : 0;
+  let utilFlag;
+  if (tarjetasCount === 0) {
+    utilFlag = 'green';
+  } else if (utilizacion < cfg.utilGreen) {
+    utilFlag = 'green';
+  } else if (utilizacion <= cfg.utilRed) {
+    utilFlag = 'yellow';
+  } else {
+    utilFlag = 'red';
+  }
+  variables.push({
+    icon: '<i data-lucide="credit-card" style="width:20px;height:20px;display:inline"></i>', title: 'Utilización de Cupos',
+    value: tarjetasCount === 0 ? 'N/A — Sin tarjetas' : utilizacion + '%',
+    flag: utilFlag,
+    flagLabel: utilFlag === 'green' ? 'Saludable' : utilFlag === 'yellow' ? 'Moderada' : 'Excesiva',
+    detail: tarjetasCount === 0
+      ? 'No se encontraron tarjetas de crédito o líneas rotativas vigentes.'
+      : `Utilización del ${utilizacion}% sobre un cupo total de ${fmtMoney(totalCupo)}. Saldo: ${fmtMoney(totalSaldo)}.`,
+    greenText: `< ${cfg.utilGreen}%`, redText: `> ${cfg.utilRed}%`,
+    barPct: tarjetasCount === 0 ? 100 : Math.max(5, 100 - utilizacion)
+  });
+
+  // ─── 4. REESTRUCTURACIONES ───────────────────────────────────────────
+  let reestructuraciones = 0;
+  let reestEntidades = [];
+  if (vigentes && vigentes.length) {
+    for (const v of vigentes) {
+      if (/reestructur/i.test(v.estado || '') || /reestructur/i.test(v.marcaClase || '')) {
+        reestructuraciones++;
+        reestEntidades.push(v.entidad);
+      }
+    }
+  }
+  if (cerradas && cerradas.length) {
+    for (const c of cerradas) {
+      if (/reestructur/i.test(c.estado || '')) {
+        reestructuraciones++;
+        reestEntidades.push(c.entidad);
+      }
+    }
+  }
+  // Also check from resumen perfil
+  if (resumen && resumen.perfil && resumen.perfil.grid && resumen.perfil.rowLabels) {
+    const reeIdx = resumen.perfil.rowLabels.indexOf('Reestructurados');
+    if (reeIdx !== -1) {
+      // Check Total column (index 4)
+      const totalCol = resumen.perfil.grid[4];
+      if (totalCol && totalCol[reeIdx]) {
+        const fromProfile = parseInt(totalCol[reeIdx]) || 0;
+        if (fromProfile > reestructuraciones) reestructuraciones = fromProfile;
+      }
+    }
+  }
+  const reestFlag = reestructuraciones <= cfg.reestGreen ? 'green' : 'red';
+  variables.push({
+    icon: '<i data-lucide="refresh-cw" style="width:20px;height:20px;display:inline"></i>', title: 'Reestructuraciones',
+    value: reestructuraciones === 0 ? '0' : reestructuraciones.toString(),
+    flag: reestFlag,
+    flagLabel: reestFlag === 'green' ? 'Ninguna' : 'Detectada(s)',
+    detail: reestructuraciones === 0
+      ? 'No se encontraron obligaciones reestructuradas. Buen indicador de manejo crediticio.'
+      : `Se encontraron ${reestructuraciones} reestructuración(es)` + (reestEntidades.length ? ` en: ${reestEntidades.join(', ')}.` : '.') + ' Indica dificultades previas de pago.',
+    greenText: cfg.reestGreen === 0 ? '0' : `≤ ${cfg.reestGreen}`,
+    redText: cfg.reestGreen === 0 ? '1 o más' : `> ${cfg.reestGreen}`,
+    barPct: reestFlag === 'green' ? 100 : 10
+  });
+
+  // ─── 5. CONSULTAS (30 DÍAS) ─────────────────────────────────────────
+  let consultas30 = 0;
+  const now = new Date();
+  const hace30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  if (consultas && consultas.length) {
+    for (const c of consultas) {
+      if (c.fecha) {
+        const parts = c.fecha.split('/');
+        if (parts.length === 3) {
+          const consultDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+          if (consultDate >= hace30) {
+            consultas30 += parseInt(c.numConsultas) || 1;
+          }
+        }
+      }
+    }
+  }
+  // Also check from resumen perfil: "Consultas 6m"
+  let consultas6m = 0;
+  if (resumen && resumen.perfil && resumen.perfil.grid && resumen.perfil.rowLabels) {
+    const cIdx = resumen.perfil.rowLabels.indexOf('Consultas 6m');
+    if (cIdx !== -1 && resumen.perfil.grid[4] && resumen.perfil.grid[4][cIdx]) {
+      consultas6m = parseInt(resumen.perfil.grid[4][cIdx]) || 0;
+    }
+  }
+
+  let consultFlag;
+  if (consultas30 <= cfg.consultGreen) {
+    consultFlag = 'green';
+  } else if (consultas30 < cfg.consultRed) {
+    consultFlag = 'yellow';
+  } else {
+    consultFlag = 'red';
+  }
+  variables.push({
+    icon: '<i data-lucide="search" style="width:20px;height:20px;display:inline"></i>', title: 'Consultas (últimos 30 días)',
+    value: consultas30.toString(),
+    flag: consultFlag,
+    flagLabel: consultFlag === 'green' ? 'Normal' : consultFlag === 'yellow' ? 'Moderado' : 'Excesivas',
+    detail: consultFlag === 'green'
+      ? `${consultas30} consulta(s) en 30 días. Dentro del rango aceptable.` + (consultas6m > 0 ? ` Total últimos 6 meses: ${consultas6m}.` : '')
+      : consultFlag === 'yellow'
+      ? `${consultas30} consultas en 30 días. Actividad moderada.` + (consultas6m > 0 ? ` Total 6 meses: ${consultas6m}.` : '')
+      : `${consultas30} consultas en 30 días. Muchas consultas recientes pueden indicar necesidad urgente de crédito.` + (consultas6m > 0 ? ` Total 6 meses: ${consultas6m}.` : ''),
+    greenText: `0 – ${cfg.consultGreen}`, redText: `≥ ${cfg.consultRed}`,
+    barPct: consultFlag === 'green' ? 100 : consultFlag === 'yellow' ? 55 : 15
+  });
+
+  // ─── 6. ANTIGÜEDAD ───────────────────────────────────────────────────
+  let antiguedadMeses = 0;
+  let fechaMasAntigua = null;
+  if (vigentes && vigentes.length) {
+    for (const v of vigentes) {
+      if (v.fechaApertura && /^\d{8}$/.test(v.fechaApertura)) {
+        const d = new Date(
+          parseInt(v.fechaApertura.slice(0, 4)),
+          parseInt(v.fechaApertura.slice(4, 6)) - 1,
+          parseInt(v.fechaApertura.slice(6, 8))
+        );
+        if (!fechaMasAntigua || d < fechaMasAntigua) fechaMasAntigua = d;
+      }
+    }
+  }
+  if (cerradas && cerradas.length) {
+    for (const c of cerradas) {
+      if (c.fechaApertura && /^\d{8}$/.test(c.fechaApertura)) {
+        const d = new Date(
+          parseInt(c.fechaApertura.slice(0, 4)),
+          parseInt(c.fechaApertura.slice(4, 6)) - 1,
+          parseInt(c.fechaApertura.slice(6, 8))
+        );
+        if (!fechaMasAntigua || d < fechaMasAntigua) fechaMasAntigua = d;
+      }
+    }
+  }
+  // Also try from info.antiguedad
+  if (info && info.antiguedad) {
+    const antM = info.antiguedad.match(/(\d+)\s*(meses?|a[ñn]os?)/i);
+    if (antM) {
+      const val = parseInt(antM[1]);
+      const unit = antM[2].toLowerCase();
+      const mFromInfo = unit.startsWith('a') ? val * 12 : val;
+      if (mFromInfo > antiguedadMeses) antiguedadMeses = mFromInfo;
+    }
+  }
+  if (fechaMasAntigua) {
+    const diffMs = now - fechaMasAntigua;
+    const mesesCalc = Math.floor(diffMs / (30.44 * 24 * 60 * 60 * 1000));
+    if (mesesCalc > antiguedadMeses) antiguedadMeses = mesesCalc;
+  }
+
+  let antFlag;
+  let antValueText;
+  if (antiguedadMeses >= cfg.antigGreen) {
+    antFlag = 'green';
+    const years = Math.floor(antiguedadMeses / 12);
+    antValueText = `${years} año(s) ${antiguedadMeses % 12} mes(es)`;
+  } else if (antiguedadMeses >= cfg.antigRed) {
+    antFlag = 'yellow';
+    antValueText = `${antiguedadMeses} meses`;
+  } else {
+    antFlag = 'red';
+    antValueText = antiguedadMeses > 0 ? `${antiguedadMeses} meses` : 'No determinada';
+  }
+  const greenYears = Math.floor(cfg.antigGreen / 12);
+  const greenRemain = cfg.antigGreen % 12;
+  const greenLabel = greenYears > 0 ? `> ${greenYears} año(s)${greenRemain ? ` ${greenRemain}m` : ''}` : `> ${cfg.antigGreen} meses`;
+  const redLabel = `< ${cfg.antigRed} meses`;
+  variables.push({
+    icon: '<i data-lucide="calendar-clock" style="width:20px;height:20px;display:inline"></i>', title: 'Antigüedad Crediticia',
+    value: antValueText,
+    flag: antFlag,
+    flagLabel: antFlag === 'green' ? 'Consolidado' : antFlag === 'yellow' ? 'En Desarrollo' : 'Perfil Joven',
+    detail: antFlag === 'green'
+      ? `Historial crediticio de ${antValueText}. Perfil maduro con experiencia crediticia consolidada.`
+      : antFlag === 'yellow'
+      ? `Historial de ${antValueText}. Perfil en desarrollo, aún no alcanza el umbral recomendado.`
+      : antiguedadMeses > 0
+      ? `Solo ${antValueText} de antigüedad. Perfil joven con historial crediticio muy corto.`
+      : 'No se pudo determinar la antigüedad crediticia a partir de los datos extraídos.',
+    greenText: greenLabel, redText: redLabel,
+    barPct: antFlag === 'green' ? 100 : antFlag === 'yellow' ? 55 : 15
+  });
+
+  // ─── CALCULATE OVERALL SCORE ─────────────────────────────────────────
+  const greens = variables.filter(v => v.flag === 'green').length;
+  const yellows = variables.filter(v => v.flag === 'yellow').length;
+  const reds = variables.filter(v => v.flag === 'red').length;
+  const score = Math.round((greens / variables.length) * 100);
+
+  // Critical reds: Mora Actual or Reestructuraciones
+  const criticalRed = variables[0].flag === 'red' || variables[3].flag === 'red';
+
+  let verdict, verdictIcon, verdictSub;
+  if (reds === 0 && yellows <= cfg.verdictMaxYellows) {
+    verdict = 'APROBAR';
+    verdictIcon = '<i data-lucide="check-circle-2" style="width:48px;height:48px;color:var(--success);stroke-width:1.5"></i>';
+    verdictSub = 'El perfil crediticio cumple con todos los criterios de evaluación. Se recomienda aprobar la solicitud de préstamo.';
+  } else if (reds >= cfg.verdictMaxReds || criticalRed) {
+    verdict = 'RECHAZAR';
+    verdictIcon = '<i data-lucide="x-circle" style="width:48px;height:48px;color:var(--danger);stroke-width:1.5"></i>';
+    verdictSub = `Se detectaron ${reds} bandera(s) roja(s)${criticalRed ? ' en variable(s) crítica(s)' : ''}. No se recomienda otorgar el préstamo en estas condiciones.`;
+  } else {
+    verdict = 'REVISAR';
+    verdictIcon = '<i data-lucide="alert-triangle" style="width:48px;height:48px;color:var(--warning);stroke-width:1.5"></i>';
+    verdictSub = `Se detectaron ${yellows} alerta(s) y ${reds} bandera(s) roja(s). Se recomienda una revisión manual más profunda antes de tomar una decisión.`;
+  }
+
+  // ─── RENDER ──────────────────────────────────────────────────────────
+  const circumference = 2 * Math.PI * 50;
+  const offset = circumference - (score / 100) * circumference;
+  const ringColor = verdict === 'APROBAR' ? 'var(--success)' : verdict === 'REVISAR' ? 'var(--warning)' : 'var(--danger)';
+
+  let html = '';
+
+  // Verdict section
+  html += `<div class="analysis-verdict verdict-${verdict.toLowerCase()}">`;
+  html += `<div class="analysis-score-ring">`;
+  html += `<svg width="120" height="120" viewBox="0 0 120 120">`;
+  html += `<circle class="ring-bg" cx="60" cy="60" r="50"/>`;
+  html += `<circle class="ring-fg" cx="60" cy="60" r="50" stroke="${ringColor}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>`;
+  html += `</svg>`;
+  html += `<div class="analysis-score-value" style="color:${ringColor}">${score}</div>`;
+  html += `</div>`;
+  html += `<div class="verdict-icon">${verdictIcon}</div>`;
+  html += `<div class="verdict-label">${verdict}</div>`;
+  html += `<div class="verdict-sub">${verdictSub}</div>`;
+
+  // Summary chips
+  html += `<div class="analysis-summary-row" style="justify-content:center; margin-top:16px">`;
+  html += `<div class="analysis-summary-chip"><div class="chip-count green">${greens}</div> Aprobadas</div>`;
+  if (yellows > 0) html += `<div class="analysis-summary-chip"><div class="chip-count yellow">${yellows}</div> Alertas</div>`;
+  if (reds > 0) html += `<div class="analysis-summary-chip"><div class="chip-count red">${reds}</div> Rechazadas</div>`;
+  html += `</div>`;
+  html += `</div>`;
+
+  // Variables grid
+  html += `<div class="analysis-grid">`;
+  for (const v of variables) {
+    html += `<div class="analysis-item flag-${v.flag}">`;
+    html += `<div class="analysis-item-header">`;
+    html += `<div class="analysis-item-title"><span class="ai-icon">${v.icon}</span> ${v.title}</div>`;
+    html += `<span class="analysis-flag ${v.flag}">`;
+    html += v.flag === 'green' ? '✓ ' : v.flag === 'yellow' ? '⚠ ' : '✗ ';
+    html += `${v.flagLabel}</span>`;
+    html += `</div>`;
+    html += `<div class="analysis-value ${v.flag}">${v.value}</div>`;
+    html += `<div class="analysis-detail">${v.detail}</div>`;
+    html += `<div class="analysis-bar"><div class="analysis-bar-fill ${v.flag}" style="width:0%" data-width="${v.barPct}"></div></div>`;
+    html += `<div class="analysis-thresholds">`;
+    html += `<div class="thresh"><span class="dot g"></span> ${v.greenText}</div>`;
+    html += `<div class="thresh"><span class="dot r"></span> ${v.redText}</div>`;
+    html += `</div>`;
+    html += `</div>`;
+  }
+  html += `</div>`;
+
+  container.innerHTML = html;
+
+  // Animate bars after render
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      container.querySelectorAll('.analysis-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+    }, 200);
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1591,6 +2537,7 @@ function procesarReporte(txt) {
 
   // Render all sections
   renderDashboard(info, endeudamiento, vigentes, cerradas);
+  renderAnalisisCrediticio(info, resumen, endeudamiento, vigentes, cerradas, consultas);
   renderInfoBasica(info);
   renderResumen(resumen);
   renderEndeudamiento(endeudamiento);
@@ -1622,6 +2569,11 @@ function procesarReporte(txt) {
 
   // Show nav links
   document.querySelectorAll('.sidebar-nav a.hidden, .sidebar-nav .hidden').forEach(el => el.classList.remove('hidden'));
+
+  // Initialize Lucide icons
+  if (window.lucide && window.lucide.createIcons) {
+    window.lucide.createIcons();
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

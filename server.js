@@ -6,6 +6,9 @@ const { Pool } = require('pg');
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+// Servir archivos estáticos (index.html, finalco.png, etc.)
+app.use(express.static(__dirname));
+
 
 // Vercel requiere que validemos si process.env.DATABASE_URL existe
 const pool = new Pool({
