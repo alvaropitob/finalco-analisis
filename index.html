@@ -412,7 +412,137 @@ body {
   .summary-grid { grid-template-columns: 1fr; }
 }
 
-/* ─── ANALYSIS PANEL ──────────────────────────────────────────────────── */
+/* ─── ANÁLISIS — PANEL EJECUTIVO DE DECISIÓN ──────────────────────────── */
+.decision-panel {
+  border-radius: var(--radius-lg); overflow: hidden;
+  margin-bottom: 20px; position: relative;
+}
+.decision-panel-header {
+  display: flex; align-items: stretch; gap: 0;
+  min-height: 160px;
+}
+.decision-gauge-col {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 28px 32px; min-width: 170px; flex-shrink: 0;
+  position: relative;
+}
+.decision-gauge-col.aprobar { background: rgba(0,120,54,0.1); border-right: 1px solid rgba(0,120,54,0.2); }
+.decision-gauge-col.revisar { background: rgba(217,119,6,0.1); border-right: 1px solid rgba(217,119,6,0.2); }
+.decision-gauge-col.rechazar { background: rgba(192,57,43,0.08); border-right: 1px solid rgba(192,57,43,0.2); }
+.decision-score-ring { width: 100px; height: 100px; position: relative; margin-bottom: 6px; }
+.decision-score-ring svg { transform: rotate(-90deg); }
+.decision-score-num {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 1.7rem; font-weight: 800; font-family: var(--font-heading); letter-spacing: -2px;
+}
+.decision-score-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; color: var(--text-muted); }
+
+.decision-verdict-col {
+  flex: 1; padding: 24px 28px; display: flex; flex-direction: column; justify-content: center;
+}
+.decision-verdict-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 6px 18px 6px 10px; border-radius: 40px; font-size: 1rem;
+  font-weight: 800; font-family: var(--font-heading); letter-spacing: 1px;
+  margin-bottom: 8px; width: fit-content;
+}
+.decision-verdict-badge.aprobar { background: rgba(0,120,54,0.15); color: var(--finalco-green); }
+.decision-verdict-badge.revisar { background: rgba(217,119,6,0.15); color: var(--warning); }
+.decision-verdict-badge.rechazar { background: rgba(192,57,43,0.13); color: var(--danger); }
+.decision-verdict-badge svg { width: 22px; height: 22px; stroke-width: 2; }
+
+.decision-sub { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; max-width: 560px; }
+
+.decision-kpis { display: flex; gap: 20px; flex-wrap: wrap; }
+.decision-kpi { text-align: center; }
+.decision-kpi-val { font-size: 1.05rem; font-weight: 800; color: var(--text); font-family: var(--font-heading); display: block; }
+.decision-kpi-lbl { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); font-weight: 600; }
+
+.decision-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.decision-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+  border: 1px solid; cursor: default;
+}
+.decision-chip .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+.decision-chip.green { background: var(--success-bg); color: var(--finalco-green); border-color: rgba(0,120,54,0.25); }
+.decision-chip.green .chip-dot { background: var(--finalco-green); }
+.decision-chip.yellow { background: var(--warning-bg); color: var(--warning); border-color: rgba(217,119,6,0.25); }
+.decision-chip.yellow .chip-dot { background: var(--warning); }
+.decision-chip.red { background: var(--danger-bg); color: var(--danger); border-color: rgba(192,57,43,0.25); }
+.decision-chip.red .chip-dot { background: var(--danger); }
+
+/* ─── BLOQUE BANDERAS CRÍTICAS ────────────────────────────────────────── */
+.red-flags-block {
+  background: rgba(192,57,43,0.05); border: 1.5px solid rgba(192,57,43,0.25);
+  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px;
+}
+.yellow-flags-block {
+  background: rgba(217,119,6,0.05); border: 1.5px solid rgba(217,119,6,0.2);
+  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px;
+}
+.flags-block-title {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.red-flags-block .flags-block-title { color: var(--danger); }
+.yellow-flags-block .flags-block-title { color: var(--warning); }
+.flag-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.flag-item:last-child { border-bottom: none; padding-bottom: 0; }
+.flag-item-icon {
+  width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.red-flags-block .flag-item-icon { background: var(--danger-bg); }
+.yellow-flags-block .flag-item-icon { background: var(--warning-bg); }
+.flag-item-body { flex: 1; }
+.flag-item-title { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.flag-item-detail { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; }
+.flag-item-value {
+  font-size: 1.1rem; font-weight: 800; font-family: var(--font-heading);
+  flex-shrink: 0; align-self: center;
+}
+.red-flags-block .flag-item-value { color: var(--danger); }
+.yellow-flags-block .flag-item-value { color: var(--warning); }
+
+/* ─── BLOQUE RECOMENDACIÓN ────────────────────────────────────────────── */
+.recommendation-block {
+  background: linear-gradient(135deg, rgba(22,84,134,0.06), rgba(0,120,54,0.06));
+  border: 1px solid rgba(22,84,134,0.2);
+  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 20px;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.recommendation-icon {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--finalco-blue), var(--finalco-green));
+  display: flex; align-items: center; justify-content: center;
+}
+.recommendation-icon svg { width: 20px; height: 20px; stroke-width: 2; color: #fff; }
+.recommendation-body {}
+.recommendation-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--finalco-blue); margin-bottom: 6px; }
+.recommendation-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+.recommendation-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.recommendation-action-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+  background: rgba(22,84,134,0.1); color: var(--finalco-blue);
+  border: 1px solid rgba(22,84,134,0.2);
+}
+
+/* ─── VARIABLES DETAIL SECTION ────────────────────────────────────────── */
+.variables-section-title {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--text-muted); margin: 20px 0 12px;
+  display: flex; align-items: center; gap: 8px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.variables-section-title .vsep { flex: 1; }
+
+/* ─── ANÁLISIS ITEM (variables individuales) ──────────────────────────── */
 .analysis-verdict {
   text-align: center; padding: 32px 24px; margin-bottom: 24px;
   border-radius: var(--radius-lg); position: relative; overflow: hidden;
@@ -421,21 +551,21 @@ body {
   content: ''; position: absolute; inset: 0;
   opacity: 0.12; z-index: 0;
 }
-.analysis-verdict.verdict-aprobar { background: linear-gradient(135deg, rgba(5,150,105,0.08), rgba(16,185,129,0.15)); border: 2px solid rgba(16,185,129,0.3); }
-.analysis-verdict.verdict-aprobar::before { background: radial-gradient(circle at 50% 40%, rgba(16,185,129,0.3), transparent 70%); }
+.analysis-verdict.verdict-aprobar { background: linear-gradient(135deg, rgba(0,120,54,0.08), rgba(0,120,54,0.15)); border: 2px solid rgba(0,120,54,0.3); }
+.analysis-verdict.verdict-aprobar::before { background: radial-gradient(circle at 50% 40%, rgba(0,120,54,0.3), transparent 70%); }
 .analysis-verdict.verdict-revisar { background: linear-gradient(135deg, rgba(217,119,6,0.08), rgba(245,158,11,0.15)); border: 2px solid rgba(245,158,11,0.3); }
 .analysis-verdict.verdict-revisar::before { background: radial-gradient(circle at 50% 40%, rgba(245,158,11,0.3), transparent 70%); }
-.analysis-verdict.verdict-rechazar { background: linear-gradient(135deg, rgba(220,38,38,0.08), rgba(239,68,68,0.15)); border: 2px solid rgba(239,68,68,0.3); }
-.analysis-verdict.verdict-rechazar::before { background: radial-gradient(circle at 50% 40%, rgba(239,68,68,0.3), transparent 70%); }
+.analysis-verdict.verdict-rechazar { background: linear-gradient(135deg, rgba(192,57,43,0.08), rgba(192,57,43,0.15)); border: 2px solid rgba(192,57,43,0.3); }
+.analysis-verdict.verdict-rechazar::before { background: radial-gradient(circle at 50% 40%, rgba(192,57,43,0.3), transparent 70%); }
 .verdict-icon {
   font-size: 3.5rem; position: relative; z-index: 1;
   animation: verdictPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
 }
 .verdict-label {
   font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;
-  position: relative; z-index: 1; margin: 8px 0 4px;
+  position: relative; z-index: 1; margin: 8px 0 4px; font-family: var(--font-heading);
 }
-.verdict-aprobar .verdict-label { color: var(--success); }
+.verdict-aprobar .verdict-label { color: var(--finalco-green); }
 .verdict-revisar .verdict-label { color: var(--warning); }
 .verdict-rechazar .verdict-label { color: var(--danger); }
 .verdict-sub { font-size: 0.85rem; color: var(--text-secondary); position: relative; z-index: 1; max-width: 500px; margin: 0 auto; line-height: 1.5; }
@@ -456,16 +586,16 @@ body {
 }
 .analysis-score-value {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  font-size: 1.6rem; font-weight: 800; letter-spacing: -1px;
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; font-family: var(--font-heading);
 }
 
 .analysis-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 16px; margin-top: 20px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px; margin-top: 8px;
 }
 .analysis-item {
-  background: var(--bg-surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
   transition: all 0.3s ease; position: relative; overflow: hidden;
 }
 .analysis-item::after {
@@ -473,41 +603,66 @@ body {
   border-radius: 4px 0 0 4px;
 }
 .analysis-item:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-.analysis-item.flag-green { border-color: rgba(16,185,129,0.25); }
-.analysis-item.flag-green::after { background: linear-gradient(180deg, #10b981, #059669); }
+.analysis-item.flag-green { border-color: rgba(0,120,54,0.2); }
+.analysis-item.flag-green::after { background: linear-gradient(180deg, var(--finalco-green), #2ecc71); }
 .analysis-item.flag-yellow { border-color: rgba(245,158,11,0.25); }
 .analysis-item.flag-yellow::after { background: linear-gradient(180deg, #f59e0b, #d97706); }
-.analysis-item.flag-red { border-color: rgba(239,68,68,0.25); }
-.analysis-item.flag-red::after { background: linear-gradient(180deg, #ef4444, #dc2626); }
+.analysis-item.flag-red { border-color: rgba(192,57,43,0.25); }
+.analysis-item.flag-red::after { background: linear-gradient(180deg, var(--danger), #e74c3c); }
 
 .analysis-item-header {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .analysis-item-title {
-  font-size: 0.88rem; font-weight: 700; color: var(--text);
-  display: flex; align-items: center; gap: 8px;
+  font-size: 0.82rem; font-weight: 700; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 7px; text-transform: uppercase; letter-spacing: 0.5px;
 }
 .analysis-item-title .ai-icon { font-size: 1.2rem; }
 .analysis-flag {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 700;
   letter-spacing: 0.5px; text-transform: uppercase;
 }
-.analysis-flag.green { background: var(--success-bg); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+.analysis-flag.green { background: var(--success-bg); color: var(--finalco-green); border: 1px solid rgba(0,120,54,0.2); }
 .analysis-flag.yellow { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
-.analysis-flag.red { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+.analysis-flag.red { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(192,57,43,0.2); }
 
 .analysis-value {
-  font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px;
+  font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; font-family: var(--font-heading);
 }
-.analysis-value.green { color: var(--success); }
+.analysis-value.green { color: var(--finalco-green); }
 .analysis-value.yellow { color: var(--warning); }
 .analysis-value.red { color: var(--danger); }
 
 .analysis-detail {
   font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;
 }
+
+/* Barra de 3 zonas (verde/amarillo/rojo) */
+.threshold-bar-3 { margin-top: 12px; }
+.threshold-bar-3-track {
+  height: 6px; border-radius: 3px; overflow: hidden;
+  display: flex; margin-bottom: 4px; gap: 1px;
+}
+.threshold-bar-3-track .seg-green { background: var(--finalco-green); flex: 1; border-radius: 3px 0 0 3px; }
+.threshold-bar-3-track .seg-yellow { background: var(--warning); flex: 1; }
+.threshold-bar-3-track .seg-red { background: var(--danger); flex: 1; border-radius: 0 3px 3px 0; }
+.threshold-bar-3-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.65rem; color: var(--text-muted); font-weight: 600;
+}
+.threshold-bar-3-pointer {
+  height: 5px; display: flex; align-items: flex-start; margin-bottom: 2px; position: relative;
+}
+.threshold-bar-3-pointer::after {
+  content: '▼'; position: absolute; font-size: 8px; transform: translateX(-50%);
+  transition: left 0.8s ease;
+}
+.threshold-bar-3-pointer.green::after { color: var(--finalco-green); }
+.threshold-bar-3-pointer.yellow::after { color: var(--warning); }
+.threshold-bar-3-pointer.red::after { color: var(--danger); }
+
 .analysis-thresholds {
   display: flex; gap: 12px; margin-top: 10px; padding-top: 10px;
   border-top: 1px solid var(--border); font-size: 0.72rem;
@@ -518,19 +673,9 @@ body {
 .analysis-thresholds .thresh .dot {
   width: 6px; height: 6px; border-radius: 50%;
 }
-.analysis-thresholds .thresh .dot.g { background: var(--success); }
+.analysis-thresholds .thresh .dot.g { background: var(--finalco-green); }
 .analysis-thresholds .thresh .dot.r { background: var(--danger); }
-
-.analysis-bar {
-  height: 6px; background: rgba(0,0,0,0.06); border-radius: 3px;
-  margin-top: 10px; overflow: hidden;
-}
-.analysis-bar-fill {
-  height: 100%; border-radius: 3px; transition: width 1s ease;
-}
-.analysis-bar-fill.green { background: linear-gradient(90deg, #10b981, #34d399); }
-.analysis-bar-fill.yellow { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-.analysis-bar-fill.red { background: linear-gradient(90deg, #ef4444, #f97316); }
+.analysis-thresholds .thresh .dot.y { background: var(--warning); }
 
 .analysis-summary-row {
   display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px;
@@ -546,9 +691,10 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 0.78rem; font-weight: 800; color: #fff;
 }
-.chip-count.green { background: var(--success); }
+.chip-count.green { background: var(--finalco-green); }
 .chip-count.yellow { background: var(--warning); }
 .chip-count.red { background: var(--danger); }
+
 
 /* ─── CONFIG MODAL ────────────────────────────────────────────────────── */
 .config-overlay {
@@ -2314,84 +2460,221 @@ function renderAnalisisCrediticio(info, resumen, endeudamiento, vigentes, cerrad
   const reds = variables.filter(v => v.flag === 'red').length;
   const score = Math.round((greens / variables.length) * 100);
 
-  // Critical reds: Mora Actual or Reestructuraciones
+  // Critical reds: Mora Actual o Reestructuraciones
   const criticalRed = variables[0].flag === 'red' || variables[3].flag === 'red';
 
-  let verdict, verdictIcon, verdictSub;
+  let verdict, verdictSub, verdictLucide;
   if (reds === 0 && yellows <= cfg.verdictMaxYellows) {
     verdict = 'APROBAR';
-    verdictIcon = '<i data-lucide="check-circle-2" style="width:48px;height:48px;color:var(--success);stroke-width:1.5"></i>';
-    verdictSub = 'El perfil crediticio cumple con todos los criterios de evaluación. Se recomienda aprobar la solicitud de préstamo.';
+    verdictLucide = 'check-circle-2';
+    verdictSub = 'El perfil crediticio cumple con todos los criterios de evaluación. Se puede proceder con la solicitud.';
   } else if (reds >= cfg.verdictMaxReds || criticalRed) {
     verdict = 'RECHAZAR';
-    verdictIcon = '<i data-lucide="x-circle" style="width:48px;height:48px;color:var(--danger);stroke-width:1.5"></i>';
-    verdictSub = `Se detectaron ${reds} bandera(s) roja(s)${criticalRed ? ' en variable(s) crítica(s)' : ''}. No se recomienda otorgar el préstamo en estas condiciones.`;
+    verdictLucide = 'x-circle';
+    verdictSub = `Se detectaron ${reds} bandera(s) roja(s)${criticalRed ? ' en variable(s) crítica(s)' : ''}. No se recomienda otorgar el préstamo en las condiciones actuales.`;
   } else {
     verdict = 'REVISAR';
-    verdictIcon = '<i data-lucide="alert-triangle" style="width:48px;height:48px;color:var(--warning);stroke-width:1.5"></i>';
-    verdictSub = `Se detectaron ${yellows} alerta(s) y ${reds} bandera(s) roja(s). Se recomienda una revisión manual más profunda antes de tomar una decisión.`;
+    verdictLucide = 'alert-triangle';
+    verdictSub = `${yellows} alerta(s) y ${reds} bandera(s) detectada(s). Se requiere revisión manual antes de decidir.`;
   }
 
-  // ─── RENDER ──────────────────────────────────────────────────────────
-  const circumference = 2 * Math.PI * 50;
+  const verdictKey = verdict.toLowerCase();
+  const circumference = 2 * Math.PI * 44;
   const offset = circumference - (score / 100) * circumference;
-  const ringColor = verdict === 'APROBAR' ? 'var(--success)' : verdict === 'REVISAR' ? 'var(--warning)' : 'var(--danger)';
+  const ringColor = verdict === 'APROBAR' ? '#007836' : verdict === 'REVISAR' ? '#d97706' : '#c0392b';
 
+  // ─── KPIs financieros ────────────────────────────────────────────────
+  let totalDeuda = 0;
+  let totalCuotaMes = 0;
+  let numVigentes = vigentes ? vigentes.length : 0;
+  if (endeudamiento && endeudamiento.total) {
+    totalDeuda = parseInt(String(endeudamiento.total.saldo).replace(/[^\d]/g, '')) || 0;
+    totalCuotaMes = parseInt(String(endeudamiento.total.cuota).replace(/[^\d]/g, '')) || 0;
+  } else if (vigentes && vigentes.length) {
+    for (const v of vigentes) {
+      totalDeuda += parseInt(String(v.saldoActual).replace(/[^\d]/g, '')) || 0;
+      totalCuotaMes += parseInt(String(v.valorCuota).replace(/[^\d]/g, '')) || 0;
+    }
+  }
+
+  // ─── Generar recomendación contextual ────────────────────────────────
+  const redsVars = variables.filter(v => v.flag === 'red');
+  const yellowsVars = variables.filter(v => v.flag === 'yellow');
+
+  let recomTexto = '';
+  let recomAcciones = [];
+
+  if (verdict === 'APROBAR') {
+    recomTexto = `El solicitante presenta un perfil crediticio sólido con ${greens} de ${variables.length} indicadores en verde. ` +
+      (totalCuotaMes > 0 ? `Cuota mensual actual de ${fmtMoney(totalCuotaMes)} — verificar capacidad de pago adicional antes de definir el monto. ` : '') +
+      'Proceder con evaluación normal de capacidad de pago e ingresos.';
+    recomAcciones = ['✓ Verificar ingresos', '✓ Calcular capacidad de pago', '✓ Definir monto y plazo'];
+  } else if (verdict === 'RECHAZAR') {
+    const causas = redsVars.map(v => v.title).join(', ');
+    recomTexto = `El perfil presenta riesgos significativos: ${causas}. `;
+    if (redsVars.find(v => v.title === 'Utilización de Cupos')) {
+      recomTexto += 'La utilización de cupos excesiva indica sobreendeudamiento con tarjetas. ';
+      recomAcciones.push('→ Solicitar cierre parcial de cupos');
+    }
+    if (redsVars.find(v => v.title === 'Reestructuraciones')) {
+      recomTexto += 'El antecedente de reestructuración indica historial de incumplimiento. ';
+      recomAcciones.push('→ Exigir codeudor solidario');
+    }
+    if (redsVars.find(v => v.title === 'Mora Actual')) {
+      recomTexto += 'La mora vigente es una señal de alto riesgo inmediato. ';
+      recomAcciones.push('→ Rechazar hasta que salde mora');
+    }
+    if (redsVars.find(v => v.title === 'Vectores de Pago (12 meses)')) {
+      recomTexto += 'El historial reciente de pagos muestra incumplimientos. ';
+      recomAcciones.push('→ Revisar detalles de obligaciones en mora');
+    }
+    recomAcciones.push('→ Archivar y notificar al solicitante');
+  } else {
+    const causasAm = yellowsVars.map(v => v.title).join(', ');
+    const causasRo = redsVars.map(v => v.title).join(', ');
+    recomTexto = `Perfil con alertas que requieren evaluación adicional: ${[...redsVars, ...yellowsVars].map(v => v.title).join(', ')}. `;
+    if (yellowsVars.find(v => v.title === 'Consultas (últimos 30 días)')) {
+      recomAcciones.push('→ Verificar motivo de múltiples consultas');
+    }
+    if (yellowsVars.find(v => v.title === 'Vectores de Pago (12 meses)')) {
+      recomAcciones.push('→ Solicitar extractos bancarios últimos 3 meses');
+    }
+    recomTexto += 'Se recomienda solicitar documentación adicional antes de decidir.';
+    recomAcciones.push('→ Solicitar comprobantes de ingresos');
+    recomAcciones.push('→ Considerar reducir monto solicitado');
+  }
+
+  // ─── RENDER INICIO ────────────────────────────────────────────────────
   let html = '';
 
-  // Verdict section
-  html += `<div class="analysis-verdict verdict-${verdict.toLowerCase()}">`;
-  html += `<div class="analysis-score-ring">`;
-  html += `<svg width="120" height="120" viewBox="0 0 120 120">`;
-  html += `<circle class="ring-bg" cx="60" cy="60" r="50"/>`;
-  html += `<circle class="ring-fg" cx="60" cy="60" r="50" stroke="${ringColor}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>`;
+  // ═══ PANEL EJECUTIVO DE DECISIÓN ═══
+  html += `<div class="decision-panel" style="border: 1.5px solid ${ringColor}33; background: ${ringColor}08;">`;
+  html += `<div class="decision-panel-header">`;
+
+  // Columna gauge
+  html += `<div class="decision-gauge-col ${verdictKey}">`;
+  html += `<div class="decision-score-ring">`;
+  html += `<svg width="100" height="100" viewBox="0 0 100 100">`;
+  html += `<circle cx="50" cy="50" r="44" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="7"/>`;
+  html += `<circle cx="50" cy="50" r="44" fill="none" stroke="${ringColor}" stroke-width="7" stroke-linecap="round"`;
+  html += ` stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 1.2s ease"/>`;
   html += `</svg>`;
-  html += `<div class="analysis-score-value" style="color:${ringColor}">${score}</div>`;
+  html += `<div class="decision-score-num" style="color:${ringColor}">${score}</div>`;
   html += `</div>`;
-  html += `<div class="verdict-icon">${verdictIcon}</div>`;
-  html += `<div class="verdict-label">${verdict}</div>`;
-  html += `<div class="verdict-sub">${verdictSub}</div>`;
-
-  // Summary chips
-  html += `<div class="analysis-summary-row" style="justify-content:center; margin-top:16px">`;
-  html += `<div class="analysis-summary-chip"><div class="chip-count green">${greens}</div> Aprobadas</div>`;
-  if (yellows > 0) html += `<div class="analysis-summary-chip"><div class="chip-count yellow">${yellows}</div> Alertas</div>`;
-  if (reds > 0) html += `<div class="analysis-summary-chip"><div class="chip-count red">${reds}</div> Rechazadas</div>`;
-  html += `</div>`;
+  html += `<div class="decision-score-label">Score</div>`;
   html += `</div>`;
 
-  // Variables grid
+  // Columna veredicto
+  html += `<div class="decision-verdict-col">`;
+  html += `<div class="decision-verdict-badge ${verdictKey}">`;
+  html += `<i data-lucide="${verdictLucide}" style="width:22px;height:22px;stroke-width:2.5"></i>`;
+  html += verdict;
+  html += `</div>`;
+  html += `<div class="decision-sub">${verdictSub}</div>`;
+
+  // KPIs financieros
+  html += `<div class="decision-kpis">`;
+  if (totalDeuda > 0) html += `<div class="decision-kpi"><span class="decision-kpi-val">${fmtMoney(totalDeuda)}</span><span class="decision-kpi-lbl">Deuda Total</span></div>`;
+  if (totalCuotaMes > 0) html += `<div class="decision-kpi"><span class="decision-kpi-val">${fmtMoney(totalCuotaMes)}</span><span class="decision-kpi-lbl">Cuota / Mes</span></div>`;
+  if (numVigentes > 0) html += `<div class="decision-kpi"><span class="decision-kpi-val">${numVigentes}</span><span class="decision-kpi-lbl">Obligaciones</span></div>`;
+  html += `</div>`;
+
+  // Chips de resumen
+  html += `<div class="decision-chips">`;
+  html += `<div class="decision-chip green"><span class="chip-dot"></span>${greens} Sin alerta</div>`;
+  if (yellows > 0) html += `<div class="decision-chip yellow"><span class="chip-dot"></span>${yellows} Alerta</div>`;
+  if (reds > 0) html += `<div class="decision-chip red"><span class="chip-dot"></span>${reds} Crítica</div>`;
+  html += `</div>`;
+  html += `</div>`; // verdict-col
+  html += `</div>`; // panel-header
+
+  // ═══ BANDERAS CRÍTICAS (rojas) ═══
+  if (redsVars.length > 0) {
+    html += `<div class="red-flags-block" style="border-top: none; border-radius: 0 0 0 0; margin: 0;">`;
+    html += `<div class="flags-block-title"><i data-lucide="shield-alert" style="width:14px;height:14px"></i> ALERTAS CRÍTICAS — Requieren atención inmediata</div>`;
+    for (const v of redsVars) {
+      html += `<div class="flag-item">`;
+      html += `<div class="flag-item-icon"><i data-lucide="alert-circle" style="width:16px;height:16px;color:var(--danger)"></i></div>`;
+      html += `<div class="flag-item-body"><div class="flag-item-title">${v.title}</div><div class="flag-item-detail">${v.detail}</div></div>`;
+      html += `<div class="flag-item-value">${v.value}</div>`;
+      html += `</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // Alertas amarillas (dentro del panel si hay)
+  if (yellowsVars.length > 0) {
+    html += `<div class="yellow-flags-block" style="border-top: none; border-radius: 0; margin: 0;">`;
+    html += `<div class="flags-block-title"><i data-lucide="alert-triangle" style="width:14px;height:14px"></i> ALERTAS MODERADAS — Evaluar con criterio</div>`;
+    for (const v of yellowsVars) {
+      html += `<div class="flag-item">`;
+      html += `<div class="flag-item-icon"><i data-lucide="alert-triangle" style="width:16px;height:16px;color:var(--warning)"></i></div>`;
+      html += `<div class="flag-item-body"><div class="flag-item-title">${v.title}</div><div class="flag-item-detail">${v.detail}</div></div>`;
+      html += `<div class="flag-item-value">${v.value}</div>`;
+      html += `</div>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `</div>`; // decision-panel
+
+  // ═══ RECOMENDACIÓN PARA EL ANALISTA ═══
+  html += `<div class="recommendation-block">`;
+  html += `<div class="recommendation-icon"><i data-lucide="lightbulb" style="width:20px;height:20px;color:#fff;stroke-width:2"></i></div>`;
+  html += `<div class="recommendation-body">`;
+  html += `<div class="recommendation-title">Recomendación para el Analista</div>`;
+  html += `<div class="recommendation-text">${recomTexto}</div>`;
+  if (recomAcciones.length > 0) {
+    html += `<div class="recommendation-actions">`;
+    for (const acc of recomAcciones) {
+      html += `<span class="recommendation-action-tag">${acc}</span>`;
+    }
+    html += `</div>`;
+  }
+  html += `</div>`;
+  html += `</div>`;
+
+  // ═══ DETALLE POR VARIABLE ═══
+  // Ordenar: rojas → amarillas → verdes
+  const sortedVars = [
+    ...variables.filter(v => v.flag === 'red'),
+    ...variables.filter(v => v.flag === 'yellow'),
+    ...variables.filter(v => v.flag === 'green'),
+  ];
+
+  html += `<div class="variables-section-title">`;
+  html += `<i data-lucide="sliders-horizontal" style="width:14px;height:14px"></i>`;
+  html += `Detalle de Variables Evaluadas`;
+  html += `<span class="vsep"></span>`;
+  html += `<span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:0.7rem;">${variables.length} variables · ordenadas por prioridad</span>`;
+  html += `</div>`;
+
   html += `<div class="analysis-grid">`;
-  for (const v of variables) {
+  for (const v of sortedVars) {
     html += `<div class="analysis-item flag-${v.flag}">`;
     html += `<div class="analysis-item-header">`;
-    html += `<div class="analysis-item-title"><span class="ai-icon">${v.icon}</span> ${v.title}</div>`;
+    html += `<div class="analysis-item-title"><span class="ai-icon">${v.icon}</span>${v.title}</div>`;
     html += `<span class="analysis-flag ${v.flag}">`;
     html += v.flag === 'green' ? '✓ ' : v.flag === 'yellow' ? '⚠ ' : '✗ ';
     html += `${v.flagLabel}</span>`;
     html += `</div>`;
     html += `<div class="analysis-value ${v.flag}">${v.value}</div>`;
     html += `<div class="analysis-detail">${v.detail}</div>`;
-    html += `<div class="analysis-bar"><div class="analysis-bar-fill ${v.flag}" style="width:0%" data-width="${v.barPct}"></div></div>`;
-    html += `<div class="analysis-thresholds">`;
-    html += `<div class="thresh"><span class="dot g"></span> ${v.greenText}</div>`;
-    html += `<div class="thresh"><span class="dot r"></span> ${v.redText}</div>`;
+    // Barra de 3 zonas
+    html += `<div class="threshold-bar-3">`;
+    const pos = v.flag === 'green' ? '16%' : v.flag === 'yellow' ? '50%' : '84%';
+    html += `<div class="threshold-bar-3-pointer ${v.flag}" style=""><span style="position:absolute;left:${pos};font-size:8px;color:${ringColor}">▼</span></div>`;
+    html += `<div class="threshold-bar-3-track"><div class="seg-green"></div><div class="seg-yellow"></div><div class="seg-red"></div></div>`;
+    html += `<div class="threshold-bar-3-labels"><span>✓ ${v.greenText}</span><span style="color:var(--warning)">⚠</span><span>✗ ${v.redText}</span></div>`;
     html += `</div>`;
     html += `</div>`;
   }
   html += `</div>`;
 
   container.innerHTML = html;
-
-  // Animate bars after render
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      container.querySelectorAll('.analysis-bar-fill').forEach(bar => {
-        bar.style.width = bar.dataset.width + '%';
-      });
-    }, 200);
-  });
+  lucide.createIcons();
 }
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TENDENCIA CHART (Canvas)
