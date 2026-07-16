@@ -1,0 +1,32 @@
+# IA y análisis
+anthropic>=0.40.0
+
+# Base de datos
+psycopg2-binary>=2.9.9
+
+# API REST
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+pydantic>=2.0.0
+
+# Autenticación JWT
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# Dashboard (opcional, si se usa Streamlit)
+streamlit>=1.35.0
+plotly>=5.22.0
+
+# Procesamiento de documentos
+pandas>=2.2.0
+Pillow>=10.3.0
+pytesseract>=0.3.10
+pdf2image>=1.17.0
+pypdf>=4.2.0
+pdfplumber>=0.11.0
+python-docx>=1.1.0
+openpyxl>=3.1.0
+
+# Configuración
+python-dotenv>=1.0.0
