@@ -27,6 +27,9 @@ pypdf>=4.2.0
 pdfplumber>=0.11.0
 python-docx>=1.1.0
 openpyxl>=3.1.0
+pypdfium2
+opencv-python-headless
+pdf417decoder
 
 # Configuración
 python-dotenv>=1.0.0
