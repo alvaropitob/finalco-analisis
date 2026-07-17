@@ -21,28 +21,6 @@ export default function Login() {
     setError('')
     setLoading(true)
 
-    // --- Mock Login para desarrollo/demostración offline ---
-    const mockUsers = {
-      'admin@finalco.com.co': { rol: 'admin', nombre: 'Administrador Principal', password: 'admin1234' },
-      'alvaro_pito@hotmail.com': { rol: 'admin', nombre: 'Alvaro Pito', password: '123456' },
-      'analista@finalco.com.co': { rol: 'analista', nombre: 'Analista de Riesgo', password: '123' },
-      'asesor@finalco.com.co': { rol: 'asesor', nombre: 'Asesor Comercial', password: '123' },
-      'cliente@finalco.com.co': { rol: 'cliente', nombre: 'Cliente de Prueba', password: '123' }
-    }
-
-    const emailLower = form.email.toLowerCase()
-    const matchedUser = mockUsers[emailLower]
-    if (matchedUser && matchedUser.password === form.password) {
-      localStorage.setItem('token',    'mock-jwt-token-xyz')
-      localStorage.setItem('refresh',  'mock-refresh-token-xyz')
-      localStorage.setItem('rol',      matchedUser.rol)
-      localStorage.setItem('nombre',   matchedUser.nombre)
-      navigate(ROL_REDIRECT[matchedUser.rol] ?? '/')
-      setLoading(false)
-      return
-    }
-    // --------------------------------------------------------
-
     try {
       const data = await api.login(form.email, form.password)
       localStorage.setItem('token',    data.access_token)
@@ -51,24 +29,7 @@ export default function Login() {
       localStorage.setItem('nombre',   data.nombre)
       navigate(ROL_REDIRECT[data.rol] ?? '/')
     } catch (err) {
-      // Fallback: si falla la conexión (el backend no responde) dejar entrar con credenciales de prueba
-      const isConnectionError = err.message && (
-        err.message.includes('Failed to fetch') || 
-        err.message.includes('NetworkError') || 
-        err.message.includes('Failed to connect') ||
-        err.message.includes('TypeError')
-      )
-      
-      if (isConnectionError) {
-        const defaultRole = form.email.includes('admin') ? 'admin' : (form.email.includes('analista') ? 'analista' : (form.email.includes('asesor') ? 'asesor' : 'cliente'))
-        localStorage.setItem('token',    'mock-jwt-token-xyz')
-        localStorage.setItem('refresh',  'mock-refresh-token-xyz')
-        localStorage.setItem('rol',      defaultRole)
-        localStorage.setItem('nombre',   form.email.split('@')[0])
-        navigate(ROL_REDIRECT[defaultRole] ?? '/')
-      } else {
-        setError(err.message || 'Credenciales incorrectas')
-      }
+      setError(err.message || 'Credenciales incorrectas')
     } finally {
       setLoading(false)
     }
