@@ -185,8 +185,17 @@ function getMockDataForPath(path, options = {}) {
 
 async function request(path, options = {}) {
   const token = getToken()
+  
+  // Si ya se detectó que el servidor está offline, usar mock de inmediato (0ms de espera)
+  if (sessionStorage.getItem('offlineMockMode') === 'true') {
+    const mockData = getMockDataForPath(path, options)
+    if (mockData !== null) {
+      return mockData
+    }
+  }
+
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 4000) // 4 segundos de timeout para cambiar rápido a mock si el server no responde
+  const timeoutId = setTimeout(() => controller.abort(), 2500) // 2.5 segundos de tolerancia
   
   try {
     const resp = await fetch(path, {
@@ -212,9 +221,13 @@ async function request(path, options = {}) {
     return await resp.json()
   } catch (err) {
     clearTimeout(timeoutId)
+    
+    // Activar modo offline para que las siguientes llamadas no tengan retraso
+    sessionStorage.setItem('offlineMockMode', 'true')
+    
     const mockData = getMockDataForPath(path, options)
     if (mockData !== null) {
-      console.warn(`[Mock Mode] Retornando datos simulados para: ${path}`)
+      console.warn(`[Mock Mode] Servidor desconectado. Activado fallback instantáneo para: ${path}`)
       return mockData
     }
     throw err
