@@ -12,7 +12,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://tu-backend-api.onrender.com/api/:path*"
+      "destination": "https://finalco-analisis.onrender.com/api/:path*"
     },
     {
       "source": "/((?!api/).*)",
