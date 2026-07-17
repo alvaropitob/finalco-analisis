@@ -1,5 +1,5 @@
 # IA y análisis
-anthropic>=0.40.0
+google-generativeai>=0.8.0
 
 # Base de datos
 psycopg2-binary>=2.9.9

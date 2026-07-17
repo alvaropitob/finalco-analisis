@@ -6,7 +6,7 @@ idéntica en web, Android e iOS (todos consumen el mismo endpoint).
 import json
 import os
 from typing import Optional
-import anthropic
+import google.generativeai as genai
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -156,7 +156,10 @@ def determinar_decision(score: int, rechazos: list, esquema: dict) -> str:
 def generar_justificacion_ia(cliente: dict, decision: str, condiciones_prestamo: dict,
                               rechazos: list, score: int, tipo_producto: str = "crédito") -> str:
     try:
-        client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        
         prompt = f"""Eres un analista de {tipo_producto} de Finalco. Genera una justificación profesional
 en máximo 3 oraciones para la siguiente decisión crediticia:
 
@@ -167,12 +170,8 @@ Decisión: {decision.upper()}
 
 Sé claro, empático y profesional. No uses tecnicismos innecesarios."""
 
-        response = client.messages.create(
-            model="claude-opus-4-5",
-            max_tokens=300,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.content[0].text
+        response = model.generate_content(contents=prompt)
+        return response.text.strip()
     except Exception as e:
         return f"Decisión tomada con base en la política de {tipo_producto} vigente. Score obtenido: {score}/100."
 
@@ -313,7 +312,10 @@ def tomar_decision(cliente_id: int, monto_solicitado: float,
 
 def sugerir_politica_ia(stats: dict, tipo_producto: str = "credito") -> dict:
     try:
-        client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        
         prompt = f"""Eres experto en riesgo crediticio colombiano para Finalco.
 Analiza estas estadísticas del portafolio de {tipo_producto} y sugiere criterios óptimos.
 
@@ -337,12 +339,11 @@ Responde ÚNICAMENTE con JSON válido con esta estructura:
   "advertencias": ["Lista de advertencias si aplica"]
 }}"""
 
-        response = client.messages.create(
-            model="claude-opus-4-5",
-            max_tokens=1500,
-            messages=[{"role": "user", "content": prompt}]
+        response = model.generate_content(
+            contents=prompt,
+            generation_config={"response_mime_type": "application/json"}
         )
-        text = response.content[0].text
+        text = response.text.strip()
         start = text.find("{")
         end = text.rfind("}") + 1
         return json.loads(text[start:end])

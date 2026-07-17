@@ -11,7 +11,7 @@ import logging
 from typing import Optional
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import anthropic
+import google.generativeai as genai
 
 log = logging.getLogger(__name__)
 
@@ -126,10 +126,15 @@ def save_politica(nombre: str, descripcion: str, criterios: dict, creada_por: st
 # ──────────────────────────────────────────────
 def sugerir_criterios_ia(stats: dict) -> dict:
     """
-    Llama a Claude con estadísticas históricas y pide criterios óptimos.
+    Llama a Gemini con estadísticas históricas y pide criterios óptimos.
     Devuelve un dict con criterios sugeridos + justificación.
     """
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        return {"error": "No hay API KEY configurada"}
+        
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
 
     prompt = f"""Eres un experto en riesgo crediticio para una entidad financiera colombiana.
 Analiza estas estadísticas históricas de clientes y sugiere criterios óptimos para la política de crédito.
@@ -158,12 +163,11 @@ Responde ÚNICAMENTE con un JSON con esta estructura exacta (sin markdown, sin t
   "advertencias": ["lista de posibles riesgos o aspectos a considerar"]
 }}"""
 
-    response = client.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=1200,
-        messages=[{"role": "user", "content": prompt}],
+    response = model.generate_content(
+        contents=prompt,
+        generation_config={"response_mime_type": "application/json"}
     )
-    raw = response.content[0].text.strip().replace("```json", "").replace("```", "")
+    raw = response.text.strip().replace("```json", "").replace("```", "")
     return json.loads(raw)
 
 
@@ -314,8 +318,13 @@ def calcular_condiciones_prestamo(cliente: dict, criterios: dict, monto_solicita
 
 def generar_justificacion_ia(cliente: dict, decision: str, condiciones_prestamo: dict,
                                rechazos: list, score: int) -> str:
-    """Genera una justificación en lenguaje natural con Claude."""
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    """Genera una justificación en lenguaje natural con Gemini."""
+    api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        return f"Decisión tomada con base en la política vigente. Score obtenido: {score}/100."
+        
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
 
     resumen_cliente = {
         "nombre": cliente.get("nombre"),
@@ -338,12 +347,8 @@ SCORE INTERNO: {score}/100
 
 Escribe solo la justificación, sin saludos ni títulos."""
 
-    response = client.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=300,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return response.content[0].text.strip()
+    response = model.generate_content(contents=prompt)
+    return response.text.strip()
 
 
 def tomar_decision(cliente_id: int, monto_solicitado: float,

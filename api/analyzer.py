@@ -13,7 +13,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional
 
-import anthropic
+import google.generativeai as genai
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from PIL import Image
@@ -697,15 +697,16 @@ def extract_data_manually(text: str, filename: str = "") -> dict:
 
 
 def analyze_with_claude(docs_info: list[dict]) -> dict:
-    """Envía los documentos a Claude para un análisis profundo. Fallback a manual si no hay API KEY."""
-    if not ANTHROPIC_API_KEY or "PONER_AQUI" in ANTHROPIC_API_KEY:
-        log.warning("No hay API KEY de Anthropic. Usando extracción por reglas locales.")
+    """Envía los documentos a Gemini para un análisis profundo. Fallback a manual si no hay API KEY."""
+    api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
+    if not api_key or "PONER_AQUI" in api_key:
+        log.warning("No hay API KEY de Gemini. Usando extracción por reglas locales.")
         full_text = "\n".join(d.get("texto", "") for d in docs_info)
         # Usar el nombre del primer archivo como referencia
         filename = docs_info[0].get("nombre", "") if docs_info else ""
         return extract_data_manually(full_text, filename)
 
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    genai.configure(api_key=api_key)
 
     content = []
 
@@ -715,34 +716,31 @@ def analyze_with_claude(docs_info: list[dict]) -> dict:
         # Agregar imágenes si hay
         for b64 in doc.get("images_b64", []):
             content.append({
-                "type": "image",
-                "source": {"type": "base64", "media_type": "image/jpeg", "data": b64}
+                "mime_type": "image/jpeg",
+                "data": base64.b64decode(b64)
             })
 
         # Agregar texto extraído
         if doc.get("texto"):
-            content.append({
-                "type": "text",
-                "text": f"{tipo_label}\nTexto extraído:\n{doc['texto'][:3000]}"
-            })
+            content.append(f"{tipo_label}\nTexto extraído:\n{doc['texto'][:3000]}")
         else:
-            content.append({"type": "text", "text": tipo_label})
+            content.append(tipo_label)
 
-    content.append({
-        "type": "text",
-        "text": f"""Analiza todos los documentos anteriores y extrae la información del cliente.
+    content.append(f"""Analiza todos los documentos anteriores y extrae la información del cliente.
 Responde ÚNICAMENTE con este JSON (sin markdown, sin explicaciones):
-{JSON_SCHEMA}"""
-    })
+{JSON_SCHEMA}""")
 
-    response = client.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=1000,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": content}]
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-flash",
+        system_instruction=SYSTEM_PROMPT
     )
 
-    raw = response.content[0].text.strip()
+    response = model.generate_content(
+        contents=content,
+        generation_config={"response_mime_type": "application/json"}
+    )
+
+    raw = response.text.strip()
     raw = raw.replace("```json", "").replace("```", "").strip()
     return json.loads(raw)
 
