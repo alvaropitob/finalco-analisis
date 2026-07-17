@@ -76,6 +76,19 @@ def get_db():
     )
 
 
+def init_sprint2_db(conn):
+    try:
+        sql_path = Path(__file__).parent / "schema_sprint2.sql"
+        if sql_path.exists():
+            sql = sql_path.read_text(encoding="utf-8")
+            with conn.cursor() as cur:
+                cur.execute(sql)
+            conn.commit()
+            print("Base de datos Sprint 2 inicializada correctamente.")
+    except Exception as e:
+        print(f"Error inicializando base de datos Sprint 2: {e}")
+
+
 @app.on_event("startup")
 async def startup():
     init_db()
@@ -83,6 +96,7 @@ async def startup():
     conn = get_db()
     try:
         init_auth_tables(conn)
+        init_sprint2_db(conn)
     finally:
         conn.close()
 
