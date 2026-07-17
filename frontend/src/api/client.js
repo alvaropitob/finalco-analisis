@@ -185,15 +185,20 @@ function getMockDataForPath(path, options = {}) {
 
 async function request(path, options = {}) {
   const token = getToken()
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 4000) // 4 segundos de timeout para cambiar rápido a mock si el server no responde
+  
   try {
     const resp = await fetch(path, {
       ...options,
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
     })
+    clearTimeout(timeoutId)
 
     if (resp.status === 401) {
       clearSession()
@@ -206,6 +211,7 @@ async function request(path, options = {}) {
     }
     return await resp.json()
   } catch (err) {
+    clearTimeout(timeoutId)
     const mockData = getMockDataForPath(path, options)
     if (mockData !== null) {
       console.warn(`[Mock Mode] Retornando datos simulados para: ${path}`)
