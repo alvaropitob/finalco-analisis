@@ -29,11 +29,14 @@ function getMockDataForPath(path, options = {}) {
   }
 
   if (url.endsWith('/clientes')) {
-    return [
-      { id: 1, nombre: 'Carlos Perez', cedula: '1104701529', email: 'carlos@perez.com', score_dc: 720, nivel_riesgo: 'Bajo', fecha_creacion: '2026-07-15' },
-      { id: 2, nombre: 'Maria Ortiz', cedula: '1110485228', email: 'maria@ortiz.com', score_dc: 580, nivel_riesgo: 'Medio', fecha_creacion: '2026-07-14' },
-      { id: 3, nombre: 'Jorge Ruiz', cedula: '1216971324', email: 'jorge@ruiz.com', score_dc: 450, nivel_riesgo: 'Alto', fecha_creacion: '2026-07-13' }
-    ];
+    return {
+      items: [
+        { id: 1, nombre: 'Carlos Perez', cedula: '1104701529', email: 'carlos@perez.com', score_dc: 720, score_datacredito: 720, nivel_riesgo: 'bajo', decision: 'aprobado', fecha_analisis: '2026-07-15T12:00:00Z' },
+        { id: 2, nombre: 'Maria Ortiz', cedula: '1110485228', email: 'maria@ortiz.com', score_dc: 580, score_datacredito: 580, nivel_riesgo: 'medio', decision: 'aprobado', fecha_analisis: '2026-07-14T10:00:00Z' },
+        { id: 3, nombre: 'Jorge Ruiz', cedula: '1216971324', email: 'jorge@ruiz.com', score_dc: 450, score_datacredito: 450, nivel_riesgo: 'alto', decision: 'rechazado', fecha_analisis: '2026-07-13T09:00:00Z' }
+      ],
+      total: 3
+    };
   }
 
   if (url.includes('/clientes/')) {
