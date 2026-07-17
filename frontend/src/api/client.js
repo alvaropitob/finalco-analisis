@@ -119,9 +119,44 @@ function getMockDataForPath(path, options = {}) {
   }
 
   if (url.endsWith('/decisiones')) {
-    return [
-      { id: 1, cliente_nombre: 'Carlos Perez', monto_solicitado: 10000000, plazo: 12, tasa_ea: 0.24, decision: 'aprobado', fecha: '2026-07-15' }
-    ];
+    return {
+      items: [
+        {
+          id: 1,
+          fecha_decision: '2026-07-15T14:30:00Z',
+          nombre: 'Carlos Perez',
+          cedula: '1104701529',
+          monto_solicitado: 10000000,
+          monto_aprobado: 10000000,
+          tasa_interes: 24.26,
+          plazo_meses: 12,
+          decision: 'aprobado'
+        },
+        {
+          id: 2,
+          fecha_decision: '2026-07-14T11:15:00Z',
+          nombre: 'Maria Ortiz',
+          cedula: '1110485228',
+          monto_solicitado: 15000000,
+          monto_aprobado: 12000000,
+          tasa_interes: 26.5,
+          plazo_meses: 24,
+          decision: 'aprobado'
+        },
+        {
+          id: 3,
+          fecha_decision: '2026-07-13T10:00:00Z',
+          nombre: 'Jorge Ruiz',
+          cedula: '1216971324',
+          monto_solicitado: 8000000,
+          monto_aprobado: 0,
+          tasa_interes: 0,
+          plazo_meses: 0,
+          decision: 'rechazado'
+        }
+      ],
+      total: 3
+    };
   }
 
   if (url.endsWith('/simulacion') || url.includes('/simulacion/')) {
