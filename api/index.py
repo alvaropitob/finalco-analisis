@@ -907,35 +907,58 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 
 @app.post("/api/v1/analizar-archivo", tags=["Sprint 2 — Carga Documental"])
 async def analizar_archivo(
-    file: UploadFile = File(...),
+    frente: UploadFile = File(...),
+    reverso: UploadFile = File(...),
     _user=Depends(require_staff)
 ):
-    """Analiza un único archivo (ej. cédula) con la IA y devuelve los datos extraídos."""
-    from analyzer import process_single_file
+    """Analiza una cédula usando OCR local (frente y reverso) sin IA."""
     import uuid
     from pathlib import Path
+    import os
+    import sys
     
-    ext = Path(file.filename).suffix.lower() if file.filename else ".jpg"
-    if not ext: ext = ".jpg"
+    # Asegurar que la ruta del scanner está en sys.path
+    scanner_path = Path(__file__).parent / "scanner"
+    if str(scanner_path) not in sys.path:
+        sys.path.append(str(scanner_path))
+        
+    from scanner.ocr_pipeline import extract_cedula
     
-    # Forzamos el nombre para asegurar que la IA sepa que es una cédula
-    fname = f"cedula_{uuid.uuid4().hex}{ext}"
-    dest = UPLOAD_DIR / fname
+    def get_ext(filename):
+        ext = Path(filename).suffix.lower() if filename else ".jpg"
+        return ext if ext else ".jpg"
+        
+    uid = uuid.uuid4().hex
+    dest_frente = UPLOAD_DIR / f"frente_{uid}{get_ext(frente.filename)}"
+    dest_reverso = UPLOAD_DIR / f"reverso_{uid}{get_ext(reverso.filename)}"
     
-    # Guardar archivo temporalmente
-    content = await file.read()
-    dest.write_bytes(content)
+    dest_frente.write_bytes(await frente.read())
+    dest_reverso.write_bytes(await reverso.read())
     
     try:
-        data = process_single_file(str(dest))
-        if not data:
-            raise HTTPException(status_code=400, detail="No se pudo procesar el archivo")
-        return data
+        data_raw = extract_cedula(str(dest_frente), str(dest_reverso))
+        
+        if not data_raw:
+            raise HTTPException(status_code=400, detail="No se pudo extraer información")
+            
+        mrz = data_raw.get("mrz") or {}
+        front = data_raw.get("front_fields") or {}
+        
+        # Formatear salida para que coincida con lo que espera el Frontend
+        resultado = {
+            "cedula": mrz.get("document_number", ""),
+            "apellidos": mrz.get("surnames", front.get("apellidos", "")),
+            "nombres": mrz.get("given_names", front.get("nombres", "")),
+            "fecha_nacimiento": mrz.get("birth_date", front.get("fecha_nacimiento", "")),
+            "_scanner_raw": data_raw # guardamos datos crudos por si acaso
+        }
+        
+        return resultado
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
-        if dest.exists():
-            dest.unlink()
+        if dest_frente.exists(): dest_frente.unlink()
+        if dest_reverso.exists(): dest_reverso.unlink()
 
 @app.post("/api/v1/documentos/cargar", tags=["Sprint 2 — Carga Documental"])
 async def cargar_documentos(
