@@ -40,12 +40,33 @@ export default function NuevaEvaluacion() {
   // Estados UI
   const [loading, setLoading] = useState(false)
   const [loadingMsg, setLoadingMsg] = useState('')
+  const [extrayendoCedula, setExtrayendoCedula] = useState(false)
   const [error, setError] = useState(null)
 
   // ── Manejo de Inputs ──────────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleCedulaUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setExtrayendoCedula(true)
+    setError(null)
+    try {
+      const data = await api.analizarArchivo(file)
+      setFormData(prev => ({
+        ...prev,
+        cedula: data.cedula || prev.cedula,
+        nombres: data.nombres || prev.nombres,
+        apellidos: data.apellidos || prev.apellidos,
+      }))
+    } catch (err) {
+      setError("No se pudo extraer la información de la cédula.")
+    } finally {
+      setExtrayendoCedula(false)
+    }
   }
 
   // ── Paso 1: Guardar Cliente ────────────────────────────────────────
@@ -216,7 +237,16 @@ export default function NuevaEvaluacion() {
       {/* ── PASO 1 ── */}
       {step === 1 && (
         <div className="card fade-up">
-          <div className="card-header"><h3>1. Información Básica del Solicitante</h3></div>
+          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3>1. Información Básica del Solicitante</h3>
+            <div>
+              <input type="file" id="cedula-upload" accept="image/*,.pdf" style={{ display: 'none' }} onChange={handleCedulaUpload} />
+              <label htmlFor="cedula-upload" className="btn btn-ghost" style={{ cursor: 'pointer', display: 'flex', gap: 8, alignItems: 'center', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
+                {extrayendoCedula ? <Loader2 size={16} className="spin" /> : <Upload size={16} />}
+                {extrayendoCedula ? 'Extrayendo...' : 'Autocompletar con Cédula'}
+              </label>
+            </div>
+          </div>
           <div className="card-body">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
