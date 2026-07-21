@@ -39,6 +39,7 @@ export default function NuevaEvaluacion() {
 
   // Estados UI
   const [loading, setLoading] = useState(false)
+  const [loadingMsg, setLoadingMsg] = useState('')
   const [error, setError] = useState(null)
 
   // ── Manejo de Inputs ──────────────────────────────────────────────
@@ -95,13 +96,29 @@ export default function NuevaEvaluacion() {
     }
     setLoading(true)
     setError(null)
+    setLoadingMsg('Subiendo documentos...')
+    
+    // Simular progreso de extracción para dar feedback al usuario
+    const timer = setInterval(() => {
+      setLoadingMsg(prev => {
+        if (prev === 'Subiendo documentos...') return 'Aplicando OCR a las imágenes...'
+        if (prev === 'Aplicando OCR a las imágenes...') return 'Extrayendo información clave con IA...'
+        if (prev === 'Extrayendo información clave con IA...') return 'Cruzando datos con centrales de riesgo...'
+        return 'Guardando resultados...'
+      })
+    }, 2500)
+
     try {
       const data = await api.cargarDocumentos(files, clienteId, formData.cedula)
+      clearInterval(timer)
+      setLoadingMsg('')
       setAnalisis(data)
       setStep(3)
       // Lanzar el scoring automáticamente al entrar al paso 3
       ejecutarScoring()
     } catch (e) {
+      clearInterval(timer)
+      setLoadingMsg('')
       setError(e.message)
       setLoading(false)
     }
@@ -269,6 +286,13 @@ export default function NuevaEvaluacion() {
                     <button onClick={() => removeFile(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)' }}><X size={14} /></button>
                   </div>
                 ))}
+              </div>
+            )}
+            
+            {loading && loadingMsg && (
+              <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--accent-glow)', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Loader2 size={18} className="spin" style={{ color: 'var(--accent)' }} />
+                <span style={{ fontSize: 14, color: 'var(--accent)', fontWeight: 500 }}>{loadingMsg}</span>
               </div>
             )}
             
