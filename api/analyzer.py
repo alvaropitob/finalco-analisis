@@ -793,55 +793,7 @@ def process_single_file(file_path: str) -> Optional[dict]:
     return data
 
 
-# ──────────────────────────────────────────────
-# PROCESAMIENTO INDIVIDUAL
-# ──────────────────────────────────────────────
-def process_single_file(file_path: str) -> Optional[dict]:
-    """Procesa un único archivo y devuelve la información extraída."""
-    f = Path(file_path)
-    if not f.exists():
-        log.error(f"El archivo no existe: {file_path}")
-        return None
 
-    ext = f.suffix.lower()
-    if ext not in SUPPORTED_EXTENSIONS:
-        log.error(f"Extensión no soportada: {ext}")
-        return None
-
-    fmt = SUPPORTED_EXTENSIONS[ext]
-    tipo = detect_doc_type(f.name)
-    log.info(f"Procesando archivo individual: {f.name} ({fmt}, tipo: {tipo})")
-
-    doc = {"nombre": f.name, "tipo": tipo, "formato": fmt, "texto": "", "images_b64": []}
-
-    if fmt == "pdf":
-        text, imgs = extract_from_pdf(f)
-        doc["texto"] = text
-        doc["images_b64"] = imgs
-    elif fmt == "imagen":
-        text, b64 = extract_from_image(f)
-        doc["texto"] = text
-        doc["images_b64"] = [b64]
-    elif fmt == "word":
-        doc["texto"] = extract_from_docx(f)
-
-    # Para buró financiero o previsualización rápida, intentamos manual primero (más rápido)
-    data = extract_data_manually(doc["texto"], f.name)
-    
-    # Si la extracción manual no encontró casi nada (Score en 0), usamos la IA
-    if tipo in ["datacredito", "cifin"] and (data.get("score_datacredito") == 0 and data.get("score_cifin") == 0):
-        log.info(f"  [Fallback IA] La extracción manual falló para {f.name}. Usando Claude...")
-        try:
-            ai_data = analyze_with_claude([doc])
-            if ai_data:
-                # Mezclar resultados (IA tiene prioridad si manual falló)
-                for k, v in ai_data.items():
-                    if v and v != 0 and v != '0':
-                        data[k] = v
-        except Exception as e:
-            log.error(f"Error en fallback de IA: {e}")
-            
-    return data
 
 
 # ──────────────────────────────────────────────
