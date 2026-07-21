@@ -235,10 +235,9 @@ export const api = {
     body: JSON.stringify({ carpeta }),
   }),
 
-  analizarArchivo: async (frente, reverso) => {
+  analizarArchivo: async (file) => {
     const formData = new FormData()
-    formData.append('frente', frente)
-    formData.append('reverso', reverso)
+    formData.append('file', file)
     
     const token = getToken()
     const resp = await fetch('/api/v1/analizar-archivo', {

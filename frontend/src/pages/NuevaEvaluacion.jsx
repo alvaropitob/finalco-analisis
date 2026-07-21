@@ -49,15 +49,13 @@ export default function NuevaEvaluacion() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const [frenteCedula, setFrenteCedula] = useState(null)
-  const [reversoCedula, setReversoCedula] = useState(null)
-
-  const handleCedulaUpload = async () => {
-    if (!frenteCedula || !reversoCedula) return
+  const handleCedulaUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
     setExtrayendoCedula(true)
     setError(null)
     try {
-      const data = await api.analizarArchivo(frenteCedula, reversoCedula)
+      const data = await api.analizarArchivo(file)
       setFormData(prev => ({
         ...prev,
         cedula: data.cedula || prev.cedula,
@@ -241,26 +239,12 @@ export default function NuevaEvaluacion() {
         <div className="card fade-up">
           <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3>1. Información Básica del Solicitante</h3>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <input type="file" id="cedula-frente" accept="image/*,.pdf" style={{ display: 'none' }} onChange={e => setFrenteCedula(e.target.files[0])} />
-              <label htmlFor="cedula-frente" className="btn btn-ghost" style={{ cursor: 'pointer', border: frenteCedula ? '1px solid var(--success)' : '1px solid var(--border)', color: frenteCedula ? 'var(--success)' : 'var(--text)' }}>
-                1. Frente
-              </label>
-
-              <input type="file" id="cedula-reverso" accept="image/*,.pdf" style={{ display: 'none' }} onChange={e => setReversoCedula(e.target.files[0])} />
-              <label htmlFor="cedula-reverso" className="btn btn-ghost" style={{ cursor: 'pointer', border: reversoCedula ? '1px solid var(--success)' : '1px solid var(--border)', color: reversoCedula ? 'var(--success)' : 'var(--text)' }}>
-                2. Reverso
-              </label>
-
-              <button 
-                className="btn btn-ghost" 
-                onClick={handleCedulaUpload} 
-                disabled={!frenteCedula || !reversoCedula || extrayendoCedula}
-                style={{ display: 'flex', gap: 8, alignItems: 'center', border: '1px solid var(--accent)', color: 'var(--accent)', marginLeft: 8 }}
-              >
+            <div>
+              <input type="file" id="cedula-upload" accept="image/*,.pdf" style={{ display: 'none' }} onChange={handleCedulaUpload} />
+              <label htmlFor="cedula-upload" className="btn btn-ghost" style={{ cursor: 'pointer', display: 'flex', gap: 8, alignItems: 'center', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
                 {extrayendoCedula ? <Loader2 size={16} className="spin" /> : <Upload size={16} />}
-                {extrayendoCedula ? 'Extrayendo...' : 'Autocompletar'}
-              </button>
+                {extrayendoCedula ? 'Extrayendo...' : 'Autocompletar con Cédula'}
+              </label>
             </div>
           </div>
           <div className="card-body">

@@ -907,15 +907,15 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 
 @app.post("/api/v1/analizar-archivo", tags=["Sprint 2 — Carga Documental"])
 async def analizar_archivo(
-    frente: UploadFile = File(...),
-    reverso: UploadFile = File(...),
+    file: UploadFile = File(...),
     _user=Depends(require_staff)
 ):
-    """Analiza una cédula usando OCR local (frente y reverso) sin IA."""
+    """Analiza una cédula usando OCR local. Asume que el frente y el reverso están en el mismo archivo."""
     import uuid
     from pathlib import Path
     import os
     import sys
+    import cv2
     
     # Asegurar que la ruta del scanner está en sys.path
     scanner_path = Path(__file__).parent / "scanner"
@@ -929,18 +929,42 @@ async def analizar_archivo(
         return ext if ext else ".jpg"
         
     uid = uuid.uuid4().hex
-    dest_frente = UPLOAD_DIR / f"frente_{uid}{get_ext(frente.filename)}"
-    dest_reverso = UPLOAD_DIR / f"reverso_{uid}{get_ext(reverso.filename)}"
+    dest_original = UPLOAD_DIR / f"cedula_{uid}{get_ext(file.filename)}"
+    dest_frente = UPLOAD_DIR / f"frente_{uid}.jpg"
+    dest_reverso = UPLOAD_DIR / f"reverso_{uid}.jpg"
     
-    dest_frente.write_bytes(await frente.read())
-    dest_reverso.write_bytes(await reverso.read())
+    dest_original.write_bytes(await file.read())
     
     try:
+        # Dividir la imagen por la mitad (asumiendo que están escaneados juntos)
+        img = cv2.imread(str(dest_original))
+        if img is None:
+            raise HTTPException(status_code=400, detail="Formato de imagen no soportado")
+            
+        h, w = img.shape[:2]
+        if h > w:
+            # Vertical (arriba/abajo)
+            mitad1 = img[:h//2, :]
+            mitad2 = img[h//2:, :]
+        else:
+            # Horizontal (izquierda/derecha)
+            mitad1 = img[:, :w//2]
+            mitad2 = img[:, w//2:]
+            
+        cv2.imwrite(str(dest_frente), mitad1)
+        cv2.imwrite(str(dest_reverso), mitad2)
+        
+        # Intentar extraer asumiendo que mitad1 es frente y mitad2 es reverso
         data_raw = extract_cedula(str(dest_frente), str(dest_reverso))
         
-        if not data_raw:
-            raise HTTPException(status_code=400, detail="No se pudo extraer información")
-            
+        # Si no detectó MRZ, tal vez están invertidos
+        if not data_raw.get("mrz") or not data_raw["mrz"].get("all_valid"):
+            data_raw_invertido = extract_cedula(str(dest_reverso), str(dest_frente))
+            if data_raw_invertido.get("mrz") and data_raw_invertido["mrz"].get("all_valid"):
+                data_raw = data_raw_invertido
+            elif data_raw_invertido.get("mrz") and not data_raw.get("mrz"):
+                data_raw = data_raw_invertido
+        
         mrz = data_raw.get("mrz") or {}
         front = data_raw.get("front_fields") or {}
         
@@ -950,13 +974,17 @@ async def analizar_archivo(
             "apellidos": mrz.get("surnames", front.get("apellidos", "")),
             "nombres": mrz.get("given_names", front.get("nombres", "")),
             "fecha_nacimiento": mrz.get("birth_date", front.get("fecha_nacimiento", "")),
-            "_scanner_raw": data_raw # guardamos datos crudos por si acaso
+            "_scanner_raw": data_raw
         }
         
+        if not resultado["cedula"]:
+            raise HTTPException(status_code=400, detail="No se pudo extraer la cédula (MRZ no detectado).")
+            
         return resultado
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
+        if dest_original.exists(): dest_original.unlink()
         if dest_frente.exists(): dest_frente.unlink()
         if dest_reverso.exists(): dest_reverso.unlink()
 
