@@ -905,6 +905,31 @@ def historial_parametros(_user=Depends(require_admin)):
 UPLOAD_DIR = Path(__file__).parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
+@app.post("/api/v1/analizar-archivo", tags=["Sprint 2 — Carga Documental"])
+async def analizar_archivo(
+    file: UploadFile = File(...),
+    _user=Depends(require_staff)
+):
+    """Analiza un único archivo (ej. cédula) con la IA y devuelve los datos extraídos."""
+    from analyzer import process_single_file
+    
+    fname = file.filename or "unknown"
+    dest = UPLOAD_DIR / fname
+    
+    # Guardar archivo temporalmente
+    content = await file.read()
+    dest.write_bytes(content)
+    
+    try:
+        data = process_single_file(str(dest))
+        if not data:
+            raise HTTPException(status_code=400, detail="No se pudo procesar el archivo")
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if dest.exists():
+            dest.unlink()
 
 @app.post("/api/v1/documentos/cargar", tags=["Sprint 2 — Carga Documental"])
 async def cargar_documentos(
