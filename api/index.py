@@ -912,8 +912,14 @@ async def analizar_archivo(
 ):
     """Analiza un único archivo (ej. cédula) con la IA y devuelve los datos extraídos."""
     from analyzer import process_single_file
+    import uuid
+    from pathlib import Path
     
-    fname = file.filename or "unknown"
+    ext = Path(file.filename).suffix.lower() if file.filename else ".jpg"
+    if not ext: ext = ".jpg"
+    
+    # Forzamos el nombre para asegurar que la IA sepa que es una cédula
+    fname = f"cedula_{uuid.uuid4().hex}{ext}"
     dest = UPLOAD_DIR / fname
     
     # Guardar archivo temporalmente

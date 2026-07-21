@@ -374,10 +374,12 @@ def ocr_image(pil_img) -> str:
     return best_text
 
 
-def extract_from_image(path: Path) -> tuple[str, str]:
+def extract_from_image(path: Path, skip_ocr: bool = False) -> tuple[str, str]:
     """Extrae texto via OCR con preprocesamiento, busca QRs y devuelve base64."""
     img = Image.open(path)
-    text = ocr_image(img)
+    text = ""
+    if not skip_ocr:
+        text = ocr_image(img)
     
     # Buscar QR y PDF417
     qrs = extract_qr(img)
@@ -699,6 +701,7 @@ def extract_data_manually(text: str, filename: str = "") -> dict:
 def analyze_with_claude(docs_info: list[dict]) -> dict:
     """Envía los documentos a Gemini para un análisis profundo. Fallback a manual si no hay API KEY."""
     api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
+    
     if not api_key or "PONER_AQUI" in api_key:
         log.warning("No hay API KEY de Gemini. Usando extracción por reglas locales.")
         full_text = "\n".join(d.get("texto", "") for d in docs_info)
@@ -767,7 +770,8 @@ def process_single_file(file_path: str) -> Optional[dict]:
         doc["texto"] = text
         doc["images_b64"] = imgs
     elif fmt == "imagen":
-        text, b64 = extract_from_image(f)
+        # Si es cédula, la IA (Gemini) lee la imagen directamente. El OCR local no es necesario y es muy lento.
+        text, b64 = extract_from_image(f, skip_ocr=(tipo == "cedula"))
         doc["texto"] = text
         doc["images_b64"] = [b64]
     elif fmt == "word":
