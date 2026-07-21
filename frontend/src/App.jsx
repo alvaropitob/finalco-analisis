@@ -9,36 +9,25 @@ import Decisiones    from './pages/Decisiones'
 import Politica      from './pages/Politica'
 import Analizar      from './pages/Analizar'
 import Login         from './pages/Login'
-import CrearCliente  from './pages/CrearCliente'
 import CargaFinanciera from './pages/CargaFinanciera'
-import SimuladorCredito from './pages/SimuladorCredito'
 import ParametrizadorRiesgo from './pages/ParametrizadorRiesgo'
-import CargaDocumental from './pages/CargaDocumental'
+import NuevaEvaluacion from './pages/NuevaEvaluacion'
 
-// ── Rutas por rol ─────────────────────────────────────────────────────────────
 const NAV = [
   { to: '/',          icon: LayoutDashboard, label: 'Dashboard',          end: true,  section: 'Principal', roles: ['admin','analista'] },
   { to: '/clientes',  icon: Users,           label: 'Clientes',           end: false, section: null,        roles: ['admin','analista','asesor','cliente'] },
-  { to: '/clientes/nuevo', icon: User,           label: 'Nuevo Cliente',      end: false, section: null,        roles: ['admin','analista','asesor'] },
+  { to: '/nueva-evaluacion', icon: User,     label: 'Nueva Evaluación',   end: false, section: null,        roles: ['admin','analista','asesor'] },
   { to: '/decisiones',icon: CheckSquare,     label: 'Decisiones',         end: false, section: null,        roles: ['admin','analista','asesor'] },
   { to: '/politica',  icon: Scale,           label: 'Política de crédito',end: false, section: 'Config.',   roles: ['admin','analista'] },
-  { to: '/analizar',  icon: FolderOpen,      label: 'Analizar documentos',end: false, section: null,        roles: ['admin','analista','asesor'] },
-  { to: '/carga-financiera', icon: TrendingUp,  label: 'Carga de Buró',      end: false, section: null,        roles: ['admin','analista','asesor'] },
-  { to: '/carga-documental', icon: Upload,      label: 'Carga Documental',   end: false, section: 'Sprint 2',  roles: ['admin','analista','asesor'] },
-  { to: '/simulador', icon: Calculator,         label: 'Simulador',          end: false, section: null,        roles: ['admin','analista','asesor'] },
-  { to: '/parametrizador', icon: Settings,      label: 'Parametrizador',     end: false, section: null,        roles: ['admin'] },
+  { to: '/parametrizador', icon: Settings,   label: 'Parametrizador',     end: false, section: null,        roles: ['admin'] },
 ]
 
 const PAGE_TITLES = {
   '/':           'Dashboard',
   '/clientes':   'Clientes',
-  '/clientes/nuevo': 'Crear Nuevo Cliente',
+  '/nueva-evaluacion': 'Nueva Evaluación',
   '/decisiones': 'Historial de Decisiones',
   '/politica':   'Política de Crédito',
-  '/analizar':   'Analizar Documentos',
-  '/carga-financiera': 'Carga de Buró Financiero',
-  '/carga-documental': 'Carga Documental',
-  '/simulador':  'Simulador de Crédito',
   '/parametrizador': 'Parametrizador de Riesgo',
 }
 
@@ -150,14 +139,11 @@ function AppLayout() {
         <Routes>
           <Route path="/"             element={<Dashboard />} />
           <Route path="/clientes"     element={<Clientes />} />
-          <Route path="/clientes/nuevo" element={<CrearCliente />} />
+          <Route path="/nueva-evaluacion" element={<NuevaEvaluacion />} />
           <Route path="/clientes/:id" element={<ClienteDetalle />} />
           <Route path="/decisiones"   element={<Decisiones />} />
           <Route path="/politica"     element={<Politica />} />
-          <Route path="/analizar"     element={<Analizar />} />
           <Route path="/carga-financiera" element={<CargaFinanciera />} />
-          <Route path="/carga-documental" element={<CargaDocumental />} />
-          <Route path="/simulador"  element={<SimuladorCredito />} />
           <Route path="/parametrizador" element={<ParametrizadorRiesgo />} />
         </Routes>
       </main>
