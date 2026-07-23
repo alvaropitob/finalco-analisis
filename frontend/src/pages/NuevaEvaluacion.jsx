@@ -11,6 +11,50 @@ import {
 const formatCOP = (n) => n != null ? `$${Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 })}` : '$0'
 const formatPct = (n) => n != null ? `${Number(n).toFixed(2)}%` : '0%'
 
+const RenderDataObject = ({ data }) => {
+  if (!data || typeof data !== 'object') return <span>{String(data)}</span>
+  
+  const formatKey = (k) => k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
+      {Object.entries(data).map(([key, value]) => {
+        if (value === null || value === undefined || value === '') return null;
+        if (key === 'texto_raw' || key === 'archivo' || key === 'tipo') return null; // Ocultar raw y metadatos
+
+        if (typeof value === 'object' && !Array.isArray(value)) {
+          return (
+            <div key={key} style={{ gridColumn: '1 / -1', marginTop: 8 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8, borderBottom: '1px solid var(--border)', paddingBottom: 4 }}>
+                {formatKey(key)}
+              </div>
+              <RenderDataObject data={value} />
+            </div>
+          )
+        }
+        
+        let displayValue = String(value);
+        let color = 'var(--text)';
+        if (typeof value === 'boolean') {
+          displayValue = value ? 'Sí' : 'No';
+          color = value ? 'var(--success)' : 'var(--danger)';
+        } else if (typeof value === 'number' && value > 1000) {
+          // Asumir moneda si es mayor a 1000 (heurística simple para este dashboard)
+          if (key.includes('score')) displayValue = value.toString();
+          else displayValue = formatCOP(value);
+        }
+        
+        return (
+          <div key={key} style={{ padding: '10px 14px', background: 'var(--bg-surface)', borderRadius: 8, border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{formatKey(key)}</div>
+            <div style={{ fontSize: 14, fontWeight: 500, color, wordBreak: 'break-word' }}>{displayValue}</div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function NuevaEvaluacion() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
@@ -365,11 +409,13 @@ export default function NuevaEvaluacion() {
                               {res.ok ? <CheckCircle size={16} color="var(--success)" /> : <X size={16} color="var(--danger)" />}
                             </div>
                             {res.ok && res.datos ? (
-                              <div style={{ fontSize: 13, fontFamily: 'monospace', color: 'var(--text-muted)', whiteSpace: 'pre-wrap', maxHeight: 150, overflowY: 'auto' }}>
-                                {JSON.stringify(res.datos, null, 2)}
+                              <div style={{ marginTop: 12 }}>
+                                <RenderDataObject data={res.datos} />
                               </div>
                             ) : (
-                              <div style={{ fontSize: 13, color: 'var(--danger)' }}>{res.error}</div>
+                              <div style={{ fontSize: 13, color: 'var(--danger)', marginTop: 8, padding: 8, background: 'var(--danger-bg)', borderRadius: 6 }}>
+                                {res.error}
+                              </div>
                             )}
                           </div>
                         ))}
