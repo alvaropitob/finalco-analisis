@@ -37,7 +37,6 @@ const RenderDataObject = ({ data, politicaActiva }) => {
           )
         }
         
-        let displayValue = String(value);
         let color = 'var(--text)';
         let isPolicyCheck = false;
         let policyPassed = false;
