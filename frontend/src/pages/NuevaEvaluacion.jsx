@@ -438,9 +438,9 @@ export default function NuevaEvaluacion() {
                           }]
                         })
                       }}
-                      style={{ marginLeft: 16, fontSize: 11, padding: '4px 8px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                      style={{ marginLeft: 16, fontSize: 11, padding: '4px 8px', background: 'var(--primary-light)', color: 'var(--primary-dark)', border: '1px solid var(--primary)', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
                     >
-                      PROBAR INTERFAZ
+                      SIMULAR VALIDACIÓN
                     </button>
                   </h4>
                   {politicaActiva && politicaActiva.criterios ? (

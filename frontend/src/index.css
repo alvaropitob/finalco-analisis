@@ -19,6 +19,10 @@
   --amber:          #D97706;
   --amber-bg:       rgba(217,119,6,0.08);
   --orange:         #FFBC7D;
+  --success:        #007836;
+  --success-bg:     rgba(0,120,54,0.15);
+  --danger:         #DC2626;
+  --danger-bg:      rgba(220,38,38,0.15);
 
   /* Surfaces */
   --bg:             #F2F5FA;
