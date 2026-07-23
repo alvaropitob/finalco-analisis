@@ -908,7 +908,6 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 @app.post("/api/v1/analizar-archivo", tags=["Sprint 2 — Carga Documental"])
 async def analizar_archivo(
     file: UploadFile = File(...),
-    _user=Depends(require_staff)
 ):
     """Analiza una cédula usando OCR local. Asume que el frente y el reverso están en el mismo archivo."""
     import uuid
