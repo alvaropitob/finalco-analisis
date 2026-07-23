@@ -220,7 +220,7 @@ export default function NuevaEvaluacion() {
       const res = await api.guardarCliente(payload)
       setClienteId(res.id)
       setStep(3)
-      ejecutarScoring()
+      ejecutarScoring(res.id)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -229,11 +229,11 @@ export default function NuevaEvaluacion() {
   }
 
   // ── Paso 3: Calcular Scoring ───────────────────────────────────────
-  const ejecutarScoring = async () => {
+  const ejecutarScoring = async (cid = clienteId) => {
     setLoading(true)
     setError(null)
     try {
-      const res = await api.calcularScoring(clienteId)
+      const res = await api.calcularScoring(cid)
       setScoring(res)
     } catch (e) {
       setError(e.message)
