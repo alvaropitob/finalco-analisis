@@ -235,6 +235,9 @@ export const api = {
     body: JSON.stringify({ carpeta }),
   }),
 
+  // ── Políticas ───────────────────────────────────────────────
+  getPoliticaActiva: () => request('/api/politica'),
+
   analizarArchivo: async (file) => {
     const formData = new FormData()
     formData.append('file', file)

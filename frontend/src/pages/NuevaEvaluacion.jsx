@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/client'
 import { 
@@ -11,7 +11,7 @@ import {
 const formatCOP = (n) => n != null ? `$${Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 })}` : '$0'
 const formatPct = (n) => n != null ? `${Number(n).toFixed(2)}%` : '0%'
 
-const RenderDataObject = ({ data }) => {
+const RenderDataObject = ({ data, politicaActiva }) => {
   if (!data || typeof data !== 'object') return <span>{String(data)}</span>
   
   const formatKey = (k) => k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
@@ -28,13 +28,17 @@ const RenderDataObject = ({ data }) => {
               <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8, borderBottom: '1px solid var(--border)', paddingBottom: 4 }}>
                 {formatKey(key)}
               </div>
-              <RenderDataObject data={value} />
+              <RenderDataObject data={value} politicaActiva={politicaActiva} />
             </div>
           )
         }
         
         let displayValue = String(value);
         let color = 'var(--text)';
+        let isPolicyCheck = false;
+        let policyPassed = false;
+        let policyLabel = '';
+
         if (typeof value === 'boolean') {
           displayValue = value ? 'Sí' : 'No';
           color = value ? 'var(--success)' : 'var(--danger)';
@@ -44,10 +48,39 @@ const RenderDataObject = ({ data }) => {
           else displayValue = formatCOP(value);
         }
         
+        // --- Comparación de Políticas ---
+        if (politicaActiva && politicaActiva.criterios) {
+           const criterios = politicaActiva.criterios;
+           if ((key === 'score' || key === 'score_datacredito') && typeof value === 'number') {
+              const min = criterios.score_datacredito_minimo;
+              if (min !== undefined) {
+                 isPolicyCheck = true;
+                 policyPassed = value >= min;
+                 policyLabel = `Mínimo: ${min}`;
+              }
+           }
+           if (key === 'score_cifin' && typeof value === 'number') {
+              const min = criterios.score_cifin_minimo;
+              if (min !== undefined) {
+                 isPolicyCheck = true;
+                 policyPassed = value >= min;
+                 policyLabel = `Mínimo: ${min}`;
+              }
+           }
+        }
+
         return (
           <div key={key} style={{ padding: '10px 14px', background: 'var(--bg-surface)', borderRadius: 8, border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
             <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{formatKey(key)}</div>
-            <div style={{ fontSize: 14, fontWeight: 500, color, wordBreak: 'break-word' }}>{displayValue}</div>
+            <div style={{ fontSize: 14, fontWeight: 500, color, wordBreak: 'break-word', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {displayValue}
+              {isPolicyCheck && (
+                 <span style={{ fontSize: 12, padding: '2px 6px', borderRadius: 12, background: policyPassed ? 'var(--success-bg)' : 'var(--danger-bg)', color: policyPassed ? 'var(--success)' : 'var(--danger)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                   {policyPassed ? <CheckCircle size={12} /> : <X size={12} />}
+                   {policyLabel}
+                 </span>
+              )}
+            </div>
           </div>
         )
       })}
@@ -80,6 +113,13 @@ export default function NuevaEvaluacion() {
   
   // Paso 4: Simulación
   const [simulacion, setSimulacion] = useState(null)
+
+  // Política Activa (para comparar en Paso 2)
+  const [politicaActiva, setPoliticaActiva] = useState(null)
+
+  useEffect(() => {
+    api.getPoliticaActiva().then(res => setPoliticaActiva(res)).catch(console.error)
+  }, [])
 
   // Estados UI
   const [loading, setLoading] = useState(false)
@@ -377,7 +417,7 @@ export default function NuevaEvaluacion() {
                       </div>
                       {res.ok && res.datos ? (
                         <div style={{ marginTop: 12 }}>
-                          <RenderDataObject data={res.datos} />
+                          <RenderDataObject data={res.datos} politicaActiva={politicaActiva} />
                         </div>
                       ) : (
                         <div style={{ fontSize: 13, color: 'var(--danger)', marginTop: 8, padding: 8, background: 'var(--danger-bg)', borderRadius: 6 }}>
