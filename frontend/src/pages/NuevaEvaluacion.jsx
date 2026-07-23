@@ -363,6 +363,33 @@ export default function NuevaEvaluacion() {
               </div>
             </div>
             
+            {analisis && analisis.resultados && analisis.resultados.length > 0 && (
+              <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'var(--bg-surface)', borderRadius: 12, border: '1px solid var(--border)' }}>
+                <h4 style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <FileText size={18} /> Datos Extraídos de Documentos
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                  {analisis.resultados.map((res, i) => (
+                    <div key={i} style={{ padding: '1rem', background: 'var(--bg-body)', borderRadius: 8, borderLeft: res.ok ? '4px solid var(--success)' : '4px solid var(--danger)' }}>
+                      <div style={{ fontWeight: 600, marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
+                        <span>{res.archivo} <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-muted)', background: 'var(--border)', padding: '2px 8px', borderRadius: 12, marginLeft: 8 }}>{res.tipo}</span></span>
+                        {res.ok ? <CheckCircle size={16} color="var(--success)" /> : <X size={16} color="var(--danger)" />}
+                      </div>
+                      {res.ok && res.datos ? (
+                        <div style={{ marginTop: 12 }}>
+                          <RenderDataObject data={res.datos} />
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: 13, color: 'var(--danger)', marginTop: 8, padding: 8, background: 'var(--danger-bg)', borderRadius: 6 }}>
+                          {res.error}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
               <button className="btn btn-ghost" onClick={() => setStep(1)} disabled={loading}>Atrás</button>
               <button className="btn btn-primary" onClick={guardarDatosCliente} disabled={loading}>
@@ -395,34 +422,6 @@ export default function NuevaEvaluacion() {
 
             {scoring && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  
-                  {analisis && analisis.resultados && analisis.resultados.length > 0 && (
-                    <div style={{ padding: '1.5rem', background: 'var(--bg-surface)', borderRadius: 12, border: '1px solid var(--border)' }}>
-                      <h4 style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <FileText size={18} /> Datos Extraídos de Documentos
-                      </h4>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                        {analisis.resultados.map((res, i) => (
-                          <div key={i} style={{ padding: '1rem', background: 'var(--bg-body)', borderRadius: 8, borderLeft: res.ok ? '4px solid var(--success)' : '4px solid var(--danger)' }}>
-                            <div style={{ fontWeight: 600, marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
-                              <span>{res.archivo} <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-muted)', background: 'var(--border)', padding: '2px 8px', borderRadius: 12, marginLeft: 8 }}>{res.tipo}</span></span>
-                              {res.ok ? <CheckCircle size={16} color="var(--success)" /> : <X size={16} color="var(--danger)" />}
-                            </div>
-                            {res.ok && res.datos ? (
-                              <div style={{ marginTop: 12 }}>
-                                <RenderDataObject data={res.datos} />
-                              </div>
-                            ) : (
-                              <div style={{ fontSize: 13, color: 'var(--danger)', marginTop: 8, padding: 8, background: 'var(--danger-bg)', borderRadius: 6 }}>
-                                {res.error}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div className="stat-card" style={{ background: 'var(--accent-glow)', border: '1px solid var(--accent)' }}>
                       <div className="stat-label">Puntaje Final</div>
