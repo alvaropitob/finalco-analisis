@@ -28,9 +28,9 @@ import pytesseract
 import cv2
 from passporteye import read_mrz
 
-from preprocessing import load_image, crop_region, to_binary, upscale
-from mrz_parser import validate_field, MRZResult
-from mrz_correction import try_correct_field
+from .preprocessing import load_image, crop_region, to_binary, upscale
+from .mrz_parser import validate_field, MRZResult
+from .mrz_correction import try_correct_field
 
 warnings.filterwarnings("ignore")  # silencia warnings de skimage/passporteye
 

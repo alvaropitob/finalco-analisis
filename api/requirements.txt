@@ -36,5 +36,5 @@ pdf417decoder
 python-dotenv>=1.0.0
 
 # Scanner OCR
-passporteye>=2.3.0
+passporteye>=2.2.0
 scikit-image

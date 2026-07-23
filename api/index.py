@@ -912,26 +912,20 @@ async def analizar_archivo(
 ):
     """Analiza una cédula usando OCR local. Asume que el frente y el reverso están en el mismo archivo."""
     import uuid
-    from pathlib import Path
-    import os
-    import sys
+    import tempfile
     import cv2
     
-    # Asegurar que la ruta del scanner está en sys.path
-    scanner_path = Path(__file__).parent / "scanner"
-    if str(scanner_path) not in sys.path:
-        sys.path.append(str(scanner_path))
-        
     from scanner.ocr_pipeline import extract_cedula
     
-    def get_ext(filename):
-        ext = Path(filename).suffix.lower() if filename else ".jpg"
-        return ext if ext else ".jpg"
+    ext = Path(file.filename).suffix.lower() if file.filename else ".jpg"
+    if not ext:
+        ext = ".jpg"
         
     uid = uuid.uuid4().hex
-    dest_original = UPLOAD_DIR / f"cedula_{uid}{get_ext(file.filename)}"
-    dest_frente = UPLOAD_DIR / f"frente_{uid}.jpg"
-    dest_reverso = UPLOAD_DIR / f"reverso_{uid}.jpg"
+    tmp_dir = Path(tempfile.mkdtemp(prefix="cedula_"))
+    dest_original = tmp_dir / f"cedula_{uid}{ext}"
+    dest_frente = tmp_dir / f"frente_{uid}.jpg"
+    dest_reverso = tmp_dir / f"reverso_{uid}.jpg"
     
     dest_original.write_bytes(await file.read())
     
@@ -978,15 +972,20 @@ async def analizar_archivo(
         }
         
         if not resultado["cedula"]:
-            raise HTTPException(status_code=400, detail="No se pudo extraer la cédula (MRZ no detectado).")
+            raise HTTPException(
+                status_code=400, 
+                detail="No se pudo extraer la cédula. Asegúrate de que la imagen contenga el frente y reverso de la cédula con la zona MRZ visible."
+            )
             
         return resultado
+    except HTTPException:
+        raise  # Re-lanzar sin envolver
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error procesando la imagen: {str(e)}")
     finally:
-        if dest_original.exists(): dest_original.unlink()
-        if dest_frente.exists(): dest_frente.unlink()
-        if dest_reverso.exists(): dest_reverso.unlink()
+        # Limpiar archivos temporales
+        import shutil
+        shutil.rmtree(tmp_dir, ignore_errors=True)
 
 @app.post("/api/v1/documentos/cargar", tags=["Sprint 2 — Carga Documental"])
 async def cargar_documentos(

@@ -12,7 +12,7 @@ errores" para la mayoria de los casos reales de OCR sobre MRZ.
 """
 
 from itertools import product
-from mrz_parser import validate_field
+from .mrz_parser import validate_field
 
 
 # Pares de caracteres que Tesseract confunde con frecuencia en fuentes

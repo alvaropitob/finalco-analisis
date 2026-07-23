@@ -698,14 +698,13 @@ def extract_data_manually(text: str, filename: str = "") -> dict:
     return data
 
 
-def analyze_with_claude(docs_info: list[dict]) -> dict:
-    """Envía los documentos a Gemini para un análisis profundo. Fallback a manual si no hay API KEY."""
+def analyze_with_ai(docs_info: list[dict]) -> dict:
+    """Envía los documentos a Gemini para análisis. Fallback a extracción local si no hay API KEY o si falla."""
     api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
     
     if not api_key or "PONER_AQUI" in api_key:
         log.warning("No hay API KEY de Gemini. Usando extracción por reglas locales.")
         full_text = "\n".join(d.get("texto", "") for d in docs_info)
-        # Usar el nombre del primer archivo como referencia
         filename = docs_info[0].get("nombre", "") if docs_info else ""
         return extract_data_manually(full_text, filename)
 
@@ -716,14 +715,12 @@ def analyze_with_claude(docs_info: list[dict]) -> dict:
     for doc in docs_info:
         tipo_label = f"[{doc['tipo'].upper()}] Archivo: {doc['nombre']}"
 
-        # Agregar imágenes si hay
         for b64 in doc.get("images_b64", []):
             content.append({
                 "mime_type": "image/jpeg",
                 "data": base64.b64decode(b64)
             })
 
-        # Agregar texto extraído
         if doc.get("texto"):
             content.append(f"{tipo_label}\nTexto extraído:\n{doc['texto'][:3000]}")
         else:
@@ -738,14 +735,27 @@ Responde ÚNICAMENTE con este JSON (sin markdown, sin explicaciones):
         system_instruction=SYSTEM_PROMPT
     )
 
-    response = model.generate_content(
-        contents=content,
-        generation_config={"response_mime_type": "application/json"}
-    )
+    try:
+        response = model.generate_content(
+            contents=content,
+            generation_config={"response_mime_type": "application/json"}
+        )
 
-    raw = response.text.strip()
-    raw = raw.replace("```json", "").replace("```", "").strip()
-    return json.loads(raw)
+        raw = response.text.strip()
+        raw = raw.replace("```json", "").replace("```", "").strip()
+        return json.loads(raw)
+    except Exception as e:
+        error_str = str(e)
+        if "429" in error_str or "quota" in error_str.lower():
+            log.warning(f"Cuota de Gemini agotada ({error_str[:80]}). Usando extracción local.")
+            full_text = "\n".join(d.get("texto", "") for d in docs_info)
+            filename = docs_info[0].get("nombre", "") if docs_info else ""
+            return extract_data_manually(full_text, filename)
+        raise  # Re-lanzar otros errores
+
+
+# Alias para compatibilidad con código existente
+analyze_with_claude = analyze_with_ai
 
 
 def process_single_file(file_path: str) -> Optional[dict]:
@@ -779,11 +789,11 @@ def process_single_file(file_path: str) -> Optional[dict]:
 
     docs_info = [doc]
 
-    log.info("Enviando documento a Claude para análisis...")
+    log.info("Enviando documento a IA para análisis...")
     try:
-        data = analyze_with_claude(docs_info)
+        data = analyze_with_ai(docs_info)
     except Exception as e:
-        log.error(f"Error en análisis con Claude: {e}")
+        log.error(f"Error en análisis con IA: {e}")
         return None
 
     log.info(f"Información extraída: {data.get('nombre')} (CC {data.get('cedula')})")
@@ -836,11 +846,11 @@ def process_folder(folder_path: str) -> Optional[dict]:
 
         docs_info.append(doc)
 
-    log.info("Enviando documentos a Claude para análisis...")
+    log.info("Enviando documentos a IA para análisis...")
     try:
-        data = analyze_with_claude(docs_info)
+        data = analyze_with_ai(docs_info)
     except Exception as e:
-        log.error(f"Error en análisis con Claude: {e}")
+        log.error(f"Error en análisis con IA: {e}")
         return None
 
     log.info(f"Cliente identificado: {data.get('nombre')} (CC {data.get('cedula')})")
