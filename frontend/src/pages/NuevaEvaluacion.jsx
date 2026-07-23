@@ -429,6 +429,20 @@ export default function NuevaEvaluacion() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <FileText size={18} /> Datos Extraídos de Documentos
+                    <button 
+                      onClick={() => {
+                        setAnalisis({
+                          resultados: [{
+                            ok: true,
+                            archivo: 'Preselecta_SIMULADO.pdf',
+                            datos: { score_acierta_mas: 720, pct_endeudamiento: 45, embargos: 0, mora_30_vigente: 0 }
+                          }]
+                        })
+                      }}
+                      style={{ marginLeft: 16, fontSize: 11, padding: '4px 8px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                    >
+                      PROBAR INTERFAZ
+                    </button>
                   </h4>
                   {politicaActiva && politicaActiva.criterios ? (
                     <span style={{ fontSize: 12, background: 'var(--success-bg)', color: 'var(--success)', padding: '4px 10px', borderRadius: 12, fontWeight: 500 }}>Política Cargada</span>
