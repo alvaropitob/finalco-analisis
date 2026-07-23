@@ -51,22 +51,38 @@ const RenderDataObject = ({ data, politicaActiva }) => {
         // --- Comparación de Políticas ---
         if (politicaActiva && politicaActiva.criterios) {
            const criterios = politicaActiva.criterios;
+           
+           // Scores
            const scoreKeys = ['score', 'score_datacredito', 'score_acierta_mas', 'score_begini'];
            if (scoreKeys.includes(key) && typeof value === 'number') {
               const min = criterios.score_datacredito_minimo || 500;
-              if (min !== undefined) {
-                 isPolicyCheck = true;
-                 policyPassed = value >= min;
-                 policyLabel = `Mínimo: ${min}`;
-              }
+              isPolicyCheck = true;
+              policyPassed = value >= min;
+              policyLabel = `Mínimo: ${min}`;
+           } else if (key === 'score_cifin' && typeof value === 'number') {
+              const min = criterios.score_cifin_minimo || 500;
+              isPolicyCheck = true;
+              policyPassed = value >= min;
+              policyLabel = `Mínimo: ${min}`;
            }
-           if (key === 'score_cifin' && typeof value === 'number') {
-              const min = criterios.score_cifin_minimo;
-              if (min !== undefined) {
-                 isPolicyCheck = true;
-                 policyPassed = value >= min;
-                 policyLabel = `Mínimo: ${min}`;
-              }
+           // Endeudamiento
+           else if (key === 'pct_endeudamiento' && typeof value === 'number') {
+              const max = criterios.endeudamiento_maximo_pct || 60;
+              isPolicyCheck = true;
+              policyPassed = value <= max;
+              policyLabel = `Máximo: ${max}%`;
+           }
+           // Moras, embargos, cartera castigada, etc (deben ser 0 idealmente)
+           else if ((key === 'embargos' || key === 'saldo_mora' || key === 'cartera_castigada' || key === 'dudoso_recaudo' || key === 'obligaciones_reestructuradas' || key === 'obligaciones_cobro_juridico') && typeof value === 'number') {
+              isPolicyCheck = true;
+              policyPassed = value === 0;
+              policyLabel = `Tolerancia: 0`;
+           }
+           // Tiempos de mora
+           else if (key.startsWith('mora_') && typeof value === 'number') {
+              isPolicyCheck = true;
+              policyPassed = value === 0;
+              policyLabel = `Sin mora`;
            }
         }
 
