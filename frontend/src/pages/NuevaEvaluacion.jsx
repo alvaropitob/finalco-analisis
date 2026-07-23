@@ -19,8 +19,12 @@ const RenderDataObject = ({ data, politicaActiva }) => {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
       {Object.entries(data).map(([key, value]) => {
-        if (value === null || value === undefined || value === '') return null;
         if (key === 'texto_raw' || key === 'archivo' || key === 'tipo') return null; // Ocultar raw y metadatos
+        
+        let displayValue = String(value);
+        if (value === null || value === undefined || value === '') {
+          displayValue = 'No encontrado en PDF';
+        }
 
         if (typeof value === 'object' && !Array.isArray(value)) {
           return (
