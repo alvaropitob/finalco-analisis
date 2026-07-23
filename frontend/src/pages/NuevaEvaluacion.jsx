@@ -84,7 +84,6 @@ export default function NuevaEvaluacion() {
   // Estados UI
   const [loading, setLoading] = useState(false)
   const [loadingMsg, setLoadingMsg] = useState('')
-  const [extrayendoCedula, setExtrayendoCedula] = useState(false)
   const [error, setError] = useState(null)
 
   // ── Manejo de Inputs ──────────────────────────────────────────────
@@ -93,52 +92,7 @@ export default function NuevaEvaluacion() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleCedulaUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    setExtrayendoCedula(true)
-    setError(null)
-    try {
-      const data = await api.analizarArchivo(file)
-      setFormData(prev => ({
-        ...prev,
-        cedula: data.cedula || prev.cedula,
-        nombres: data.nombres || prev.nombres,
-        apellidos: data.apellidos || prev.apellidos,
-      }))
-    } catch (err) {
-      setError("No se pudo extraer la información de la cédula.")
-    } finally {
-      setExtrayendoCedula(false)
-    }
-  }
-
-  // ── Paso 1: Guardar Cliente ────────────────────────────────────────
-  const handlePaso1 = async () => {
-    if (!formData.cedula || !formData.nombres || !formData.apellidos) {
-      setError('Por favor completa los campos obligatorios.')
-      return
-    }
-    setLoading(true)
-    setError(null)
-    try {
-      const payload = {
-        ...formData,
-        nombre: `${formData.apellidos} ${formData.nombres}`.trim(),
-        monto_solicitado: Number(formData.monto_solicitado),
-        plazo_solicitado: Number(formData.plazo_solicitado)
-      }
-      const res = await api.guardarCliente(payload)
-      setClienteId(res.id)
-      setStep(2)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // ── Paso 2: Cargar Documentos ──────────────────────────────────────
+  // ── Paso 1: Cargar Documentos ──────────────────────────────────────
   const addFiles = (newFiles) => {
     const arr = Array.from(newFiles).filter(f => {
       const ext = f.name.split('.').pop().toLowerCase()
@@ -153,38 +107,83 @@ export default function NuevaEvaluacion() {
   }
   const removeFile = (idx) => setFiles(prev => prev.filter((_, i) => i !== idx))
 
-  const handlePaso2 = async () => {
+  const procesarDocumentos = async () => {
     if (files.length === 0) {
-      // Permitir avanzar sin documentos
-      setStep(3)
+      setError('Por favor sube al menos un documento para continuar.')
       return
     }
     setLoading(true)
     setError(null)
-    setLoadingMsg('Subiendo documentos...')
+    setLoadingMsg('Procesando documentos...')
     
-    // Simular progreso de extracción para dar feedback al usuario
     const timer = setInterval(() => {
       setLoadingMsg(prev => {
-        if (prev === 'Subiendo documentos...') return 'Aplicando OCR a las imágenes...'
-        if (prev === 'Aplicando OCR a las imágenes...') return 'Extrayendo información clave con IA...'
-        if (prev === 'Extrayendo información clave con IA...') return 'Cruzando datos con centrales de riesgo...'
-        return 'Guardando resultados...'
+        if (prev === 'Procesando documentos...') return 'Aplicando OCR...'
+        if (prev === 'Aplicando OCR...') return 'Extrayendo datos clave...'
+        return 'Finalizando extracción...'
       })
     }, 2500)
 
     try {
-      const data = await api.cargarDocumentos(files, clienteId, formData.cedula)
+      const data = await api.cargarDocumentos(files, null, null)
       clearInterval(timer)
       setLoadingMsg('')
       setAnalisis(data)
-      setStep(3)
-      // Lanzar el scoring automáticamente al entrar al paso 3
-      ejecutarScoring()
+      
+      let newCedula = formData.cedula
+      let newNombres = formData.nombres
+      let newApellidos = formData.apellidos
+      
+      if (data.resultados) {
+        data.resultados.forEach(res => {
+          if (res.ok && res.datos) {
+            if (res.datos.cedula) newCedula = res.datos.cedula;
+            if (res.datos.nombres) newNombres = res.datos.nombres;
+            if (res.datos.apellidos) newApellidos = res.datos.apellidos;
+          }
+        })
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        cedula: newCedula,
+        nombres: newNombres,
+        apellidos: newApellidos
+      }))
+      
+      setStep(2)
     } catch (e) {
       clearInterval(timer)
       setLoadingMsg('')
       setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // ── Paso 2: Guardar Cliente ────────────────────────────────────────
+  const guardarDatosCliente = async () => {
+    if (!formData.cedula || !formData.nombres || !formData.apellidos) {
+      setError('Por favor completa los campos obligatorios.')
+      return
+    }
+    setLoading(true)
+    setError(null)
+    
+    try {
+      const payload = {
+        ...formData,
+        nombre: `${formData.apellidos} ${formData.nombres}`.trim(),
+        monto_solicitado: Number(formData.monto_solicitado),
+        plazo_solicitado: Number(formData.plazo_solicitado)
+      }
+      const res = await api.guardarCliente(payload)
+      setClienteId(res.id)
+      setStep(3)
+      ejecutarScoring()
+    } catch (e) {
+      setError(e.message)
+    } finally {
       setLoading(false)
     }
   }
@@ -252,7 +251,7 @@ export default function NuevaEvaluacion() {
       <div className="stepper-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', background: 'var(--bg-surface)', padding: '1rem 2rem', borderRadius: 12 }}>
         {[
           { id: 1, label: 'Datos Básicos', icon: User },
-          { id: 2, label: 'Documentos', icon: Upload },
+          { id: 2, label: 'Datos Básicos', icon: User },
           { id: 3, label: 'Análisis IA', icon: Activity },
           { id: 4, label: 'Simulación', icon: Calculator }
         ].map((s, i) => (
@@ -278,52 +277,12 @@ export default function NuevaEvaluacion() {
         </div>
       )}
 
-      {/* ── PASO 1 ── */}
+      {/* ── PASO 1: Documentos ── */}
       {step === 1 && (
         <div className="card fade-up">
           <div className="card-header">
-            <h3>1. Información Básica del Solicitante</h3>
-          </div>
-          <div className="card-body">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label className="field-label">Cédula *</label>
-                <input className="input" name="cedula" value={formData.cedula} onChange={handleChange} placeholder="Ej: 1104701529" />
-              </div>
-              <div></div>
-              <div>
-                <label className="field-label">Nombres *</label>
-                <input className="input" name="nombres" value={formData.nombres} onChange={handleChange} placeholder="Ej: Juan" />
-              </div>
-              <div>
-                <label className="field-label">Apellidos *</label>
-                <input className="input" name="apellidos" value={formData.apellidos} onChange={handleChange} placeholder="Ej: Perez" />
-              </div>
-              <div>
-                <label className="field-label">Monto Solicitado (COP) *</label>
-                <input className="input" type="number" name="monto_solicitado" value={formData.monto_solicitado} onChange={handleChange} />
-              </div>
-              <div>
-                <label className="field-label">Plazo (Meses) *</label>
-                <input className="input" type="number" name="plazo_solicitado" value={formData.plazo_solicitado} onChange={handleChange} />
-              </div>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
-              <button className="btn btn-primary" onClick={handlePaso1} disabled={loading}>
-                {loading ? <Loader2 className="spin" size={16} /> : <>Siguiente <ArrowRight size={16} /></>}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── PASO 2 ── */}
-      {step === 2 && (
-        <div className="card fade-up">
-          <div className="card-header">
-            <h3>2. Carga de Documentos</h3>
-            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Opcional - Sube Datacrédito, Cédula, ADRES, etc.</span>
+            <h3>1. Carga de Documentos</h3>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Sube Datacrédito, Cédula, ADRES, etc. para extraer los datos automáticamente.</span>
           </div>
           <div className="card-body">
             <div
@@ -363,10 +322,51 @@ export default function NuevaEvaluacion() {
               </div>
             )}
             
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
+              <button className="btn btn-primary" onClick={procesarDocumentos} disabled={loading || files.length === 0}>
+                {loading ? <Loader2 className="spin" size={16} /> : <>Extraer Datos <ArrowRight size={16} /></>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── PASO 2: Datos Básicos ── */}
+      {step === 2 && (
+        <div className="card fade-up">
+          <div className="card-header">
+            <h3>2. Información Básica del Solicitante</h3>
+            <span style={{ fontSize: 13, color: 'var(--success)' }}>Datos extraídos automáticamente. Revisa y completa el monto y plazo.</span>
+          </div>
+          <div className="card-body">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label className="field-label">Cédula *</label>
+                <input className="input" name="cedula" value={formData.cedula} onChange={handleChange} placeholder="Ej: 1104701529" />
+              </div>
+              <div></div>
+              <div>
+                <label className="field-label">Nombres *</label>
+                <input className="input" name="nombres" value={formData.nombres} onChange={handleChange} placeholder="Ej: Juan" />
+              </div>
+              <div>
+                <label className="field-label">Apellidos *</label>
+                <input className="input" name="apellidos" value={formData.apellidos} onChange={handleChange} placeholder="Ej: Perez" />
+              </div>
+              <div>
+                <label className="field-label">Monto Solicitado (COP) *</label>
+                <input className="input" type="number" name="monto_solicitado" value={formData.monto_solicitado} onChange={handleChange} />
+              </div>
+              <div>
+                <label className="field-label">Plazo (Meses) *</label>
+                <input className="input" type="number" name="plazo_solicitado" value={formData.plazo_solicitado} onChange={handleChange} />
+              </div>
+            </div>
+            
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
               <button className="btn btn-ghost" onClick={() => setStep(1)} disabled={loading}>Atrás</button>
-              <button className="btn btn-primary" onClick={handlePaso2} disabled={loading}>
-                {loading ? <Loader2 className="spin" size={16} /> : <>Procesar Documentos e Ir al Análisis <ArrowRight size={16} /></>}
+              <button className="btn btn-primary" onClick={guardarDatosCliente} disabled={loading}>
+                {loading ? <Loader2 className="spin" size={16} /> : <>Guardar y Analizar <ArrowRight size={16} /></>}
               </button>
             </div>
           </div>

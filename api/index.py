@@ -1001,7 +1001,7 @@ async def cargar_documentos(
         fname = file.filename or "unknown"
         ext = Path(fname).suffix.lower()
 
-        if ext not in (".pdf", ".xlsx", ".xls"):
+        if ext not in (".pdf", ".xlsx", ".xls", ".jpg", ".jpeg", ".png"):
             resultados.append({"archivo": fname, "error": f"Tipo no soportado: {ext}"})
             continue
 
@@ -1052,7 +1052,50 @@ async def cargar_documentos(
 
             elif "cc_" in fname_lower or "cedula" in fname_lower:
                 tipo = "cedula"
-                datos = {"tipo": "cedula", "archivo": fname}
+                if ext in (".jpg", ".jpeg", ".png"):
+                    import cv2
+                    import uuid
+                    import tempfile
+                    from scanner.ocr_pipeline import extract_cedula
+                    
+                    img = cv2.imread(str(dest))
+                    if img is None:
+                        raise ValueError("Formato de imagen de cédula no soportado")
+                        
+                    h, w = img.shape[:2]
+                    tmp_dir = Path(tempfile.mkdtemp())
+                    dest_frente = tmp_dir / f"frente_{uuid.uuid4().hex}.jpg"
+                    dest_reverso = tmp_dir / f"reverso_{uuid.uuid4().hex}.jpg"
+                    
+                    try:
+                        if h > w:
+                            cv2.imwrite(str(dest_frente), img[:h//2, :])
+                            cv2.imwrite(str(dest_reverso), img[h//2:, :])
+                        else:
+                            cv2.imwrite(str(dest_frente), img[:, :w//2])
+                            cv2.imwrite(str(dest_reverso), img[:, w//2:])
+                            
+                        data_raw = extract_cedula(str(dest_frente), str(dest_reverso))
+                        if not data_raw.get("mrz") or not data_raw["mrz"].get("all_valid"):
+                            data_raw_invertido = extract_cedula(str(dest_reverso), str(dest_frente))
+                            if data_raw_invertido.get("mrz") and (data_raw_invertido["mrz"].get("all_valid") or not data_raw.get("mrz")):
+                                data_raw = data_raw_invertido
+                                
+                        mrz = data_raw.get("mrz") or {}
+                        front = data_raw.get("front_fields") or {}
+                        
+                        datos = {
+                            "cedula": mrz.get("document_number", ""),
+                            "apellidos": mrz.get("surnames", front.get("apellidos", "")),
+                            "nombres": mrz.get("given_names", front.get("nombres", "")),
+                            "fecha_nacimiento": mrz.get("birth_date", front.get("fecha_nacimiento", "")),
+                            "_scanner_raw": data_raw
+                        }
+                    finally:
+                        import shutil
+                        shutil.rmtree(tmp_dir, ignore_errors=True)
+                else:
+                    datos = {"error": "Por favor suba la cédula en formato JPG/PNG."}
 
             resultados.append({
                 "archivo": fname,
