@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 sys.path.append(str(Path(__file__).parent))
+sys.path.append(str(Path(__file__).parent.parent)) # Add Spring 2 root to path so scanner/ is found
 
 from analyzer import init_db, process_folder, process_single_file, save_cliente
 from auth import (
