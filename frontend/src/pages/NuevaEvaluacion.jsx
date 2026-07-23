@@ -422,9 +422,16 @@ export default function NuevaEvaluacion() {
             
             {analisis && analisis.resultados && analisis.resultados.length > 0 && (
               <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'var(--bg-surface)', borderRadius: 12, border: '1px solid var(--border)' }}>
-                <h4 style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <FileText size={18} /> Datos Extraídos de Documentos
-                </h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <FileText size={18} /> Datos Extraídos de Documentos
+                  </h4>
+                  {politicaActiva && politicaActiva.criterios ? (
+                    <span style={{ fontSize: 12, background: 'var(--success-bg)', color: 'var(--success)', padding: '4px 10px', borderRadius: 12, fontWeight: 500 }}>Política Cargada</span>
+                  ) : (
+                    <span style={{ fontSize: 12, background: 'var(--danger-bg)', color: 'var(--danger)', padding: '4px 10px', borderRadius: 12, fontWeight: 500 }}>Sin Política</span>
+                  )}
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
                   {analisis.resultados.map((res, i) => (
                     <div key={i} style={{ padding: '1rem', background: 'var(--bg-body)', borderRadius: 8, borderLeft: res.ok ? '4px solid var(--success)' : '4px solid var(--danger)' }}>
