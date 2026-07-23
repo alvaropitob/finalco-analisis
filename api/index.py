@@ -990,8 +990,7 @@ async def analizar_archivo(
 async def cargar_documentos(
     files: List[UploadFile] = File(...),
     cliente_id: Optional[int] = Form(None),
-    cedula: Optional[str] = Form(None),
-    _user=Depends(require_staff),
+    cedula: Optional[str] = Form(None)
 ):
     """Carga múltiple de PDFs/XLSX por cliente."""
     resultados = []

@@ -258,6 +258,28 @@ export const api = {
     return resp.json()
   },
 
+  cargarDocumentos: async (files, clienteId, cedula) => {
+    const formData = new FormData()
+    Array.from(files).forEach(file => formData.append('files', file))
+    if (clienteId) formData.append('cliente_id', clienteId)
+    if (cedula) formData.append('cedula', cedula)
+    
+    const token = getToken()
+    const resp = await fetch('/api/v1/documentos/cargar', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    })
+    
+    if (!resp.ok) {
+      const error = await resp.json().catch(() => ({ detail: 'Error desconocido' }))
+      throw new Error(error.detail || `Error ${resp.status}: ${resp.statusText}`)
+    }
+    return resp.json()
+  },
+
   guardarCliente: (data) => request('/api/v1/clientes', {
     method: 'POST',
     body: JSON.stringify(data),
