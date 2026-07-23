@@ -350,18 +350,44 @@ export default function NuevaEvaluacion() {
             )}
 
             {scoring && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="stat-card" style={{ background: 'var(--accent-glow)', border: '1px solid var(--accent)' }}>
-                    <div className="stat-label">Puntaje Final</div>
-                    <div className="stat-value" style={{ color: 'var(--accent)', fontSize: 32 }}>{Number(scoring.puntaje_final).toFixed(1)}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  
+                  {analisis && analisis.resultados && analisis.resultados.length > 0 && (
+                    <div style={{ padding: '1.5rem', background: 'var(--bg-surface)', borderRadius: 12, border: '1px solid var(--border)' }}>
+                      <h4 style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <FileText size={18} /> Datos Extraídos de Documentos
+                      </h4>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                        {analisis.resultados.map((res, i) => (
+                          <div key={i} style={{ padding: '1rem', background: 'var(--bg-body)', borderRadius: 8, borderLeft: res.ok ? '4px solid var(--success)' : '4px solid var(--danger)' }}>
+                            <div style={{ fontWeight: 600, marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
+                              <span>{res.archivo} <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-muted)', background: 'var(--border)', padding: '2px 8px', borderRadius: 12, marginLeft: 8 }}>{res.tipo}</span></span>
+                              {res.ok ? <CheckCircle size={16} color="var(--success)" /> : <X size={16} color="var(--danger)" />}
+                            </div>
+                            {res.ok && res.datos ? (
+                              <div style={{ fontSize: 13, fontFamily: 'monospace', color: 'var(--text-muted)', whiteSpace: 'pre-wrap', maxHeight: 150, overflowY: 'auto' }}>
+                                {JSON.stringify(res.datos, null, 2)}
+                              </div>
+                            ) : (
+                              <div style={{ fontSize: 13, color: 'var(--danger)' }}>{res.error}</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="stat-card" style={{ background: 'var(--accent-glow)', border: '1px solid var(--accent)' }}>
+                      <div className="stat-label">Puntaje Final</div>
+                      <div className="stat-value" style={{ color: 'var(--accent)', fontSize: 32 }}>{Number(scoring.puntaje_final).toFixed(1)}</div>
+                    </div>
+                    <div className="stat-card" style={{ background: scoring.decision === 'aprobado' ? 'var(--success-bg)' : scoring.decision === 'rechazado' ? 'var(--danger-bg)' : 'var(--warning-bg)' }}>
+                      <div className="stat-label">Banda Riesgo</div>
+                      <div className="stat-value" style={{ fontSize: 32, color: scoring.decision === 'aprobado' ? 'var(--success)' : scoring.decision === 'rechazado' ? 'var(--danger)' : 'var(--warning)' }}>{scoring.banda || '-'}</div>
+                      <div style={{ fontSize: 13, textTransform: 'uppercase', fontWeight: 600, marginTop: 4 }}>{scoring.decision || 'En revisión'}</div>
+                    </div>
                   </div>
-                  <div className="stat-card" style={{ background: scoring.decision === 'aprobado' ? 'var(--success-bg)' : scoring.decision === 'rechazado' ? 'var(--danger-bg)' : 'var(--warning-bg)' }}>
-                    <div className="stat-label">Banda Riesgo</div>
-                    <div className="stat-value" style={{ fontSize: 32, color: scoring.decision === 'aprobado' ? 'var(--success)' : scoring.decision === 'rechazado' ? 'var(--danger)' : 'var(--warning)' }}>{scoring.banda || '-'}</div>
-                    <div style={{ fontSize: 13, textTransform: 'uppercase', fontWeight: 600, marginTop: 4 }}>{scoring.decision || 'En revisión'}</div>
-                  </div>
-                </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
                   <button className="btn btn-ghost" onClick={() => setStep(2)}>Atrás</button>
