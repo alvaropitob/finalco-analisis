@@ -6,7 +6,6 @@ idéntica en web, Android e iOS (todos consumen el mismo endpoint).
 import json
 import os
 from typing import Optional
-import google.generativeai as genai
 import psycopg2
 from psycopg2.extras import RealDictCursor
 

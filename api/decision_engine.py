@@ -11,7 +11,6 @@ import logging
 from typing import Optional
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import google.generativeai as genai
 
 log = logging.getLogger(__name__)
 

@@ -13,28 +13,13 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional
 
-import google.generativeai as genai
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from PIL import Image
-import pytesseract
-from pdf2image import convert_from_path
-from pypdf import PdfReader
-import pdfplumber
-from docx import Document as DocxDocument
 import io
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# ─── Configurar Tesseract (Windows) ───────────────────────────────────────────
-import sys as _sys
-if _sys.platform == "win32":
-    import pytesseract as _tess
-    _tess_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-    import os as _os
-    if _os.path.exists(_tess_path):
-        _tess.pytesseract.tesseract_cmd = _tess_path
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
@@ -218,11 +203,7 @@ def detect_doc_type(filename: str) -> str:
     return "otro"
 
 
-import pypdfium2 as pdfium
-import cv2
-import numpy as np
 
-from pdf417decoder import PDF417Decoder
 
 def extract_pdf417(image_pil) -> list:
     """Detecta y decodifica códigos PDF417 (comunes en cédulas colombianas)."""
