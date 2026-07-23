@@ -51,8 +51,9 @@ const RenderDataObject = ({ data, politicaActiva }) => {
         // --- Comparación de Políticas ---
         if (politicaActiva && politicaActiva.criterios) {
            const criterios = politicaActiva.criterios;
-           if ((key === 'score' || key === 'score_datacredito') && typeof value === 'number') {
-              const min = criterios.score_datacredito_minimo;
+           const scoreKeys = ['score', 'score_datacredito', 'score_acierta_mas', 'score_begini'];
+           if (scoreKeys.includes(key) && typeof value === 'number') {
+              const min = criterios.score_datacredito_minimo || 500;
               if (min !== undefined) {
                  isPolicyCheck = true;
                  policyPassed = value >= min;
