@@ -993,9 +993,12 @@ async def cargar_documentos(
     cliente_id: Optional[int] = Form(None),
     cedula: Optional[str] = Form(None)
 ):
-    """Carga múltiple de PDFs/XLSX por cliente."""
+    """Carga múltiple de PDFs/XLSX por cliente. Persiste datos extraídos en el registro del cliente."""
     resultados = []
     import pdfplumber
+
+    # Datos financieros consolidados de todos los documentos (para persistir en el cliente)
+    datos_financieros_consolidados = {}
 
     for file in files:
         fname = file.filename or "unknown"
@@ -1033,6 +1036,18 @@ async def cargar_documentos(
                 with pdfplumber.open(str(dest)) as pdf:
                     texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
                 datos = extraer_preselecta(texto, fname)
+                
+                # Consolidar datos financieros clave para persistir en el cliente
+                if datos.get("score_acierta_mas") is not None:
+                    datos_financieros_consolidados["score_datacredito"] = datos["score_acierta_mas"]
+                if datos.get("pct_endeudamiento") is not None:
+                    datos_financieros_consolidados["endeudamiento_datacredito"] = datos["pct_endeudamiento"]
+                if datos.get("cedula"):
+                    datos_financieros_consolidados["cedula"] = datos["cedula"]
+                if datos.get("nombres"):
+                    datos_financieros_consolidados["nombres"] = datos["nombres"]
+                if datos.get("apellidos"):
+                    datos_financieros_consolidados["apellidos"] = datos["apellidos"]
 
             elif "runt" in fname_lower:
                 tipo = "runt"
@@ -1106,9 +1121,55 @@ async def cargar_documentos(
         except Exception as e:
             resultados.append({"archivo": fname, "tipo": tipo, "error": str(e), "ok": False})
 
+    # ── Persistir datos financieros en el cliente si hay datos relevantes ────
+    if datos_financieros_consolidados and (cliente_id or datos_financieros_consolidados.get("cedula")):
+        try:
+            conn = get_db()
+            try:
+                with conn.cursor() as cur:
+                    if cliente_id:
+                        # Actualizar por ID
+                        updates = []
+                        params = []
+                        if "score_datacredito" in datos_financieros_consolidados:
+                            updates.append("score_datacredito = %s")
+                            params.append(datos_financieros_consolidados["score_datacredito"])
+                        if "endeudamiento_datacredito" in datos_financieros_consolidados:
+                            updates.append("endeudamiento_datacredito = %s")
+                            params.append(datos_financieros_consolidados["endeudamiento_datacredito"])
+                        if updates:
+                            params.append(cliente_id)
+                            cur.execute(
+                                f"UPDATE clientes SET {', '.join(updates)} WHERE id = %s",
+                                params
+                            )
+                    elif datos_financieros_consolidados.get("cedula"):
+                        # Actualizar por cédula
+                        updates = []
+                        params = []
+                        if "score_datacredito" in datos_financieros_consolidados:
+                            updates.append("score_datacredito = %s")
+                            params.append(datos_financieros_consolidados["score_datacredito"])
+                        if "endeudamiento_datacredito" in datos_financieros_consolidados:
+                            updates.append("endeudamiento_datacredito = %s")
+                            params.append(datos_financieros_consolidados["endeudamiento_datacredito"])
+                        if updates:
+                            params.append(datos_financieros_consolidados["cedula"])
+                            cur.execute(
+                                f"UPDATE clientes SET {', '.join(updates)} WHERE cedula = %s",
+                                params
+                            )
+                conn.commit()
+                print(f"Datos financieros persistidos para cliente: {cliente_id or datos_financieros_consolidados.get('cedula')}")
+            finally:
+                conn.close()
+        except Exception as e:
+            print(f"Advertencia: No se pudieron persistir datos financieros: {e}")
+
     return {
         "total_archivos": len(files),
         "procesados": sum(1 for r in resultados if r.get("ok")),
         "errores": sum(1 for r in resultados if not r.get("ok")),
         "resultados": resultados,
     }
+

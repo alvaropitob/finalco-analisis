@@ -310,8 +310,8 @@ export default function NuevaEvaluacion() {
       {/* Stepper Header */}
       <div className="stepper-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', background: 'var(--bg-surface)', padding: '1rem 2rem', borderRadius: 12 }}>
         {[
-          { id: 1, label: 'Datos Básicos', icon: User },
-          { id: 2, label: 'Datos Básicos', icon: User },
+          { id: 1, label: 'Cargar Documentos', icon: Upload },
+          { id: 2, label: 'Verificar Datos', icon: User },
           { id: 3, label: 'Análisis IA', icon: Activity },
           { id: 4, label: 'Simulación', icon: Calculator }
         ].map((s, i) => (
@@ -428,20 +428,6 @@ export default function NuevaEvaluacion() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <FileText size={18} /> Datos Extraídos de Documentos
-                    <button 
-                      onClick={() => {
-                        setAnalisis({
-                          resultados: [{
-                            ok: true,
-                            archivo: 'Preselecta_SIMULADO.pdf',
-                            datos: { score_acierta_mas: 720, pct_endeudamiento: 45, embargos: 0, mora_30_vigente: 0 }
-                          }]
-                        })
-                      }}
-                      style={{ marginLeft: 16, fontSize: 11, padding: '4px 8px', background: 'var(--primary-light)', color: 'var(--primary-dark)', border: '1px solid var(--primary)', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
-                    >
-                      SIMULAR VALIDACIÓN
-                    </button>
                   </h4>
                   {politicaActiva && politicaActiva.criterios ? (
                     <span style={{ fontSize: 12, background: 'var(--success-bg)', color: 'var(--success)', padding: '4px 10px', borderRadius: 12, fontWeight: 500 }}>Política Cargada</span>
@@ -482,50 +468,199 @@ export default function NuevaEvaluacion() {
       )}
 
       {/* ── PASO 3 ── */}
-      {step === 3 && (
-        <div className="card fade-up">
-          <div className="card-header">
-            <h3>3. Análisis IA y Scoring</h3>
-          </div>
-          <div className="card-body">
-            {!scoring && !loading && (
-              <div style={{ textAlign: 'center', padding: '2rem' }}>
-                <button className="btn btn-primary" onClick={ejecutarScoring}>Ejecutar Scoring</button>
-              </div>
-            )}
-            
-            {loading && (
-              <div style={{ textAlign: 'center', padding: '3rem 0' }}>
-                <Activity size={32} className="spin" style={{ color: 'var(--accent)', marginBottom: '1rem' }} />
-                <p>Calculando Scoring Multi-fuente...</p>
-              </div>
-            )}
+      {step === 3 && (() => {
+        // Construir tabla de verificación de políticas con datos extraídos
+        const criterios = politicaActiva?.criterios || {}
+        const datosExtraidos = {}
+        if (analisis?.resultados) {
+          analisis.resultados.forEach(r => {
+            if (r.ok && r.datos) Object.assign(datosExtraidos, r.datos)
+          })
+        }
 
-            {scoring && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div className="stat-card" style={{ background: 'var(--accent-glow)', border: '1px solid var(--accent)' }}>
-                      <div className="stat-label">Puntaje Final</div>
-                      <div className="stat-value" style={{ color: 'var(--accent)', fontSize: 32 }}>{Number(scoring.puntaje_final).toFixed(1)}</div>
-                    </div>
-                    <div className="stat-card" style={{ background: scoring.decision === 'aprobado' ? 'var(--success-bg)' : scoring.decision === 'rechazado' ? 'var(--danger-bg)' : 'var(--warning-bg)' }}>
-                      <div className="stat-label">Banda Riesgo</div>
-                      <div className="stat-value" style={{ fontSize: 32, color: scoring.decision === 'aprobado' ? 'var(--success)' : scoring.decision === 'rechazado' ? 'var(--danger)' : 'var(--warning)' }}>{scoring.banda || '-'}</div>
-                      <div style={{ fontSize: 13, textTransform: 'uppercase', fontWeight: 600, marginTop: 4 }}>{scoring.decision || 'En revisión'}</div>
-                    </div>
-                  </div>
+        const checks = [
+          {
+            campo: 'Score de Crédito',
+            clave: 'score_acierta_mas',
+            valor: datosExtraidos.score_acierta_mas ?? datosExtraidos.score_datacredito ?? datosExtraidos.score_begini,
+            minimo: criterios.score_datacredito_minimo || 550,
+            tipo: 'min',
+            unidad: 'pts',
+          },
+          {
+            campo: 'Endeudamiento',
+            clave: 'pct_endeudamiento',
+            valor: datosExtraidos.pct_endeudamiento,
+            maximo: criterios.endeudamiento_maximo_pct || 60,
+            tipo: 'max',
+            unidad: '%',
+          },
+          {
+            campo: 'Embargos',
+            clave: 'embargos',
+            valor: datosExtraidos.embargos,
+            tolerancia: 0,
+            tipo: 'zero',
+            unidad: '',
+          },
+          {
+            campo: 'Cartera Castigada',
+            clave: 'cartera_castigada',
+            valor: datosExtraidos.cartera_castigada,
+            tolerancia: 0,
+            tipo: 'zero',
+            unidad: '',
+          },
+          {
+            campo: 'Mora Vigente 30d',
+            clave: 'mora_30_vigente',
+            valor: datosExtraidos.mora_30_vigente,
+            tolerancia: 0,
+            tipo: 'zero',
+            unidad: '',
+          },
+          {
+            campo: 'Mora Vigente 60d',
+            clave: 'mora_60_vigente',
+            valor: datosExtraidos.mora_60_vigente,
+            tolerancia: 0,
+            tipo: 'zero',
+            unidad: '',
+          },
+          {
+            campo: 'Mora Histórica 90d',
+            clave: 'mora_90_hist_12m',
+            valor: datosExtraidos.mora_90_hist_12m,
+            tolerancia: 0,
+            tipo: 'zero',
+            unidad: '',
+          },
+          {
+            campo: 'Dudoso Recaudo',
+            clave: 'dudoso_recaudo',
+            valor: datosExtraidos.dudoso_recaudo,
+            tolerancia: 0,
+            tipo: 'zero',
+            unidad: '',
+          },
+        ].filter(c => c.valor !== undefined && c.valor !== null)
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
-                  <button className="btn btn-ghost" onClick={() => setStep(2)}>Atrás</button>
-                  <button className="btn btn-primary" onClick={handlePaso3}>
-                    Ver Simulador <ArrowRight size={16} />
-                  </button>
+        const getResult = (c) => {
+          if (c.tipo === 'min') return c.valor >= c.minimo
+          if (c.tipo === 'max') return c.valor <= c.maximo
+          if (c.tipo === 'zero') return c.valor === 0
+          return null
+        }
+        const getPolicyLabel = (c) => {
+          if (c.tipo === 'min') return `Mínimo: ${c.minimo}${c.unidad}`
+          if (c.tipo === 'max') return `Máximo: ${c.maximo}${c.unidad}`
+          if (c.tipo === 'zero') return `Tolerancia: 0`
+          return ''
+        }
+
+        const aprobados = checks.filter(c => getResult(c) === true).length
+        const rechazados = checks.filter(c => getResult(c) === false).length
+
+        return (
+          <div className="card fade-up">
+            <div className="card-header">
+              <h3>3. Análisis IA y Verificación de Políticas</h3>
+            </div>
+            <div className="card-body">
+              {/* Resumen global */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div className="stat-card" style={{ background: 'var(--success-bg)', border: '1px solid var(--success)' }}>
+                  <div className="stat-label">Criterios Cumplidos</div>
+                  <div className="stat-value" style={{ color: 'var(--success)', fontSize: 36 }}>{aprobados}</div>
+                </div>
+                <div className="stat-card" style={{ background: rechazados > 0 ? 'var(--danger-bg)' : 'var(--bg-surface)', border: `1px solid ${rechazados > 0 ? 'var(--danger)' : 'var(--border)'}` }}>
+                  <div className="stat-label">Criterios Incumplidos</div>
+                  <div className="stat-value" style={{ color: rechazados > 0 ? 'var(--danger)' : 'var(--text-muted)', fontSize: 36 }}>{rechazados}</div>
                 </div>
               </div>
-            )}
+
+              {checks.length === 0 ? (
+                <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', background: 'var(--bg-surface)', borderRadius: 10 }}>
+                  <AlertCircle size={32} style={{ marginBottom: 8, opacity: 0.5 }} />
+                  <p>No se extrajeron datos financieros de los documentos cargados.</p>
+                  <p style={{ fontSize: 13, marginTop: 4 }}>Vuelve al paso anterior y carga el PDF de Preselecta o Datacrédito.</p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {checks.map((c, i) => {
+                    const passed = getResult(c)
+                    return (
+                      <div key={i} style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        padding: '14px 18px', borderRadius: 10,
+                        background: passed ? 'var(--success-bg)' : 'var(--danger-bg)',
+                        border: `1px solid ${passed ? 'var(--success)' : 'var(--danger)'}`,
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          {passed
+                            ? <CheckCircle size={20} color="var(--success)" />
+                            : <X size={20} color="var(--danger)" />}
+                          <div>
+                            <div style={{ fontWeight: 600, fontSize: 14, color: passed ? 'var(--success)' : 'var(--danger)' }}>{c.campo}</div>
+                            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{getPolicyLabel(c)}</div>
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: 20, fontWeight: 700, color: passed ? 'var(--success)' : 'var(--danger)' }}>
+                            {c.valor}{c.unidad}
+                          </div>
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                            {passed ? 'Cumple' : 'No Cumple'}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Scoring del motor IA (si ya se calculó) */}
+              {scoring && (
+                <div style={{ marginTop: '1.5rem', padding: '1rem 1.5rem', background: 'var(--bg-surface)', borderRadius: 10, border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>Motor de Scoring IA</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                    <div>
+                      <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--primary)' }}>{Number(scoring.puntaje_final).toFixed(0)}</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)', marginLeft: 4 }}>/ 1000 pts</span>
+                    </div>
+                    <div style={{
+                      padding: '6px 14px', borderRadius: 20, fontWeight: 600, fontSize: 13,
+                      background: scoring.decision === 'aprobado' ? 'var(--success-bg)' : scoring.decision === 'rechazado' ? 'var(--danger-bg)' : 'var(--amber-bg)',
+                      color: scoring.decision === 'aprobado' ? 'var(--success)' : scoring.decision === 'rechazado' ? 'var(--danger)' : 'var(--amber)',
+                    }}>
+                      {scoring.banda || scoring.decision || 'En revisión'}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {!scoring && !loading && (
+                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                  <button className="btn btn-primary" onClick={ejecutarScoring}>Ejecutar Motor de Scoring IA</button>
+                </div>
+              )}
+              {loading && !scoring && (
+                <div style={{ marginTop: '1.5rem', textAlign: 'center', padding: '1rem' }}>
+                  <Loader2 size={24} className="spin" style={{ color: 'var(--primary)' }} />
+                  <p style={{ marginTop: 8, color: 'var(--text-muted)' }}>Calculando scoring...</p>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
+                <button className="btn btn-ghost" onClick={() => setStep(2)}>Atrás</button>
+                <button className="btn btn-primary" onClick={handlePaso3}>
+                  Ver Simulador <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* ── PASO 4 ── */}
       {step === 4 && (

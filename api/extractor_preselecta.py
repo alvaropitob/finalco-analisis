@@ -75,7 +75,9 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
         return data
 
     # ── Cédula ──────────────────────────────────────────────────────────────
-    ced_m = re.search(r'N[úu]mero\s+de\s+Documento:\s*(\d{7,10})', texto, re.IGNORECASE)
+    ced_m = re.search(r'N[úu]mero\s*de\s*Documento\s*:\s*(\d{7,10})', texto, re.IGNORECASE)
+    if not ced_m:
+        ced_m = re.search(r'C[eé]dula\s*(?:de\s*Ciudadan[íi]a)?\s*[:\-]?\s*(\d{7,10})', texto, re.IGNORECASE)
     if ced_m:
         data["cedula"] = ced_m.group(1)
     elif filename:
@@ -84,7 +86,9 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
             data["cedula"] = fn_m.group(1)
 
     # ── Nombres y Apellidos ─────────────────────────────────────────────────
-    nom_m = re.search(r'Nombres?\s+y\s+Apellidos?:\s*(.+)', texto, re.IGNORECASE)
+    nom_m = re.search(r'Nombres?\s*y\s*Apellidos?\s*:\s*(.+)', texto, re.IGNORECASE)
+    if not nom_m:
+        nom_m = re.search(r'Nombre(?:\s+Completo)?\s*:\s*(.+)', texto, re.IGNORECASE)
     if nom_m:
         full_name = nom_m.group(1).strip()
         parts = full_name.split()
@@ -105,19 +109,29 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
         data["genero"] = gen_m.group(1)
 
     # ── Decisión Preselecta ─────────────────────────────────────────────────
-    dec_m = re.search(r'Decisi[óo]n:\s*(Aprobado|Rechazado|Estudio)', texto, re.IGNORECASE)
+    dec_m = re.search(r'Decisi[óo]n\s*:\s*(Aprobado|Rechazado|Estudio|APROBADO|RECHAZADO|ESTUDIO)', texto, re.IGNORECASE)
     if dec_m:
         data["decision_preselecta"] = dec_m.group(1).capitalize()
 
     # ── Score Acierta Más ───────────────────────────────────────────────────
-    score_m = re.search(r'Acierta\s+M[áa]s:\s*(\d{1,3})', texto, re.IGNORECASE)
+    # Try multiple patterns for score: "Acierta Más: 720", "Acierta Mas: 720", "Score: 720"
+    score_m = re.search(r'Acierta\s*M[áa]s\s*:\s*(\d{1,3})', texto, re.IGNORECASE)
+    if not score_m:
+        score_m = re.search(r'(?:SCORE|Puntaje)\s*Acierta\s*M[áa]s\s*[:\-]?\s*(\d{1,3})', texto, re.IGNORECASE)
+    if not score_m:
+        score_m = re.search(r'(?:Score|Puntaje)\s*[:\-]\s*(\d{3})\b', texto, re.IGNORECASE)
     if score_m:
         data["score_acierta_mas"] = int(score_m.group(1))
 
     # ── QUANTO ingreso medio ────────────────────────────────────────────────
-    quanto_m = re.search(r'Quanto3?\s+Valor\s+Medio:\s*([\d.]+)', texto, re.IGNORECASE)
+    quanto_m = re.search(r'Quanto3?\s*Valor\s*Medio\s*:\s*([\d.,]+)', texto, re.IGNORECASE)
+    if not quanto_m:
+        quanto_m = re.search(r'Ingreso\s*(?:Medio|Estimado)\s*:\s*([\d.,]+)', texto, re.IGNORECASE)
     if quanto_m:
-        data["quanto_ingreso_medio"] = float(quanto_m.group(1))
+        try:
+            data["quanto_ingreso_medio"] = float(quanto_m.group(1).replace(',', ''))
+        except ValueError:
+            pass
 
     # ── Perfil Score ────────────────────────────────────────────────────────
     perfil_m = re.search(r'PERFIL_SCORE:\s*(Alto|Medio|Bajo|NA)', texto, re.IGNORECASE)
@@ -126,8 +140,14 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
 
     # ── Variables del bloque de respuesta personalizada ─────────────────────
     def extract_var(name, default=0):
-        m = re.search(rf'-\s*{name}:\s*([\d.]+)', texto, re.IGNORECASE)
-        return int(float(m.group(1))) if m else default
+        # Try both "- VAR_NAME: 0" and "VAR_NAME: 0" and "VAR_NAME = 0" formats
+        m = re.search(rf'(?:-\s*)?{re.escape(name)}\s*[:\=]\s*([\d.]+)', texto, re.IGNORECASE)
+        if m:
+            try:
+                return int(float(m.group(1)))
+            except ValueError:
+                return default
+        return default
 
     data["embargos"] = extract_var("VAR_EMBARGOS")
     data["cancelaciones_negativas_12m"] = extract_var("VAR_CANCELACIONES_NEGATIVAS_ULT12")
@@ -147,10 +167,11 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
 
     # ── Variables financieras ───────────────────────────────────────────────
     def extract_float_var(name):
-        m = re.search(rf'-\s*{name}:\s*([\d.,]+)', texto, re.IGNORECASE)
+        # Try both "- VAR_NAME: 1234" and "VAR_NAME: 1234" and "VAR_NAME = 1234" formats
+        m = re.search(rf'(?:-\s*)?{re.escape(name)}\s*[:\=]\s*([\d.,]+)', texto, re.IGNORECASE)
         if m:
             try:
-                return float(m.group(1).replace(',', ''))
+                return float(m.group(1).replace(',', '').replace('.', '', m.group(1).count('.') - 1) if m.group(1).count('.') > 1 else m.group(1).replace(',', ''))
             except ValueError:
                 return None
         return None
