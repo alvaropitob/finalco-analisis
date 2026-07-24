@@ -639,6 +639,141 @@ export default function NuevaEvaluacion() {
                 </div>
               )}
 
+              {/* ── Recomendación Escrita ── */}
+              {checks.length > 0 && (() => {
+                const montoSolicitado = Number(formData.monto_solicitado) || 0
+                const scoreVal = datosExtraidos.score_acierta_mas ?? datosExtraidos.score_datacredito ?? null
+                const scoreMin = (politicaActiva?.criterios?.score_datacredito_minimo) || 550
+                const endeudamiento = datosExtraidos.pct_endeudamiento ?? null
+                const endeudamientoMax = (politicaActiva?.criterios?.endeudamiento_maximo_pct) || 60
+
+                // Señales de riesgo bloqueantes (cualquiera es suficiente para rechazar)
+                const tieneEmbargoActivo = (datosExtraidos.embargos || 0) > 0
+                const tieneCarteraCastigada = (datosExtraidos.cartera_castigada || 0) > 0
+                const tieneMoraVigente = ((datosExtraidos.mora_30_vigente || 0) + (datosExtraidos.mora_60_vigente || 0) + (datosExtraidos.mora_90_vigente || 0)) > 0
+                const tieneCarteraDudosa = (datosExtraidos.dudoso_recaudo || 0) > 0
+
+                const fallasCriticas = [
+                  tieneEmbargoActivo && 'embargo activo registrado en buró',
+                  tieneCarteraCastigada && 'cartera castigada en el historial crediticio',
+                  tieneMoraVigente && 'obligaciones con mora vigente no saldada',
+                  tieneCarteraDudosa && 'obligaciones de dudoso recaudo',
+                ].filter(Boolean)
+
+                const scoreBajo = scoreVal !== null && scoreVal < scoreMin
+                const scoreJusto = scoreVal !== null && scoreVal >= scoreMin && scoreVal < scoreMin + 50
+                const endeudamientoAlto = endeudamiento !== null && endeudamiento > endeudamientoMax
+                const endeudamientoJusto = endeudamiento !== null && endeudamiento > endeudamientoMax * 0.8 && endeudamiento <= endeudamientoMax
+
+                // Calcular monto alternativo (basado en endeudamiento disponible)
+                let montoAlternativo = null
+                if (endeudamiento !== null && datosExtraidos.ingresos_quanto) {
+                  const disponible = (endeudamientoMax / 100 - endeudamiento / 100) * datosExtraidos.ingresos_quanto
+                  if (disponible > 0 && disponible < montoSolicitado) {
+                    montoAlternativo = Math.floor(disponible * 0.8) // 80% del disponible, por margen de seguridad
+                  }
+                }
+
+                let tipo, titulo, color, borderColor, lineas
+
+                if (fallasCriticas.length > 0) {
+                  // RECHAZO DEFINITIVO
+                  tipo = 'rechazado'
+                  color = 'var(--danger-bg)'
+                  borderColor = 'var(--danger)'
+                  titulo = '⚠️ Recomendación: RECHAZAR la solicitud'
+                  lineas = [
+                    `El perfil crediticio del solicitante presenta ${fallasCriticas.length > 1 ? 'varias señales' : 'una señal'} de riesgo que impiden la aprobación bajo la política vigente.`,
+                    `En concreto, se identifica${fallasCriticas.length > 1 ? 'n' : ''}: ${fallasCriticas.join('; ')}.`,
+                    `Estas condiciones son incompatibles con la política de crédito de la entidad, independientemente del monto solicitado. Se sugiere notificar al solicitante y dejar la evaluación en estado de rechazo definitivo.`,
+                  ]
+                } else if (scoreBajo && endeudamientoAlto) {
+                  // RECHAZO POR DOBLE FALLO (score + endeudamiento)
+                  tipo = 'rechazado'
+                  color = 'var(--danger-bg)'
+                  borderColor = 'var(--danger)'
+                  titulo = '⚠️ Recomendación: RECHAZAR la solicitud'
+                  lineas = [
+                    `El solicitante no cumple con los criterios mínimos en dos variables clave: el puntaje de crédito (${scoreVal} pts vs mínimo de ${scoreMin} pts) y el nivel de endeudamiento (${endeudamiento}% vs máximo permitido del ${endeudamientoMax}%).`,
+                    `La combinación de un score por debajo del umbral y un endeudamiento que supera el límite de la política representa un nivel de riesgo que no es posible mitigar con una reducción de monto.`,
+                    `Se recomienda rechazar la solicitud y orientar al solicitante hacia alternativas de saneamiento de deuda antes de volver a postularse.`,
+                  ]
+                } else if (scoreBajo) {
+                  // RECHAZO POR SCORE BAJO
+                  tipo = 'rechazado'
+                  color = 'var(--danger-bg)'
+                  borderColor = 'var(--danger)'
+                  titulo = '⚠️ Recomendación: RECHAZAR la solicitud'
+                  lineas = [
+                    `El puntaje de crédito del solicitante (${scoreVal} pts) está por debajo del mínimo establecido en la política (${scoreMin} pts), lo cual indica un historial crediticio con un nivel de riesgo superior al aceptable.`,
+                    `Aunque los demás indicadores son controlables, el score es la variable más determinante en la política y no es posible compensarlo con una reducción del monto. Por esta razón, se recomienda rechazar la solicitud.`,
+                  ]
+                } else if (endeudamientoAlto && montoAlternativo) {
+                  // APROBACIÓN PARCIAL
+                  tipo = 'parcial'
+                  color = 'var(--amber-bg)'
+                  borderColor = 'var(--amber)'
+                  titulo = '🟡 Recomendación: APROBAR con monto reducido'
+                  lineas = [
+                    `El puntaje de crédito del solicitante (${scoreVal} pts) supera el mínimo requerido (${scoreMin} pts), lo cual es una señal positiva. Sin embargo, el nivel de endeudamiento actual (${endeudamiento}%) supera el límite de la política (${endeudamientoMax}%), lo que restringe la capacidad de pago para el monto solicitado de ${formatCOP(montoSolicitado)}.`,
+                    `Con base en los ingresos estimados y el margen de endeudamiento disponible, es posible autorizar un monto de hasta ${formatCOP(montoAlternativo)} bajo las condiciones de la política, con un plazo que permita mantener la cuota dentro del límite de capacidad de pago.`,
+                    `Se recomienda presentar al solicitante esta alternativa y, si acepta, proceder con la simulación para el monto ajustado.`,
+                  ]
+                } else if (endeudamientoAlto) {
+                  // APROBACIÓN PARCIAL (SIN DATO DE INGRESO PARA CALCULAR MONTO)
+                  tipo = 'parcial'
+                  color = 'var(--amber-bg)'
+                  borderColor = 'var(--amber)'
+                  titulo = '🟡 Recomendación: Revisar con monto reducido'
+                  lineas = [
+                    `El puntaje de crédito es satisfactorio (${scoreVal} pts), pero el nivel de endeudamiento (${endeudamiento}%) supera el máximo permitido (${endeudamientoMax}%).`,
+                    `Se recomienda revisar la capacidad de pago real del solicitante con un analista y considerar aprobar un monto menor que mantenga el endeudamiento total dentro del límite de la política.`,
+                  ]
+                } else if (scoreJusto || endeudamientoJusto) {
+                  // APROBACIÓN CON OBSERVACIÓN
+                  tipo = 'aprobado'
+                  color = 'var(--success-bg)'
+                  borderColor = 'var(--success)'
+                  titulo = '✅ Recomendación: APROBAR con observación'
+                  lineas = [
+                    `El solicitante cumple con todos los criterios de la política de crédito vigente. Se puede proceder con la aprobación del monto solicitado de ${formatCOP(montoSolicitado)}.`,
+                    scoreJusto ? `Sin embargo, el puntaje de crédito (${scoreVal} pts) se encuentra justo sobre el umbral mínimo (${scoreMin} pts), lo que sugiere un perfil de riesgo moderado. Se recomienda realizar un seguimiento periódico de la obligación durante los primeros 6 meses.` : '',
+                    endeudamientoJusto ? `El nivel de endeudamiento (${endeudamiento}%) está cerca del límite máximo, por lo que no se recomienda aprobar créditos adicionales para este cliente en el corto plazo.` : '',
+                  ].filter(Boolean)
+                } else {
+                  // APROBACIÓN PLENA
+                  tipo = 'aprobado'
+                  color = 'var(--success-bg)'
+                  borderColor = 'var(--success)'
+                  titulo = '✅ Recomendación: APROBAR el monto solicitado'
+                  lineas = [
+                    `El solicitante cumple satisfactoriamente con todos los criterios de la política de crédito vigente.${scoreVal ? ` El puntaje de crédito de ${scoreVal} pts está por encima del mínimo requerido (${scoreMin} pts).` : ''}${endeudamiento ? ` El nivel de endeudamiento de ${endeudamiento}% está dentro del límite máximo permitido (${endeudamientoMax}%).` : ''}`,
+                    `No se identifican señales de alerta en el historial de moras, embargos ni cartera castigada. El perfil de riesgo es compatible con la aprobación del monto solicitado de ${formatCOP(montoSolicitado)}.`,
+                    `Se puede proceder con la generación de la simulación de crédito y la formalización del desembolso.`,
+                  ]
+                }
+
+                return (
+                  <div style={{ marginTop: '1.5rem', padding: '1.5rem', borderRadius: 12, background: color, border: `1px solid ${borderColor}` }}>
+                    <div style={{ fontWeight: 700, fontSize: 15, marginBottom: '1rem', color: tipo === 'rechazado' ? 'var(--danger)' : tipo === 'parcial' ? 'var(--amber)' : 'var(--success)' }}>
+                      {titulo}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                      {lineas.map((l, i) => (
+                        <p key={i} style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: 'var(--text)' }}>
+                          {l}
+                        </p>
+                      ))}
+                    </div>
+                    {montoAlternativo && tipo === 'parcial' && (
+                      <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'rgba(255,255,255,0.6)', borderRadius: 8, fontWeight: 600, fontSize: 14 }}>
+                        💡 Monto alternativo sugerido: <span style={{ color: 'var(--primary)', fontSize: 16 }}>{formatCOP(montoAlternativo)}</span>
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
+
               {!scoring && !loading && (
                 <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                   <button className="btn btn-primary" onClick={ejecutarScoring}>Ejecutar Motor de Scoring IA</button>
