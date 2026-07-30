@@ -636,7 +636,9 @@ def extract_data_manually(text: str, filename: str = "") -> dict:
     
     # Saldo Total y Cupo Total (Limpieza de moneda)
     def clean_currency(val_str):
-        return int(re.sub(r'[^0-9]', '', val_str))
+        val_str = re.sub(r'[.,]\d{2}$', '', val_str.strip())
+        val_clean = re.sub(r'[^0-9]', '', val_str)
+        return int(val_clean) if val_clean else 0
 
     saldo_m = re.search(r'SALDO\s+TOTAL[:.\s]*\$?\s*([\d.,\s]{5,20})', text, re.IGNORECASE)
     if saldo_m: data["saldo_total"] = clean_currency(saldo_m.group(1))
