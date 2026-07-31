@@ -51,7 +51,7 @@ DOC_TYPE_KEYWORDS = {
     "datacredito": ["datacredit", "data_credit", "buro", "bureau"],
     "cifin": ["cifin", "asobancaria"],
     "informe": ["confiab", "informe", "reporte", "analisis", "riesgo"],
-    "witme": ["witme", "solicitud", "finalco"],
+    "witme": ["witme", "solicitud", "finalco", "ssf"],
 }
 
 

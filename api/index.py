@@ -1038,7 +1038,7 @@ async def cargar_documentos(
                 tipo = "preselecta"
             elif "runt" in fname_lower:
                 tipo = "runt"
-            elif "witme" in fname_lower or "solicitud" in fname_lower or "finalco" in fname_lower:
+            elif "witme" in fname_lower or "solicitud" in fname_lower or "finalco" in fname_lower or "ssf" in fname_lower:
                 tipo = "witme"
             elif fname_lower.startswith("dg_") or "digiventure" in fname_lower:
                 tipo = "digiventure"

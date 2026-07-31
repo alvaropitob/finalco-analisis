@@ -43,7 +43,7 @@ export default function CargaDocumental() {
     if (n.includes('begini')) return 'begini'
     if (n.includes('preselecta')) return 'preselecta'
     if (n.includes('runt')) return 'runt'
-    if (n.includes('witme') || n.includes('solicitud')) return 'witme'
+    if (n.includes('witme') || n.includes('solicitud') || n.includes('finalco') || n.includes('ssf')) return 'witme'
     if (n.startsWith('dg_') || n.includes('digiventure')) return 'digiventure'
     if (n.startsWith('pn-') || n.startsWith('pn_')) return 'datacredito'
     if (n.startsWith('cc_') || n.includes('cedula')) return 'cc'
