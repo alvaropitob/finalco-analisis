@@ -163,7 +163,7 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
     # ── Variables del bloque de respuesta personalizada ─────────────────────
     def extract_var(name, default=0):
         # Try both "- VAR_NAME: 0" and "VAR_NAME: 0" and "VAR_NAME = 0" formats
-        m = re.search(rf'(?:-\s*)?{re.escape(name)}\s*[:\=]\s*([\d.]+)', texto, re.IGNORECASE)
+        m = re.search(rf'(?:-\s*)?\b{re.escape(name)}\b\s*[:\=]\s*([\d.]+)', texto, re.IGNORECASE)
         if m:
             try:
                 return int(float(m.group(1)))
@@ -190,7 +190,7 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
     # ── Variables financieras ───────────────────────────────────────────────
     def extract_float_var(name):
         # Try both "- VAR_NAME: 1234" and "VAR_NAME: 1234" and "VAR_NAME = 1234" formats
-        m = re.search(rf'(?:-\s*)?{re.escape(name)}\s*[:\=]\s*([\d.,]+)', texto, re.IGNORECASE)
+        m = re.search(rf'(?:-\s*)?\b{re.escape(name)}\b\s*[:\=]\s*([\d.,]+)', texto, re.IGNORECASE)
         if m:
             return parse_number(m.group(1))
         return None
