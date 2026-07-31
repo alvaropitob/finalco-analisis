@@ -93,7 +93,10 @@ const RenderDataObject = ({ data, politicaActiva }) => {
 
         return (
           <div key={key} style={{ padding: '10px 14px', background: 'var(--bg-surface)', borderRadius: 8, border: '1px solid var(--border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{formatKey(key)}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+              {formatKey(key)}
+              <InfoTooltip text={`Extraído de la variable '${key.toUpperCase()}' del reporte o documento procesado.`} />
+            </div>
             <div style={{ fontSize: 14, fontWeight: 500, color, wordBreak: 'break-word', display: 'flex', alignItems: 'center', gap: '6px' }}>
               {displayValue}
               {isPolicyCheck && (
