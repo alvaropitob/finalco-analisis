@@ -123,15 +123,37 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
     if score_m:
         data["score_acierta_mas"] = int(score_m.group(1))
 
+    def parse_number(s: str) -> Optional[float]:
+        if not s: return None
+        try:
+            if '.' in s and ',' in s:
+                if s.rfind(',') > s.rfind('.'):
+                    return float(s.replace('.', '').replace(',', '.'))
+                else:
+                    return float(s.replace(',', ''))
+            elif ',' in s:
+                parts = s.split(',')
+                if len(parts[-1]) == 2:
+                    return float(s.replace(',', '.'))
+                else:
+                    return float(s.replace(',', ''))
+            elif '.' in s:
+                parts = s.split('.')
+                if len(parts[-1]) == 2 and len(parts) == 2:
+                    return float(s)
+                else:
+                    return float(s.replace('.', ''))
+            else:
+                return float(s)
+        except ValueError:
+            return None
+
     # ── QUANTO ingreso medio ────────────────────────────────────────────────
     quanto_m = re.search(r'Quanto3?\s*Valor\s*Medio\s*:\s*([\d.,]+)', texto, re.IGNORECASE)
     if not quanto_m:
         quanto_m = re.search(r'Ingreso\s*(?:Medio|Estimado)\s*:\s*([\d.,]+)', texto, re.IGNORECASE)
     if quanto_m:
-        try:
-            data["quanto_ingreso_medio"] = float(quanto_m.group(1).replace(',', ''))
-        except ValueError:
-            pass
+        data["quanto_ingreso_medio"] = parse_number(quanto_m.group(1))
 
     # ── Perfil Score ────────────────────────────────────────────────────────
     perfil_m = re.search(r'PERFIL_SCORE:\s*(Alto|Medio|Bajo|NA)', texto, re.IGNORECASE)
@@ -170,10 +192,7 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
         # Try both "- VAR_NAME: 1234" and "VAR_NAME: 1234" and "VAR_NAME = 1234" formats
         m = re.search(rf'(?:-\s*)?{re.escape(name)}\s*[:\=]\s*([\d.,]+)', texto, re.IGNORECASE)
         if m:
-            try:
-                return float(m.group(1).replace(',', '').replace('.', '', m.group(1).count('.') - 1) if m.group(1).count('.') > 1 else m.group(1).replace(',', ''))
-            except ValueError:
-                return None
+            return parse_number(m.group(1))
         return None
 
     data["ingresos_quanto"] = extract_float_var("INGRESOS")

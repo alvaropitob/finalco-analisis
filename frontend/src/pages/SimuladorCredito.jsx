@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Calculator, TrendingDown, DollarSign, Calendar, Download, ChevronDown, ChevronUp } from 'lucide-react'
+import NumberInput from '../components/NumberInput'
 import { api } from '../api/client'
 
 const formatCOP = (n) => n != null ? `$${Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 })}` : '$0'
 const formatPct = (n, dec = 2) => n != null ? `${Number(n).toFixed(dec)}%` : '0%'
 
 export default function SimuladorCredito() {
-  const [monto, setMonto] = useState(300000)
+  const [monto, setMonto] = useState(600000)
   const [plazo, setPlazo] = useState(2)
   const [tasaEa, setTasaEa] = useState(24.26)
   const [seguro, setSeguro] = useState(0.1)
@@ -80,8 +81,8 @@ export default function SimuladorCredito() {
                   value={monto} onChange={e => setMonto(+e.target.value)}
                   style={{ flex: 1 }}
                 />
-                <input
-                  type="number" className="input" style={{ width: 140, textAlign: 'right' }}
+                <NumberInput
+                  className="input" style={{ width: 140, textAlign: 'right' }}
                   value={monto} onChange={e => setMonto(+e.target.value)}
                 />
               </div>
@@ -97,8 +98,8 @@ export default function SimuladorCredito() {
                   value={plazo} onChange={e => setPlazo(+e.target.value)}
                   style={{ flex: 1 }}
                 />
-                <input
-                  type="number" className="input" style={{ width: 80, textAlign: 'right' }}
+                <NumberInput
+                  className="input" style={{ width: 80, textAlign: 'right' }}
                   value={plazo} onChange={e => setPlazo(+e.target.value)}
                 />
               </div>
@@ -108,18 +109,20 @@ export default function SimuladorCredito() {
             {/* Tasa EA */}
             <div>
               <label className="field-label">Tasa Efectiva Anual (%)</label>
-              <input
-                type="number" className="input" step={0.01}
+              <NumberInput
+                className="input"
                 value={tasaEa} onChange={e => setTasaEa(+e.target.value)}
+                decimalScale={2}
               />
             </div>
 
             {/* Seguro */}
             <div>
               <label className="field-label">Seguro de vida mensual (%)</label>
-              <input
-                type="number" className="input" step={0.01}
+              <NumberInput
+                className="input"
                 value={seguro} onChange={e => setSeguro(+e.target.value)}
+                decimalScale={2}
               />
             </div>
 

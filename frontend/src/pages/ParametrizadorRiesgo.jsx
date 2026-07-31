@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Settings, Save, History, AlertTriangle, CheckCircle } from 'lucide-react'
 import { api, getRol } from '../api/client'
+import NumberInput from '../components/NumberInput'
 
 const SECTIONS = [
   {
@@ -180,10 +181,8 @@ export default function ParametrizadorRiesgo() {
                       {f.label}
                       {changed && <span style={{ color: 'var(--warning)', fontSize: 11 }}>● modificado</span>}
                     </label>
-                    <input
-                      type="number"
+                    <NumberInput
                       className="input"
-                      step={f.step || 1}
                       value={params[f.key] ?? ''}
                       onChange={e => handleChange(f.key, e.target.value === '' ? null : +e.target.value)}
                       disabled={!isAdmin}
@@ -191,6 +190,8 @@ export default function ParametrizadorRiesgo() {
                         borderColor: changed ? 'var(--warning)' : undefined,
                         background: changed ? 'var(--warning-bg)' : undefined,
                       }}
+                      decimalScale={f.step ? (f.step < 0.01 ? 4 : 2) : 0}
+                      isCurrency={f.type === 'money'}
                     />
                   </div>
                 )

@@ -76,7 +76,7 @@ def init_decision_db():
 DEFAULT_CRITERIOS = {
     "score_datacredito_minimo": 550,
     "score_cifin_minimo": 500,
-    "endeudamiento_maximo_pct": 60.0,
+    "endeudamiento_maximo_pct": 30.0,
     "obligaciones_cifin_maximas": 5,
     "requiere_confiable": True,
     "niveles_riesgo_permitidos": ["bajo", "medio"],
@@ -238,7 +238,7 @@ def calcular_score_decision(cliente: dict, criterios: dict) -> tuple[int, list, 
         score -= 10
 
     # Endeudamiento
-    max_endeud = criterios.get("endeudamiento_maximo_pct", 60)
+    max_endeud = criterios.get("endeudamiento_maximo_pct", 30)
     if endeud > max_endeud:
         rechazos.append(f"Endeudamiento {endeud:.1f}% supera el máximo permitido ({max_endeud}%)")
         score -= 25

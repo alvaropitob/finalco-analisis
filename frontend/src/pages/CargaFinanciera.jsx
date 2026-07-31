@@ -7,6 +7,7 @@ import {
   Save, X, RefreshCw, Search, ArrowRight, Hash,
   ShieldCheck, AlertTriangle, Activity, Briefcase
 } from 'lucide-react'
+import NumberInput from '../components/NumberInput'
 
 export default function CargaFinanciera() {
   const navigate = useNavigate()
@@ -192,33 +193,33 @@ export default function CargaFinanciera() {
               <div className="form-grid-3">
                 <div className="form-group">
                   <label className="form-label"><Activity size={13} /> Score DataCrédito</label>
-                  <input className="form-input" type="number" value={formData.score_datacredito} onChange={e => setFormData({...formData, score_datacredito: parseInt(e.target.value)})} />
+                  <NumberInput className="form-input" value={formData.score_datacredito} onChange={e => setFormData({...formData, score_datacredito: parseInt(e.target.value)})} />
                 </div>
                 <div className="form-group">
                   <label className="form-label"><TrendingUp size={13} /> Endeudamiento (%)</label>
-                  <input className="form-input" type="number" step="0.01" value={formData.endeudamiento_datacredito} onChange={e => setFormData({...formData, endeudamiento_datacredito: parseFloat(e.target.value)})} />
+                  <NumberInput className="form-input" decimalScale={2} value={formData.endeudamiento_datacredito} onChange={e => setFormData({...formData, endeudamiento_datacredito: parseFloat(e.target.value)})} />
                 </div>
                 <div className="form-group">
                   <label className="form-label"><AlertTriangle size={13} /> Mora Máxima (Meses)</label>
-                  <input className="form-input" type="number" value={formData.mora_maxima} onChange={e => setFormData({...formData, mora_maxima: parseInt(e.target.value)})} />
+                  <NumberInput className="form-input" value={formData.mora_maxima} onChange={e => setFormData({...formData, mora_maxima: parseInt(e.target.value)})} />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label"><Search size={13} /> Huellas Consulta (6m)</label>
-                  <input className="form-input" type="number" value={formData.huellas_consulta} onChange={e => setFormData({...formData, huellas_consulta: parseInt(e.target.value)})} />
+                  <NumberInput className="form-input" value={formData.huellas_consulta} onChange={e => setFormData({...formData, huellas_consulta: parseInt(e.target.value)})} />
                 </div>
                 <div className="form-group">
                   <label className="form-label"><DollarSign size={13} /> Saldo Total</label>
-                  <input className="form-input" type="number" value={formData.saldo_total} onChange={e => setFormData({...formData, saldo_total: parseInt(e.target.value)})} />
+                  <NumberInput className="form-input" value={formData.saldo_total} onChange={e => setFormData({...formData, saldo_total: parseInt(e.target.value)})} />
                 </div>
                 <div className="form-group">
                   <label className="form-label"><CreditCard size={13} /> Cupo Total</label>
-                  <input className="form-input" type="number" value={formData.cupo_total} onChange={e => setFormData({...formData, cupo_total: parseInt(e.target.value)})} />
+                  <NumberInput className="form-input" value={formData.cupo_total} onChange={e => setFormData({...formData, cupo_total: parseInt(e.target.value)})} />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label"><Briefcase size={13} /> Cuentas Abiertas</label>
-                  <input className="form-input" type="number" value={formData.cuentas_abiertas} onChange={e => setFormData({...formData, cuentas_abiertas: parseInt(e.target.value)})} />
+                  <NumberInput className="form-input" value={formData.cuentas_abiertas} onChange={e => setFormData({...formData, cuentas_abiertas: parseInt(e.target.value)})} />
                 </div>
                 <div className="form-group">
                   <label className="form-label"><ShieldCheck size={13} /> Estado Identificación</label>
@@ -226,7 +227,7 @@ export default function CargaFinanciera() {
                 </div>
                 <div className="form-group">
                   <label className="form-label"><Activity size={13} /> Score CIFIN</label>
-                  <input className="form-input" type="number" value={formData.score_cifin} onChange={e => setFormData({...formData, score_cifin: parseInt(e.target.value)})} />
+                  <NumberInput className="form-input" value={formData.score_cifin} onChange={e => setFormData({...formData, score_cifin: parseInt(e.target.value)})} />
                 </div>
               </div>
 

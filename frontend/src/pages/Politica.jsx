@@ -4,7 +4,7 @@ import { Sparkles, Save, CheckCircle } from 'lucide-react'
 
 const DEFAULT = {
   score_datacredito_minimo: 550, score_cifin_minimo: 500,
-  endeudamiento_maximo_pct: 60, obligaciones_cifin_maximas: 5,
+  endeudamiento_maximo_pct: 30, obligaciones_cifin_maximas: 5,
   requiere_confiable: true, niveles_riesgo_permitidos: ['bajo', 'medio'],
   monto_minimo: 500000, monto_maximo_base: 50000000,
   tasa_base_anual_pct: 24, ajuste_tasa_riesgo_medio_pct: 4,

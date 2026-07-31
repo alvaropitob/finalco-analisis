@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api/client'
 import { ArrowLeft, Zap, FileText, AlertCircle } from 'lucide-react'
+import NumberInput from '../components/NumberInput'
 
 function ScoreBar({ label, value, max = 900 }) {
   const pct = Math.min(100, Math.round((value / max) * 100))
@@ -142,9 +143,8 @@ export default function ClienteDetalle() {
 
           <div className="form-group">
             <label className="form-label">Monto solicitado</label>
-            <input
+            <NumberInput
               className="form-input"
-              type="number"
               value={monto}
               min={100000}
               step={500000}

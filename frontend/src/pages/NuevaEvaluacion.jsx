@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { api } from '../api/client'
 import { 
   User, Upload, FileText, X, CheckCircle, AlertCircle, 
   Loader2, Calculator, ArrowRight, DollarSign, Activity,
   ChevronRight
 } from 'lucide-react'
+import InfoTooltip from '../components/InfoTooltip'
+import NumberInput from '../components/NumberInput'
 
 // Utilidades
 const formatCOP = (n) => n != null ? `$${Number(n).toLocaleString('es-CO', { maximumFractionDigits: 0 })}` : '$0'
@@ -70,7 +72,7 @@ const RenderDataObject = ({ data, politicaActiva }) => {
            }
            // Endeudamiento
            else if (key === 'pct_endeudamiento' && typeof value === 'number') {
-              const max = criterios.endeudamiento_maximo_pct || 60;
+              const max = criterios.endeudamiento_maximo_pct || 30;
               isPolicyCheck = true;
               policyPassed = value <= max;
               policyLabel = `Máximo: ${max}%`;
@@ -110,6 +112,7 @@ const RenderDataObject = ({ data, politicaActiva }) => {
 
 export default function NuevaEvaluacion() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [step, setStep] = useState(1)
   
   // Paso 1: Cliente
@@ -117,7 +120,7 @@ export default function NuevaEvaluacion() {
     cedula: '',
     nombres: '',
     apellidos: '',
-    monto_solicitado: 300000,
+    monto_solicitado: 600000,
     plazo_solicitado: 2
   })
   const [clienteId, setClienteId] = useState(null)
@@ -140,6 +143,25 @@ export default function NuevaEvaluacion() {
   useEffect(() => {
     api.getPoliticaActiva().then(res => setPoliticaActiva(res)).catch(console.error)
   }, [])
+
+  // Resetear el estado si se vuelve a clickear el enlace en el menú
+  useEffect(() => {
+    setStep(1)
+    setFiles([])
+    setFormData({
+      cedula: '',
+      nombres: '',
+      apellidos: '',
+      monto_solicitado: 600000,
+      plazo_solicitado: 2
+    })
+    setClienteId(null)
+    setAnalisis(null)
+    setScoring(null)
+    setSimulacion(null)
+    setError(null)
+    setLoading(false)
+  }, [location.key])
 
   // Estados UI
   const [loading, setLoading] = useState(false)
@@ -415,11 +437,11 @@ export default function NuevaEvaluacion() {
               </div>
               <div>
                 <label className="field-label">Monto Solicitado (COP) *</label>
-                <input className="input" type="number" name="monto_solicitado" value={formData.monto_solicitado} onChange={handleChange} />
+                <NumberInput className="input" name="monto_solicitado" value={formData.monto_solicitado} onChange={handleChange} />
               </div>
               <div>
                 <label className="field-label">Plazo (Meses) *</label>
-                <input className="input" type="number" name="plazo_solicitado" value={formData.plazo_solicitado} onChange={handleChange} />
+                <NumberInput className="input" name="plazo_solicitado" value={formData.plazo_solicitado} onChange={handleChange} />
               </div>
             </div>
             
@@ -491,7 +513,7 @@ export default function NuevaEvaluacion() {
             campo: 'Endeudamiento',
             clave: 'pct_endeudamiento',
             valor: datosExtraidos.pct_endeudamiento,
-            maximo: criterios.endeudamiento_maximo_pct || 60,
+            maximo: criterios.endeudamiento_maximo_pct || 30,
             tipo: 'max',
             unidad: '%',
           },
@@ -558,6 +580,14 @@ export default function NuevaEvaluacion() {
           return ''
         }
 
+        const getTooltipText = (campo) => {
+          if (campo.includes('Endeudamiento') || campo.includes('Capacidad de Pago')) return "Calculado como (Cuota a Reportar + Cuota Nueva) / Ingresos Netos estimados o declarados.";
+          if (campo.includes('Score') || campo.includes('Datacredito')) return "Puntaje devuelto por la central de riesgo (ej. Datacrédito) o motor alternativo.";
+          if (campo.includes('Edad')) return "Calculado a partir de la fecha de expedición de la cédula y fecha de nacimiento extraída del documento.";
+          if (campo.includes('Embargo') || campo.includes('Mora') || campo.includes('Castigada')) return "Validación directa de alertas negativas en los reportes de centrales de riesgo.";
+          return "Dato extraído y calculado según las políticas vigentes de crédito.";
+        }
+
         const aprobados = checks.filter(c => getResult(c) === true).length
         const rechazados = checks.filter(c => getResult(c) === false).length
 
@@ -601,7 +631,10 @@ export default function NuevaEvaluacion() {
                             ? <CheckCircle size={20} color="var(--success)" />
                             : <X size={20} color="var(--danger)" />}
                           <div>
-                            <div style={{ fontWeight: 600, fontSize: 14, color: passed ? 'var(--success)' : 'var(--danger)' }}>{c.campo}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: 14, color: passed ? 'var(--success)' : 'var(--danger)' }}>
+                              {c.campo}
+                              <InfoTooltip text={getTooltipText(c.campo)} />
+                            </div>
                             <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{getPolicyLabel(c)}</div>
                           </div>
                         </div>
@@ -622,7 +655,10 @@ export default function NuevaEvaluacion() {
               {/* Scoring del motor IA (si ya se calculó) */}
               {scoring && (
                 <div style={{ marginTop: '1.5rem', padding: '1rem 1.5rem', background: 'var(--bg-surface)', borderRadius: 10, border: '1px solid var(--border)' }}>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>Motor de Scoring IA</div>
+                  <div style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>
+                    Motor de Scoring IA
+                    <InfoTooltip text="Puntaje calculado en base a 4 ejes (Capacidad 30%, Comportamiento 30%, Flujo 20% y Entorno 8%) más ajustes por validaciones externas. El puntaje base de 88% se normaliza a un máximo de 100 puntos." />
+                  </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
                     <div>
                       <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--primary)' }}>{Number(scoring.puntaje_final).toFixed(0)}</span>
@@ -645,7 +681,7 @@ export default function NuevaEvaluacion() {
                 const scoreVal = datosExtraidos.score_acierta_mas ?? datosExtraidos.score_datacredito ?? null
                 const scoreMin = (politicaActiva?.criterios?.score_datacredito_minimo) || 550
                 const endeudamiento = datosExtraidos.pct_endeudamiento ?? null
-                const endeudamientoMax = (politicaActiva?.criterios?.endeudamiento_maximo_pct) || 60
+                const endeudamientoMax = (politicaActiva?.criterios?.endeudamiento_maximo_pct) || 30
 
                 // Señales de riesgo bloqueantes (cualquiera es suficiente para rechazar)
                 const tieneEmbargoActivo = (datosExtraidos.embargos || 0) > 0
