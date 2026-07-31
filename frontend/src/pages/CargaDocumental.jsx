@@ -10,6 +10,7 @@ const DOC_TYPES = [
   { key: 'begini',      label: 'Begini',             accept: '.pdf', color: '#f59e0b' },
   { key: 'runt',        label: 'RUNT / Activos',     accept: '.pdf', color: '#ef4444' },
   { key: 'digiventure', label: 'Digiventure (XLSX)', accept: '.xlsx,.xls', color: '#059669' },
+  { key: 'witme',       label: 'Solicitud Witme (PDF)', accept: '.pdf', color: '#ec4899' },
 ]
 
 export default function CargaDocumental() {
@@ -42,6 +43,7 @@ export default function CargaDocumental() {
     if (n.includes('begini')) return 'begini'
     if (n.includes('preselecta')) return 'preselecta'
     if (n.includes('runt')) return 'runt'
+    if (n.includes('witme') || n.includes('solicitud')) return 'witme'
     if (n.startsWith('dg_') || n.includes('digiventure')) return 'digiventure'
     if (n.startsWith('pn-') || n.startsWith('pn_')) return 'datacredito'
     if (n.startsWith('cc_') || n.includes('cedula')) return 'cc'
@@ -252,6 +254,13 @@ export default function CargaDocumental() {
                           <span>
                             {r.datos.nombre_solicitante && `${r.datos.nombre_solicitante} — `}
                             Banda: <strong>{r.datos.banda || '—'}</strong> — Puntaje: <strong>{r.datos.puntaje_final ? Number(r.datos.puntaje_final).toFixed(1) : '—'}</strong>
+                          </span>
+                        )}
+                        {r.tipo === 'witme' && (
+                          <span>
+                            {r.datos.nombre_completo && `${r.datos.nombre_completo} — `}
+                            Monto: <strong>{r.datos.monto_solicitado ? `$${Number(r.datos.monto_solicitado).toLocaleString('es-CO')}` : '—'}</strong>
+                            {r.datos.ingresos_mensuales && ` — Ingresos: $${Number(r.datos.ingresos_mensuales).toLocaleString('es-CO')}`}
                           </span>
                         )}
                       </div>

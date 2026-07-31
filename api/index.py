@@ -46,6 +46,7 @@ from extractor_begini import extraer_begini
 from extractor_preselecta import extraer_preselecta
 from extractor_runt import extraer_runt
 from extractor_digiventure import extraer_digiventure
+from extractor_witme import extraer_witme
 from rule_engine import sugerir_politica_ia, tomar_decision
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -1059,6 +1060,38 @@ async def cargar_documentos(
                 tipo = "digiventure"
                 datos = extraer_digiventure(str(dest))
 
+            elif "witme" in fname_lower or "solicitud" in fname_lower:
+                tipo = "witme"
+                with pdfplumber.open(str(dest)) as pdf:
+                    texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
+                datos = extraer_witme(texto, fname)
+                
+                # Consolidar datos financieros y de perfil clave para persistir en el cliente
+                if datos.get("cedula"):
+                    datos_financieros_consolidados["cedula"] = datos["cedula"]
+                if datos.get("nombres"):
+                    datos_financieros_consolidados["nombres"] = datos["nombres"]
+                if datos.get("apellidos"):
+                    datos_financieros_consolidados["apellidos"] = datos["apellidos"]
+                if datos.get("ingresos_mensuales") is not None:
+                    datos_financieros_consolidados["ingresos_mensuales"] = datos["ingresos_mensuales"]
+                if datos.get("monto_solicitado") is not None:
+                    datos_financieros_consolidados["monto_solicitado"] = datos["monto_solicitado"]
+                if datos.get("plazo_solicitado") is not None:
+                    datos_financieros_consolidados["plazo_solicitado"] = datos["plazo_solicitado"]
+                if datos.get("personas_a_cargo") is not None:
+                    datos_financieros_consolidados["personas_a_cargo"] = datos["personas_a_cargo"]
+                if datos.get("destino_credito"):
+                    datos_financieros_consolidados["destino_credito"] = datos["destino_credito"]
+                if datos.get("ocupacion"):
+                    datos_financieros_consolidados["actividad_economica"] = datos["ocupacion"]
+                if datos.get("fecha_ingreso"):
+                    datos_financieros_consolidados["antiguedad_laboral"] = f"Ingreso: {datos['fecha_ingreso']}"
+                if datos.get("tiene_vehiculo") is not None:
+                    datos_financieros_consolidados["tiene_vehiculo"] = datos["tiene_vehiculo"]
+                if datos.get("tiene_propiedad") is not None:
+                    datos_financieros_consolidados["tiene_propiedad"] = datos["tiene_propiedad"]
+
             elif "pn-" in fname_lower or "pn_" in fname_lower:
                 tipo = "datacredito"
                 with pdfplumber.open(str(dest)) as pdf:
@@ -1126,37 +1159,75 @@ async def cargar_documentos(
         try:
             conn = get_db()
             try:
+                # Definir mapa de campos a actualizar
+                MAPPING = {
+                    "score_datacredito": "score_datacredito",
+                    "endeudamiento_datacredito": "endeudamiento_datacredito",
+                    "ingresos_mensuales": "ingresos_mensuales",
+                    "monto_solicitado": "monto_solicitado",
+                    "plazo_solicitado": "plazo_solicitado",
+                    "personas_a_cargo": "personas_a_cargo",
+                    "destino_credito": "destino_credito",
+                    "actividad_economica": "actividad_economica",
+                    "antiguedad_laboral": "antiguedad_laboral",
+                    "tiene_vehiculo": "tiene_vehiculo",
+                    "tiene_propiedad": "tiene_propiedad",
+                    "nombres": "nombres",
+                    "apellidos": "apellidos"
+                }
                 with conn.cursor() as cur:
                     if cliente_id:
                         # Actualizar por ID
                         updates = []
                         params = []
-                        if "score_datacredito" in datos_financieros_consolidados:
-                            updates.append("score_datacredito = %s")
-                            params.append(datos_financieros_consolidados["score_datacredito"])
-                        if "endeudamiento_datacredito" in datos_financieros_consolidados:
-                            updates.append("endeudamiento_datacredito = %s")
-                            params.append(datos_financieros_consolidados["endeudamiento_datacredito"])
+                        for key, col in MAPPING.items():
+                            if key in datos_financieros_consolidados and datos_financieros_consolidados[key] is not None:
+                                updates.append(f"{col} = %s")
+                                params.append(datos_financieros_consolidados[key])
+                        
+                        if "nombres" in datos_financieros_consolidados or "apellidos" in datos_financieros_consolidados:
+                            cur.execute("SELECT nombres, apellidos FROM clientes_credito WHERE id = %s", (cliente_id,))
+                            row = cur.fetchone()
+                            db_nombres = row[0] if row else ""
+                            db_apellidos = row[1] if row else ""
+                            new_nombres = datos_financieros_consolidados.get("nombres") or db_nombres or ""
+                            new_apellidos = datos_financieros_consolidados.get("apellidos") or db_apellidos or ""
+                            nombre_completo = f"{new_apellidos} {new_nombres}".strip()
+                            if nombre_completo:
+                                updates.append("nombre = %s")
+                                params.append(nombre_completo)
+                                
                         if updates:
                             params.append(cliente_id)
                             cur.execute(
-                                f"UPDATE clientes SET {', '.join(updates)} WHERE id = %s",
+                                f"UPDATE clientes_credito SET {', '.join(updates)} WHERE id = %s",
                                 params
                             )
                     elif datos_financieros_consolidados.get("cedula"):
                         # Actualizar por cédula
                         updates = []
                         params = []
-                        if "score_datacredito" in datos_financieros_consolidados:
-                            updates.append("score_datacredito = %s")
-                            params.append(datos_financieros_consolidados["score_datacredito"])
-                        if "endeudamiento_datacredito" in datos_financieros_consolidados:
-                            updates.append("endeudamiento_datacredito = %s")
-                            params.append(datos_financieros_consolidados["endeudamiento_datacredito"])
+                        for key, col in MAPPING.items():
+                            if key in datos_financieros_consolidados and datos_financieros_consolidados[key] is not None:
+                                updates.append(f"{col} = %s")
+                                params.append(datos_financieros_consolidados[key])
+                        
+                        if "nombres" in datos_financieros_consolidados or "apellidos" in datos_financieros_consolidados:
+                            cur.execute("SELECT nombres, apellidos FROM clientes_credito WHERE cedula = %s", (datos_financieros_consolidados["cedula"],))
+                            row = cur.fetchone()
+                            db_nombres = row[0] if row else ""
+                            db_apellidos = row[1] if row else ""
+                            new_nombres = datos_financieros_consolidados.get("nombres") or db_nombres or ""
+                            new_apellidos = datos_financieros_consolidados.get("apellidos") or db_apellidos or ""
+                            nombre_completo = f"{new_apellidos} {new_nombres}".strip()
+                            if nombre_completo:
+                                updates.append("nombre = %s")
+                                params.append(nombre_completo)
+                                
                         if updates:
                             params.append(datos_financieros_consolidados["cedula"])
                             cur.execute(
-                                f"UPDATE clientes SET {', '.join(updates)} WHERE cedula = %s",
+                                f"UPDATE clientes_credito SET {', '.join(updates)} WHERE cedula = %s",
                                 params
                             )
                 conn.commit()
