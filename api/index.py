@@ -1015,27 +1015,60 @@ async def cargar_documentos(
         dest.write_bytes(content)
 
         try:
-            # Determinar tipo de documento por nombre
+            # Determinar tipo de documento por nombre o por contenido
             fname_lower = fname.lower()
             tipo = "desconocido"
             datos = {}
+            texto = ""
 
+            # Extraer texto si es PDF para permitir la clasificación fallback
+            if ext == ".pdf":
+                try:
+                    with pdfplumber.open(str(dest)) as pdf:
+                        texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
+                except Exception as e:
+                    print(f"Error extrayendo texto del PDF {fname}: {e}")
+
+            # 1. Intentar clasificar por el nombre del archivo
             if "adres" in fname_lower:
                 tipo = "adres"
-                with pdfplumber.open(str(dest)) as pdf:
-                    texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
-                datos = extraer_adres(texto, fname)
-
             elif "begini" in fname_lower:
                 tipo = "begini"
-                with pdfplumber.open(str(dest)) as pdf:
-                    texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
-                datos = extraer_begini(texto, fname)
-
             elif "preselecta" in fname_lower:
                 tipo = "preselecta"
-                with pdfplumber.open(str(dest)) as pdf:
-                    texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
+            elif "runt" in fname_lower:
+                tipo = "runt"
+            elif "witme" in fname_lower or "solicitud" in fname_lower or "finalco" in fname_lower:
+                tipo = "witme"
+            elif fname_lower.startswith("dg_") or "digiventure" in fname_lower:
+                tipo = "digiventure"
+            elif "pn-" in fname_lower or "pn_" in fname_lower:
+                tipo = "datacredito"
+            elif "cc_" in fname_lower or "cedula" in fname_lower:
+                tipo = "cedula"
+
+            # 2. Fallback de clasificación por contenido del texto si es desconocido
+            if tipo == "desconocido" and texto:
+                texto_lower = texto.lower()
+                if "finalco.digiventures.la" in texto_lower or "witme" in texto_lower or "capital seleccionado" in texto_lower or "enlaces de continuación" in texto_lower:
+                    tipo = "witme"
+                elif "administradora de los recursos del sistema" in texto_lower or "bdua" in texto_lower:
+                    tipo = "adres"
+                elif "begini" in texto_lower or "escala begini" in texto_lower:
+                    tipo = "begini"
+                elif "preselecta" in texto_lower or "acierta más" in texto_lower or "quanto3" in texto_lower:
+                    tipo = "preselecta"
+                elif "runt" in texto_lower or "registro único nacional de tránsito" in texto_lower:
+                    tipo = "runt"
+
+            # 3. Procesar según tipo de documento identificado
+            if tipo == "adres":
+                datos = extraer_adres(texto, fname)
+
+            elif tipo == "begini":
+                datos = extraer_begini(texto, fname)
+
+            elif tipo == "preselecta":
                 datos = extraer_preselecta(texto, fname)
                 
                 # Consolidar datos financieros clave para persistir en el cliente
@@ -1050,20 +1083,13 @@ async def cargar_documentos(
                 if datos.get("apellidos"):
                     datos_financieros_consolidados["apellidos"] = datos["apellidos"]
 
-            elif "runt" in fname_lower:
-                tipo = "runt"
-                with pdfplumber.open(str(dest)) as pdf:
-                    texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
+            elif tipo == "runt":
                 datos = extraer_runt(texto, fname)
 
-            elif fname_lower.startswith("dg_") or "digiventure" in fname_lower:
-                tipo = "digiventure"
+            elif tipo == "digiventure":
                 datos = extraer_digiventure(str(dest))
 
-            elif "witme" in fname_lower or "solicitud" in fname_lower:
-                tipo = "witme"
-                with pdfplumber.open(str(dest)) as pdf:
-                    texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
+            elif tipo == "witme":
                 datos = extraer_witme(texto, fname)
                 
                 # Consolidar datos financieros y de perfil clave para persistir en el cliente
@@ -1092,10 +1118,7 @@ async def cargar_documentos(
                 if datos.get("tiene_propiedad") is not None:
                     datos_financieros_consolidados["tiene_propiedad"] = datos["tiene_propiedad"]
 
-            elif "pn-" in fname_lower or "pn_" in fname_lower:
-                tipo = "datacredito"
-                with pdfplumber.open(str(dest)) as pdf:
-                    texto = "\n".join(p.extract_text() or "" for p in pdf.pages)
+            elif tipo == "datacredito":
                 datos = {"texto_raw": texto[:500], "tipo": "datacredito"}
 
             elif "cc_" in fname_lower or "cedula" in fname_lower:
