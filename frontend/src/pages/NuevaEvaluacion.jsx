@@ -595,11 +595,17 @@ export default function NuevaEvaluacion() {
         }
 
         const getTooltipText = (campo) => {
-          if (campo.includes('Endeudamiento') || campo.includes('Capacidad de Pago')) return "Calculado como (Cuota a Reportar + Cuota Nueva) / Ingresos Netos estimados o declarados.";
-          if (campo.includes('Score') || campo.includes('Datacredito')) return "Puntaje devuelto por la central de riesgo (ej. Datacrédito) o motor alternativo.";
-          if (campo.includes('Edad')) return "Calculado a partir de la fecha de expedición de la cédula y fecha de nacimiento extraída del documento.";
-          if (campo.includes('Embargo') || campo.includes('Mora') || campo.includes('Castigada')) return "Validación directa de alertas negativas en los reportes de centrales de riesgo.";
-          return "Dato extraído y calculado según las políticas vigentes de crédito.";
+          const dict = {
+            'Score de Crédito': "Puntaje de riesgo extraído directamente del reporte del buró (ej. Preselecta / Acierta Más o Datacrédito).",
+            'Endeudamiento': "Porcentaje de endeudamiento del cliente extraído de la variable 'PORC_ENDEUDAMIENTO' del PDF de centrales de riesgo.",
+            'Embargos': "Cantidad de embargos activos extraída de la variable 'VAR_EMBARGOS' del reporte.",
+            'Cartera Castigada': "Número de cuentas en castigo extraídas de 'VAR_CARTERA_CASTIGADA_TIT_RECH'.",
+            'Mora Vigente 30d': "Obligaciones actualmente en mora de 30 días, extraídas de 'VAR_MORA30_VIGENTE_TIT_RECH'.",
+            'Mora Vigente 60d': "Obligaciones actualmente en mora de 60 días, extraídas de 'VAR_MORA60_VIGENTE_TIT_RECH'.",
+            'Mora Histórica 90d': "Obligaciones con mora de 90 días en los últimos 12 meses, extraídas de 'VAR_MORA90_ULT12M_TIT_RECH'.",
+            'Dudoso Recaudo': "Cuentas marcadas como de dudoso recaudo en el buró, extraídas de 'VAR_DUDOSO_RECAUDO_TIT_RECH'."
+          }
+          return dict[campo] || "Dato extraído del reporte del cliente."
         }
 
         const aprobados = checks.filter(c => getResult(c) === true).length
