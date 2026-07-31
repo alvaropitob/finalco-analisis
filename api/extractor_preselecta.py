@@ -128,23 +128,28 @@ def extraer_preselecta(texto: str, filename: str = "") -> dict:
         try:
             if '.' in s and ',' in s:
                 if s.rfind(',') > s.rfind('.'):
-                    return float(s.replace('.', '').replace(',', '.'))
+                    val = float(s.replace('.', '').replace(',', '.'))
                 else:
-                    return float(s.replace(',', ''))
+                    val = float(s.replace(',', ''))
             elif ',' in s:
                 parts = s.split(',')
-                if len(parts[-1]) == 2:
-                    return float(s.replace(',', '.'))
+                # Si hay múltiples comas o la última parte tiene exactamente 3 dígitos, es separador de miles
+                if len(parts) > 2 or (len(parts) == 2 and len(parts[-1]) == 3):
+                    val = float(s.replace(',', ''))
                 else:
-                    return float(s.replace(',', ''))
+                    val = float(s.replace(',', '.'))
             elif '.' in s:
                 parts = s.split('.')
-                if len(parts[-1]) == 2 and len(parts) == 2:
-                    return float(s)
+                # Si hay múltiples puntos o la última parte tiene exactamente 3 dígitos, es separador de miles
+                if len(parts) > 2 or (len(parts) == 2 and len(parts[-1]) == 3):
+                    val = float(s.replace('.', ''))
                 else:
-                    return float(s.replace('.', ''))
+                    val = float(s)
             else:
-                return float(s)
+                val = float(s)
+                
+            # Truncar los decimales como solicitó el usuario para gastos/ingresos
+            return float(int(val))
         except ValueError:
             return None
 
