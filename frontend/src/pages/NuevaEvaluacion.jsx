@@ -120,8 +120,8 @@ export default function NuevaEvaluacion() {
     cedula: '',
     nombres: '',
     apellidos: '',
-    monto_solicitado: 600000,
-    plazo_solicitado: 2
+    monto_solicitado: '',
+    plazo_solicitado: ''
   })
   const [clienteId, setClienteId] = useState(null)
   
@@ -137,8 +137,9 @@ export default function NuevaEvaluacion() {
   // Paso 4: Simulación
   const [simulacion, setSimulacion] = useState(null)
 
-  // Política Activa (para comparar en Paso 2)
+  // Política Activa y Parámetros
   const [politicaActiva, setPoliticaActiva] = useState(null)
+  const [parametrosRiesgo, setParametrosRiesgo] = useState(null)
 
   useEffect(() => {
     api.getPoliticaActiva().then(res => setPoliticaActiva(res)).catch(console.error)
@@ -152,9 +153,22 @@ export default function NuevaEvaluacion() {
       cedula: '',
       nombres: '',
       apellidos: '',
-      monto_solicitado: 600000,
-      plazo_solicitado: 2
+      monto_solicitado: '',
+      plazo_solicitado: ''
     })
+    
+    // Cargar valores por defecto y guardar parámetros globales
+    api.getParametrosRiesgo().then(params => {
+      if (params) {
+        setParametrosRiesgo(params)
+        setFormData(prev => ({
+          ...prev,
+          monto_solicitado: params.monto_solicitado_default || '',
+          plazo_solicitado: params.plazo_solicitado_default || ''
+        }))
+      }
+    }).catch(console.error)
+
     setClienteId(null)
     setAnalisis(null)
     setScoring(null)
@@ -657,7 +671,7 @@ export default function NuevaEvaluacion() {
                 <div style={{ marginTop: '1.5rem', padding: '1rem 1.5rem', background: 'var(--bg-surface)', borderRadius: 10, border: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>
                     Motor de Scoring IA
-                    <InfoTooltip text="Puntaje calculado en base a 4 ejes (Capacidad 30%, Comportamiento 30%, Flujo 20% y Entorno 8%) más ajustes por validaciones externas. El puntaje base de 88% se normaliza a un máximo de 100 puntos." />
+                    <InfoTooltip text={`Puntaje calculado en base a 4 ejes (Capacidad ${parametrosRiesgo?.peso_capacidad || 30}%, Comportamiento ${parametrosRiesgo?.peso_comportamiento || 30}%, Flujo ${parametrosRiesgo?.peso_flujo || 20}% y Entorno ${parametrosRiesgo?.peso_entorno || 8}%) más ajustes por validaciones externas. El puntaje total base se normaliza a un máximo de 1000 puntos (100%).`} />
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
                     <div>
@@ -696,17 +710,21 @@ export default function NuevaEvaluacion() {
                   tieneCarteraDudosa && 'obligaciones de dudoso recaudo',
                 ].filter(Boolean)
 
+                const margenScoreJusto = (politicaActiva?.criterios?.margen_score_justo) || 50
                 const scoreBajo = scoreVal !== null && scoreVal < scoreMin
-                const scoreJusto = scoreVal !== null && scoreVal >= scoreMin && scoreVal < scoreMin + 50
+                const scoreJusto = scoreVal !== null && scoreVal >= scoreMin && scoreVal < scoreMin + margenScoreJusto
+
+                const margenEndeudamientoJusto = ((politicaActiva?.criterios?.margen_endeudamiento_justo_pct) || 80) / 100
                 const endeudamientoAlto = endeudamiento !== null && endeudamiento > endeudamientoMax
-                const endeudamientoJusto = endeudamiento !== null && endeudamiento > endeudamientoMax * 0.8 && endeudamiento <= endeudamientoMax
+                const endeudamientoJusto = endeudamiento !== null && endeudamiento > endeudamientoMax * margenEndeudamientoJusto && endeudamiento <= endeudamientoMax
 
                 // Calcular monto alternativo (basado en endeudamiento disponible)
                 let montoAlternativo = null
                 if (endeudamiento !== null && datosExtraidos.ingresos_quanto) {
                   const disponible = (endeudamientoMax / 100 - endeudamiento / 100) * datosExtraidos.ingresos_quanto
                   if (disponible > 0 && disponible < montoSolicitado) {
-                    montoAlternativo = Math.floor(disponible * 0.8) // 80% del disponible, por margen de seguridad
+                    const margenSeguridad = ((politicaActiva?.criterios?.margen_seguridad_monto_pct) || 80) / 100
+                    montoAlternativo = Math.floor(disponible * margenSeguridad)
                   }
                 }
 

@@ -188,4 +188,6 @@ class ParametrosRiesgoRequest(BaseModel):
     monto_min_b: Optional[float] = None
     monto_max_b: Optional[float] = None
     monto_c: Optional[float] = None
+    monto_solicitado_default: Optional[float] = None
+    plazo_solicitado_default: Optional[int] = None
 

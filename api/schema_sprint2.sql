@@ -79,6 +79,10 @@ CREATE TABLE IF NOT EXISTS parametros_riesgo (
     tasa_ea               NUMERIC(8,4) DEFAULT 0.2426,
     tasa_nominal          NUMERIC(8,4),
     
+    -- Valores Solicitud
+    monto_solicitado_default NUMERIC(15,2) DEFAULT 600000,
+    plazo_solicitado_default INTEGER DEFAULT 2,
+    
     -- Costos
     seguro_vida_pct       NUMERIC(6,4) DEFAULT 0.001,
     fianza_pct            NUMERIC(6,4) DEFAULT 0.0,

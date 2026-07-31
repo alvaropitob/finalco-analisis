@@ -13,6 +13,13 @@ const SECTIONS = [
     ],
   },
   {
+    title: 'Valores por Defecto de Solicitud',
+    fields: [
+      { key: 'monto_solicitado_default', label: 'Monto Solicitado ($)', type: 'money' },
+      { key: 'plazo_solicitado_default', label: 'Plazo (Meses)', type: 'number' },
+    ],
+  },
+  {
     title: 'Costos Fijos',
     fields: [
       { key: 'gastos_tecnologia', label: 'Gastos de tecnología ($)', type: 'money' },

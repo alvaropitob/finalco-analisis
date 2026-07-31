@@ -9,6 +9,8 @@ const DEFAULT = {
   monto_minimo: 500000, monto_maximo_base: 50000000,
   tasa_base_anual_pct: 24, ajuste_tasa_riesgo_medio_pct: 4,
   plazo_minimo_meses: 3, plazo_maximo_meses: 60, factor_capacidad_pago: 0.30,
+  margen_score_justo: 50, margen_endeudamiento_justo_pct: 80,
+  margen_seguridad_monto_pct: 80,
 }
 
 function Slider({ label, hint, value, min, max, step = 1, onChange, fmt }) {
@@ -186,6 +188,22 @@ export default function Politica() {
             min={0.2} max={0.5} step={0.01} fmt={v => `${Math.round(v*100)}%`}
             hint="% del ingreso destinable al pago de cuota"
             onChange={set('factor_capacidad_pago')} />
+        </div>
+      </div>
+
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div className="card">
+          <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 400, fontSize: '1.1rem', marginBottom: '1.25rem' }}>
+            Márgenes de Decisión y Seguridad
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' }}>
+            <Slider label="Margen Score Justo (pts)" value={criterios.margen_score_justo}
+              min={10} max={200} step={5} hint="Puntos por encima del mínimo para considerar el score como 'Justo'" onChange={set('margen_score_justo')} />
+            <Slider label="Alerta Endeudamiento Justo" value={criterios.margen_endeudamiento_justo_pct}
+              min={50} max={99} step={1} fmt={fmtPct} hint="% del límite máximo a partir del cual se levanta alerta de 'Endeudamiento Justo'" onChange={set('margen_endeudamiento_justo_pct')} />
+            <Slider label="Margen Seguridad Monto Alternativo" value={criterios.margen_seguridad_monto_pct}
+              min={10} max={100} step={5} fmt={fmtPct} hint="% del monto disponible sugerido en caso de aprobación parcial" onChange={set('margen_seguridad_monto_pct')} />
+          </div>
         </div>
       </div>
 
